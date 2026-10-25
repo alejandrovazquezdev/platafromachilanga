@@ -1,0 +1,228 @@
+{% extends 'base.html' %}
+{% from 'components/iconos.html' import icono %}
+{% from 'components/tarjeta_comercio.html' import tarjeta_comercio %}
+
+{% block titulo %}Chilangatón · Tu comercio, en el mapa de la ciudad{% endblock %}
+{% block descripcion %}Registra tu mercado, tianguis o tienda de barrio: hazlo visible, publica tus productos y da el paso a la digitalización. Gratis y sin RFC obligatorio.{% endblock %}
+
+{% block contenido %}
+<section class="hero">
+  <div class="contenedor hero__grid">
+    <div class="hero__texto">
+      <p class="eyebrow"><span class="eyebrow__linea" aria-hidden="true"></span> Reto 1 · Comercio popular y barrial</p>
+      <h1 class="hero__titulo">Tu comercio, <span class="texto-guinda">en el mapa</span> de la ciudad.</h1>
+      <p class="hero__bajada">
+        Mercados, tianguis y tiendas de barrio: registra tu negocio, hazlo visible y
+        accede a herramientas para vender más y cobrar distinto.
+      </p>
+      <div class="hero__acciones">
+        <a class="btn btn--primario btn--lg" href="{{ url_for('registro.paso1') }}">
+          Registrar mi comercio
+          {{ icono('arrow-right', 'btn__icono', 20) }}
+        </a>
+        <a class="btn btn--secundario btn--lg" href="{{ url_for('main.como_funciona') }}">
+          Ver cómo funciona
+        </a>
+      </div>
+      <ul class="hero__sellos" aria-label="Ventajas del registro">
+        <li>{{ icono('check', 'icono', 16) }} Gratis</li>
+        <li>{{ icono('clock', 'icono', 16) }} 5 minutos</li>
+        <li>{{ icono('shield', 'icono', 16) }} Sin RFC obligatorio</li>
+      </ul>
+    </div>
+
+    <div class="hero__visual">
+      <div class="hero__mapa">
+        <img
+          class="hero__flores"
+          src="{{ url_for('static', filename='img/mapa-flores.png') }}"
+          alt=""
+          width="480"
+          height="630"
+          loading="eager"
+        >
+        <div class="hero__grilla" aria-hidden="true"></div>
+        <div class="hero__pin" aria-hidden="true">
+          {{ icono('map-pin', 'icono', 20) }}
+          <span>Tu comercio</span>
+        </div>
+
+        <article class="ficha-demo" aria-label="Ejemplo de ficha de comercio">
+          <div class="ficha-demo__cabecera">
+            <span class="badge badge--tipo">Tienda de barrio</span>
+            <span class="estado estado--publicado"><span class="punto" aria-hidden="true"></span> Publicado</span>
+          </div>
+          <h2>Abarrotes Doña Mari</h2>
+          <p class="ficha-demo__lugar">{{ icono('map-pin', 'icono', 15) }} Coyoacán · Del Carmen</p>
+          <p class="ficha-demo__desc">Abarrotes, lácteos y pedidos a domicilio en la colonia.</p>
+          <div class="ficha-demo__chips">
+            <span>Efectivo</span><span>Transferencia</span><span>WhatsApp</span>
+          </div>
+          <div class="ficha-demo__pie">
+            <span>{{ icono('clock', 'icono', 15) }} 8:30–20:30</span>
+            <span>{{ icono('eye', 'icono', 15) }} 218 visitas</span>
+          </div>
+        </article>
+
+        <div class="flotante flotante--pos">
+          {{ icono('card', 'icono', 20) }}
+          <span><strong>Punto de venta</strong><small>Listo para cobrar con tarjeta</small></span>
+        </div>
+        <div class="flotante flotante--barrio">
+          {{ icono('heart', 'icono', 20) }}
+          <span><strong>+128</strong><small>vecinos vieron tu ficha</small></span>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="stats" aria-label="Datos del comercio popular en la CDMX">
+  <div class="contenedor stats__grid">
+    {% for numero, etiqueta, detalle in estadisticas %}
+    <div class="stat">
+      <strong class="stat__numero">{{ numero }}</strong>
+      <span class="stat__etiqueta">{{ etiqueta }}</span>
+      <small class="stat__detalle">{{ detalle }}</small>
+    </div>
+    {% endfor %}
+  </div>
+  <p class="contenedor stats__fuente">Fuente: SEDECO CDMX e INEGI. Datos del reto Chilangatón.</p>
+</section>
+
+<section class="seccion" id="beneficios">
+  <div class="contenedor">
+    <div class="seccion__cabecera">
+      <p class="eyebrow"><span class="eyebrow__linea" aria-hidden="true"></span> Lo que ganas</p>
+      <h2>Más visibilidad, más herramientas,<br class="solo-escritorio"> menos burocracia.</h2>
+      <p>
+        El comercio popular sostiene la ciudad, pero casi nunca aparece en los mapas
+        digitales. Este registro está pensado para cambiar eso sin pedirte papeleo de más.
+      </p>
+    </div>
+    <div class="beneficios">
+      {% for beneficio in beneficios %}
+      <article class="beneficio">
+        <span class="beneficio__icono">{{ icono(beneficio.icono, 'icono', 26) }}</span>
+        <h3>{{ beneficio.titulo }}</h3>
+        <p>{{ beneficio.texto }}</p>
+        <small>{{ beneficio.detalle }}</small>
+      </article>
+      {% endfor %}
+    </div>
+  </div>
+</section>
+
+<section class="seccion seccion--papel" id="registro">
+  <div class="contenedor split">
+    <div class="split__principal">
+      <p class="eyebrow"><span class="eyebrow__linea" aria-hidden="true"></span> Registro en 4 pasos</p>
+      <h2>¿Qué implica registrarte?</h2>
+      <p class="split__bajada">
+        Es un formulario guiado. Puedes empezar con lo que sabes y completar el resto
+        después; no necesitas tener todo a la mano para dar el primer paso.
+      </p>
+      <ol class="pasos-lista">
+        {% for numero, titulo, texto in pasos %}
+        <li class="paso">
+          <span class="paso__numero">{{ numero }}</span>
+          <div>
+            <h3>{{ titulo }}</h3>
+            <p>{{ texto }}</p>
+          </div>
+        </li>
+        {% endfor %}
+      </ol>
+      <a class="btn btn--primario" href="{{ url_for('registro.paso1') }}">
+        Empezar mi registro
+        {{ icono('arrow-right', 'btn__icono', 18) }}
+      </a>
+    </div>
+
+    <aside class="panel-requisitos">
+      <h3>{{ icono('check', 'icono', 20) }} Lo que sí necesitas</h3>
+      <ul class="lista-check">
+        <li>El nombre de tu comercio y qué vendes.</li>
+        <li>Tu alcaldía, colonia y una referencia de ubicación.</li>
+        <li>Un teléfono o WhatsApp de contacto.</li>
+        <li>Los horarios en los que te pueden encontrar.</li>
+      </ul>
+      <hr>
+      <h3>{{ icono('x', 'icono', 20) }} Lo que NO necesitas</h3>
+      <ul class="lista-x">
+        <li>RFC ni constancia de situación fiscal.</li>
+        <li>Cuenta bancaria o terminal propia.</li>
+        <li>Local propio o escritura.</li>
+        <li>Internet en el local para empezar.</li>
+      </ul>
+      <p class="nota">
+        {{ icono('info', 'icono', 18) }}
+        El RFC es opcional. No lo usamos para trámites fiscales ni lo compartimos con el SAT.
+      </p>
+    </aside>
+  </div>
+</section>
+
+<section class="seccion">
+  <div class="contenedor">
+    <div class="seccion__cabecera seccion__cabecera--fila">
+      <div>
+        <p class="eyebrow"><span class="eyebrow__linea" aria-hidden="true"></span> Directorio</p>
+        <h2>Comercios que ya están en el mapa</h2>
+        <p>{{ total_comercios }} comercios y {{ total_productos }} productos de demostración para que veas cómo queda tu ficha.</p>
+      </div>
+      <a class="btn btn--secundario" href="{{ url_for('directorio.lista') }}">
+        Ver el directorio
+        {{ icono('arrow-right', 'btn__icono', 18) }}
+      </a>
+    </div>
+    <div class="grid-cards">
+      {% for comercio in destacados %}
+        {{ tarjeta_comercio(comercio) }}
+      {% endfor %}
+    </div>
+  </div>
+</section>
+
+<section class="seccion" id="preguntas">
+  <div class="contenedor faq">
+    <div class="faq__intro">
+      <p class="eyebrow"><span class="eyebrow__linea" aria-hidden="true"></span> Sin letras chiquitas</p>
+      <h2>Preguntas de siempre</h2>
+      <p>
+        Sabemos que la visibilidad y los datos preocupan. Estas son las respuestas
+        cortas; el detalle está en el aviso de privacidad.
+      </p>
+      <a class="enlace-flecha" href="{{ url_for('main.aviso_privacidad') }}">
+        Leer el aviso de privacidad
+        {{ icono('arrow-right', 'icono', 16) }}
+      </a>
+    </div>
+    <div class="faq__lista">
+      {% for pregunta, respuesta in faqs %}
+      <details class="faq__item">
+        <summary>
+          <span>{{ pregunta }}</span>
+          {{ icono('chevron-down', 'faq__chevron', 20) }}
+        </summary>
+        <p>{{ respuesta }}</p>
+      </details>
+      {% endfor %}
+    </div>
+  </div>
+</section>
+
+<section class="cta">
+  <div class="contenedor cta__inner">
+    <div>
+      <p class="eyebrow eyebrow--claro"><span class="eyebrow__linea" aria-hidden="true"></span> Tu barrio cuenta</p>
+      <h2>Haz que tu comercio se encuentre en el mapa.</h2>
+      <p>Empieza hoy. No necesitas RFC, cuenta bancaria ni tener todo resuelto.</p>
+    </div>
+    <a class="btn btn--blanco btn--lg" href="{{ url_for('registro.paso1') }}">
+      Registrar mi comercio
+      {{ icono('arrow-right', 'btn__icono', 20) }}
+    </a>
+  </div>
+</section>
+{% endblock %}

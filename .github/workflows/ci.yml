@@ -1,0 +1,87 @@
+name: CI/CD
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: chilangaton-produccion
+  cancel-in-progress: false
+
+jobs:
+  test:
+    name: Pruebas
+    runs-on: [self-hosted, Linux, X64, chilangaton, hostinger]
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Entorno Python
+        run: |
+          set -e
+          rm -rf .venv-ci
+          python3 -m venv .venv-ci
+          . .venv-ci/bin/activate
+          python -m pip install --quiet --upgrade pip
+          python -m pip install --quiet -r requirements-dev.txt
+          python -m pytest -q
+
+  deploy:
+    name: Desplegar a producción
+    needs: test
+    if: github.ref == 'refs/heads/main'
+    runs-on: [self-hosted, Linux, X64, chilangaton, hostinger]
+    environment: production
+    steps:
+      - name: Actualizar código
+        run: |
+          set -e
+          cd /var/www/platafromachilanga
+          git -c safe.directory=/var/www/platafromachilanga fetch origin main
+          git -c safe.directory=/var/www/platafromachilanga reset --hard origin/main
+
+      - name: Dependencias
+        run: |
+          set -e
+          cd /var/www/platafromachilanga
+          [ -d venv ] || python3 -m venv venv
+          . venv/bin/activate
+          python -m pip install --quiet --upgrade pip
+          python -m pip install --quiet -r requirements.txt
+
+      - name: Preparar base
+        run: |
+          set -e
+          cd /var/www/platafromachilanga
+          . venv/bin/activate
+          set -a
+          . ./.env
+          set +a
+          export FLASK_APP=entrypoint
+          export FLASK_CONFIG=config.ProductionConfig
+          flask init-db
+
+      - name: Reiniciar servicio
+        run: |
+          set -e
+          sudo -n /bin/systemctl restart platafromachilanga.service
+          sleep 4
+          sudo -n /bin/systemctl is-active platafromachilanga.service
+
+      - name: Health check
+        run: |
+          set -e
+          for intento in 1 2 3 4 5 6 7 8 9 10; do
+            if curl -fsS --max-time 5 http://127.0.0.1:5110/salud >/dev/null; then
+              echo "✅ Chilangatón responde"
+              exit 0
+            fi
+            sleep 2
+          done
+          echo "❌ Sin respuesta; últimas líneas del servicio:"
+          sudo -n journalctl -u platafromachilanga.service -n 80 --no-pager || true
+          exit 1

@@ -1,0 +1,4 @@
+FLASK_APP=entrypoint
+FLASK_DEBUG=1
+FLASK_RUN_PORT=5110
+FLASK_CONFIG=config.Config

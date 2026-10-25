@@ -1,0 +1,173 @@
+{% extends 'base.html' %}
+{% from 'components/iconos.html' import icono %}
+{% from 'components/tarjeta_comercio.html' import tarjeta_comercio %}
+
+{% block titulo %}{{ comercio.nombre }} · {{ comercio.alcaldia }} · Chilangatón{% endblock %}
+{% block descripcion %}{{ comercio.descripcion_corta or 'Ficha de comercio popular en la Ciudad de México.' }}{% endblock %}
+
+{% block head_extra %}
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
+{% endblock %}
+
+{% block contenido %}
+<div class="contenedor migas">
+  <a href="{{ url_for('directorio.lista') }}">Directorio</a>
+  <span aria-hidden="true">/</span>
+  <span>{{ comercio.nombre }}</span>
+</div>
+
+<section class="ficha-hero">
+  <div class="contenedor ficha-hero__grid">
+    <div class="ficha-hero__texto">
+      <div class="ficha-hero__badges">
+        <span class="badge badge--tipo">{{ comercio.tipo_label }}</span>
+        <span class="badge badge--giro">{{ comercio.giro_label }}</span>
+        {% if comercio.abierto_ahora %}
+        <span class="estado estado--abierto"><span class="punto" aria-hidden="true"></span> Abierto ahora</span>
+        {% else %}
+        <span class="estado estado--cerrado"><span class="punto" aria-hidden="true"></span> {{ comercio.horario_hoy_texto }}</span>
+        {% endif %}
+      </div>
+      <h1>{{ comercio.nombre }}</h1>
+      <p class="ficha-hero__lugar">{{ icono('map-pin', 'icono', 18) }} {{ comercio.colonia }}, {{ comercio.alcaldia }}</p>
+      <p class="ficha-hero__descripcion">{{ comercio.descripcion or 'Un comercio de barrio que forma parte de la red de Chilangatón.' }}</p>
+      <div class="ficha-hero__sellos">
+        <span>{{ icono('calendar', 'icono', 16) }} {{ comercio.anios_operando or 'Comercio local' }}</span>
+        {% if comercio.personas %}<span>{{ icono('users', 'icono', 16) }} {{ comercio.personas }} personas</span>{% endif %}
+        <span>{{ icono('eye', 'icono', 16) }} {{ comercio.visitas }} visitas</span>
+      </div>
+    </div>
+
+    <aside class="ficha-contacto">
+      <h2>Contacta a este comercio</h2>
+      {% if comercio.whatsapp %}
+      <a class="btn btn--primario btn--bloque" href="https://wa.me/52{{ comercio.whatsapp|replace(' ', '')|replace('-', '')|replace('+', '') }}" target="_blank" rel="noopener">
+        {{ icono('whatsapp', 'btn__icono', 20) }}
+        Escribir por WhatsApp
+      </a>
+      {% endif %}
+      {% if comercio.telefono %}
+      <a class="btn btn--secundario btn--bloque" href="tel:{{ comercio.telefono|replace(' ', '') }}">
+        {{ icono('phone', 'btn__icono', 18) }}
+        Llamar
+      </a>
+      {% endif %}
+      <button class="btn btn--fantasma btn--bloque" type="button" data-copiar-texto="{{ url_for('directorio.ficha', slug=comercio.slug, _external=True) }}">
+        {{ icono('share', 'btn__icono', 18) }}
+        Compartir ficha
+      </button>
+      <div class="ficha-contacto__detalle">
+        <p>{{ icono('clock', 'icono', 16) }} Hoy: <strong>{{ comercio.horario_hoy_texto }}</strong></p>
+        <p>{{ icono('wallet', 'icono', 16) }} {{ comercio.metodos_pago_labels|join(', ') or 'Efectivo' }}</p>
+      </div>
+      <p class="ficha-contacto__nota">{{ icono('shield', 'icono', 15) }} La información de contacto es la que el comercio decidió publicar.</p>
+    </aside>
+  </div>
+</section>
+
+<section class="contenedor ficha-cuerpo">
+  <div class="ficha-cuerpo__principal">
+    <section class="bloque">
+      <div class="bloque__cabecera">
+        <h2>Lo que ofrece</h2>
+        <span class="bloque__meta">{{ comercio.productos|length }} productos</span>
+      </div>
+      {% if comercio.productos %}
+      <div class="productos-grid">
+        {% for producto in comercio.productos %}
+        <article class="producto">
+          <span class="producto__categoria">{{ producto.categoria or 'Producto' }}</span>
+          <h3>{{ producto.nombre }}</h3>
+          <p class="producto__precio">{{ producto.precio|precio }}{% if producto.unidad %} <small>/ {{ producto.unidad }}</small>{% endif %}</p>
+          {% if producto.descripcion %}<p class="producto__desc">{{ producto.descripcion }}</p>{% endif %}
+        </article>
+        {% endfor %}
+      </div>
+      {% else %}
+      <p class="texto-vacio">Este comercio todavía no publicó productos. Puedes contactarlo para preguntar.</p>
+      {% endif %}
+    </section>
+
+    <section class="bloque">
+      <h2>Horarios</h2>
+      <ul class="horario-lista">
+        {% for clave, etiqueta in DIAS %}
+        {% set dia = (comercio.horario or {}).get(clave) or {} %}
+        <li class="{% if not dia.get('abre') %}is-cerrado{% endif %}">
+          <span>{{ etiqueta }}</span>
+          <strong>{% if dia.get('abre') %}{{ dia.get('de') }}–{{ dia.get('a') }}{% else %}Cerrado{% endif %}</strong>
+        </li>
+        {% endfor %}
+      </ul>
+      {% if comercio.tipo == 'tianguis' and comercio.dias_tianguis %}
+      <p class="bloque__nota">{{ icono('tent', 'icono', 16) }} Tianguis: {{ comercio.dias_tianguis }}{% if comercio.numero_puesto %} · Puesto {{ comercio.numero_puesto }}{% endif %}</p>
+      {% endif %}
+    </section>
+
+    <section class="bloque">
+      <h2>Dónde encontrarlo</h2>
+      <div class="mapa mapa--ficha" id="mapa-ficha" data-mapa>
+        <div class="mapa__fallback">
+          {{ icono('map-pin', 'icono', 28) }}
+          <p>Ubicación aproximada: {{ comercio.colonia }}, {{ comercio.alcaldia }}.</p>
+        </div>
+      </div>
+      <div class="direccion-caja">
+        <p><strong>{{ comercio.calle }}</strong></p>
+        <p>{{ comercio.colonia }}, {{ comercio.alcaldia }}</p>
+        {% if comercio.referencias %}<p class="direccion-caja__ref">{{ comercio.referencias }}</p>{% endif %}
+      </div>
+    </section>
+  </div>
+
+  <aside class="ficha-cuerpo__lateral">
+    <div class="tarjeta-lateral tarjeta-lateral--compacta">
+      <p class="tarjeta-lateral__eyebrow">Formas de pago</p>
+      <ul class="lista-pagos">
+        {% for metodo in comercio.metodos_pago_labels %}
+        <li>{{ icono('check', 'icono', 16) }} {{ metodo }}</li>
+        {% else %}
+        <li>{{ icono('check', 'icono', 16) }} Efectivo</li>
+        {% endfor %}
+      </ul>
+    </div>
+
+    <div class="tarjeta-lateral tarjeta-lateral--compacta">
+      <p class="tarjeta-lateral__eyebrow">Punto de venta</p>
+      <h3>{{ comercio.interes_pos_label }}</h3>
+      <p>Si el comercio lo solicitó, el equipo de Chilangatón puede contactarlo para cotizar una terminal.</p>
+    </div>
+
+    <div class="tarjeta-lateral tarjeta-lateral--compacta">
+      <p class="tarjeta-lateral__eyebrow">¿Información incorrecta?</p>
+      <p>Ayúdanos a mantener el directorio al día.</p>
+      <a class="enlace-flecha" href="mailto:equipo@chilangaton.mx?subject=Reporte%20de%20ficha%20{{ comercio.folio }}">Reportar esta ficha {{ icono('arrow-right', 'icono', 16) }}</a>
+    </div>
+  </aside>
+</section>
+
+{% if relacionados %}
+<section class="seccion seccion--papel">
+  <div class="contenedor">
+    <div class="seccion__cabecera seccion__cabecera--fila">
+      <div>
+        <p class="eyebrow"><span class="eyebrow__linea" aria-hidden="true"></span> Cerca de aquí</p>
+        <h2>Otros comercios que te pueden interesar</h2>
+      </div>
+      <a class="btn btn--secundario" href="{{ url_for('directorio.lista') }}">Ver directorio</a>
+    </div>
+    <div class="grid-cards">
+      {% for comercio in relacionados %}
+        {{ tarjeta_comercio(comercio) }}
+      {% endfor %}
+    </div>
+  </div>
+</section>
+{% endif %}
+
+<script type="application/json" id="datos-mapa">{{ mapa_json|safe }}</script>
+{% endblock %}
+
+{% block scripts %}
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" defer></script>
+{% endblock %}

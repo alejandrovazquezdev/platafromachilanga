@@ -1,0 +1,35 @@
+{% from 'components/iconos.html' import icono %}
+<div class="franja franja--simple">
+  <div class="contenedor franja__inner">
+    <span><strong>Chilangatón 2026</strong> · Registro de comercio</span>
+    <span class="franja__der">Prototipo</span>
+  </div>
+</div>
+<header class="site-header site-header--simple">
+  <div class="contenedor header__inner">
+    <a class="marca" href="{{ url_for('main.inicio') }}" aria-label="Chilangatón, ir al inicio">
+      <picture>
+        <source type="image/webp" srcset="{{ url_for('static', filename='img/logo-gobierno-500.webp') }}" sizes="210px">
+        <img class="marca__logo" src="{{ url_for('static', filename='img/logo-gobierno-500.png') }}" alt="Gobierno de la Ciudad de México" width="500" height="152">
+      </picture>
+      <span class="marca__separador" aria-hidden="true"></span>
+      <span class="marca__texto"><strong>Chilangatón</strong><small>Comercio popular</small></span>
+    </a>
+    <div class="header__acciones">
+      <a class="header__enlace" href="{{ url_for('main.como_funciona') }}">¿Qué necesito?</a>
+      <a class="btn btn--fantasma btn--sm" href="{{ url_for('main.inicio') }}">
+        {{ icono('arrow-left', 'btn__icono', 18) }}
+        Salir
+      </a>
+    </div>
+  </div>
+</header>
+{% with messages = get_flashed_messages(with_categories=true) %}
+  {% if messages %}
+  <div class="contenedor avisos" role="status">
+    {% for categoria, mensaje in messages %}
+    <div class="aviso aviso--{{ categoria }}">{{ mensaje }}</div>
+    {% endfor %}
+  </div>
+  {% endif %}
+{% endwith %}

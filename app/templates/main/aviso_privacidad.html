@@ -1,0 +1,113 @@
+{% extends 'base.html' %}
+{% from 'components/iconos.html' import icono %}
+
+{% block titulo %}Aviso de privacidad · Chilangatón{% endblock %}
+{% block descripcion %}Aviso de privacidad del prototipo Chilangatón: qué datos recabamos, para qué los usamos y cómo ejercer tus derechos.{% endblock %}
+
+{% block contenido %}
+<section class="hero hero--interior hero--compacto">
+  <div class="contenedor hero__interior">
+    <p class="eyebrow"><span class="eyebrow__linea" aria-hidden="true"></span> Transparencia</p>
+    <h1>Aviso de privacidad</h1>
+    <p class="hero__bajada">
+      Este es un prototipo desarrollado en el marco del Chilangatón 2026. No es un
+      sitio oficial del Gobierno de la Ciudad de México.
+    </p>
+    <p class="meta-linea">Última actualización: 25 de octubre de 2026.</p>
+  </div>
+</section>
+
+<section class="seccion">
+  <div class="contenedor prosa">
+    <div class="prosa__aviso">
+      {{ icono('info', 'icono', 20) }}
+      <p>
+        Versión de trabajo para el hackathon. Antes de operar con comercios reales,
+        este aviso debe revisarse y alinearse con la LFPDPPP y con el área jurídica
+        correspondiente.
+      </p>
+    </div>
+
+    <h2>1. Quién es el responsable</h2>
+    <p>
+      El equipo de <strong>Chilangatón · Reto 1</strong> es responsable del tratamiento
+      de los datos personales que se recaban en este prototipo. Para cualquier duda,
+      solicitud o aclaración puedes contactar al equipo organizador del hackathon.
+    </p>
+
+    <h2>2. Qué datos recabamos</h2>
+    <p>Para publicar la ficha del comercio podemos recabar:</p>
+    <ul>
+      <li><strong>Datos del comercio:</strong> nombre, tipo, giro, descripción, antigüedad y número de personas que trabajan en él.</li>
+      <li><strong>Ubicación:</strong> alcaldía, colonia, calle y número, referencias y horarios.</li>
+      <li><strong>Oferta:</strong> productos o servicios, precios de referencia y formas de pago.</li>
+      <li><strong>Contacto:</strong> nombre de la persona responsable, teléfono, WhatsApp y correo electrónico.</li>
+      <li><strong>Datos opcionales:</strong> RFC, si decides proporcionarlo.</li>
+    </ul>
+    <p>
+      No solicitamos datos personales sensibles (salud, origen étnico, creencias,
+      orientación sexual, datos biométricos o financieros). Te pedimos no ingresarlos
+      en los campos de texto libre.
+    </p>
+
+    <h2>3. Para qué usamos los datos</h2>
+    <ul>
+      <li>Crear y publicar la ficha del comercio en el directorio y el mapa.</li>
+      <li>Permitir que las personas interesadas contacten al comercio.</li>
+      <li>Generar estadísticas agregadas sobre el comercio popular.</li>
+      <li>Contactarte para dar seguimiento al registro o al punto de venta, si lo solicitaste.</li>
+      <li>Operar, mantener y mejorar la plataforma.</li>
+    </ul>
+    <p>
+      No usamos tus datos para enviarte publicidad de terceros ni para venderlos.
+      El RFC, si lo proporcionas, es opcional y no se utiliza para trámites fiscales.
+    </p>
+
+    <h2>4. Qué mostramos públicamente</h2>
+    <p>
+      La ficha pública muestra el nombre del comercio, tipo, giro, descripción,
+      alcaldía, colonia, referencia, horarios, productos, precios de referencia,
+      formas de pago y un medio de contacto. No mostramos el RFC ni el correo
+      electrónico si decides no hacerlo público.
+    </p>
+
+    <h2>5. Transferencias</h2>
+    <p>
+      No transferimos tus datos a terceros para fines comerciales. Podemos compartirlos
+      con proveedores tecnológicos que alojan o mantienen la plataforma, bajo
+      obligaciones de confidencialidad, o cuando exista un mandato legal.
+    </p>
+
+    <h2>6. Derechos ARCO</h2>
+    <p>
+      Puedes solicitar el acceso, rectificación, cancelación u oposición al tratamiento
+      de tus datos, así como retirar tu consentimiento, contactando al equipo
+      organizador. Atenderemos la solicitud en los plazos que marca la normativa
+      aplicable. También puedes pedir que tu ficha deje de aparecer en el directorio.
+    </p>
+
+    <h2>7. Conservación y seguridad</h2>
+    <p>
+      Conservamos los datos durante el desarrollo y la evaluación del prototipo. Si
+      solicitas la eliminación, borraremos la ficha y los datos asociados, salvo
+      obligaciones legales. Aplicamos medidas razonables de seguridad, pero ningún
+      sistema es infalible: no ingreses información confidencial.
+    </p>
+
+    <h2>8. Cambios a este aviso</h2>
+    <p>
+      Podemos actualizar este aviso para reflejar cambios en la plataforma o en la
+      normativa. Publicaremos la versión vigente en esta misma página con su fecha
+      de actualización.
+    </p>
+
+    <div class="prosa__acciones">
+      <a class="btn btn--primario" href="{{ url_for('registro.paso1') }}">
+        Volver al registro
+        {{ icono('arrow-right', 'btn__icono', 18) }}
+      </a>
+      <a class="btn btn--secundario" href="{{ url_for('main.como_funciona') }}">Cómo funciona</a>
+    </div>
+  </div>
+</section>
+{% endblock %}

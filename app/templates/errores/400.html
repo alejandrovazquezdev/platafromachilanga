@@ -1,0 +1,12 @@
+{% extends 'base.html' %}
+{% block titulo %}La sesión expiró · Chilangatón{% endblock %}
+{% block contenido %}
+<section class="error-pagina">
+  <div class="contenedor error-pagina__caja">
+    <span class="error-pagina__codigo">400</span>
+    <h1>La sesión expiró.</h1>
+    <p>Por seguridad, vuelve a cargar la página y envía el formulario otra vez.</p>
+    <a class="btn btn--primario" href="{{ url_for('registro.paso1') }}">Volver al registro</a>
+  </div>
+</section>
+{% endblock %}

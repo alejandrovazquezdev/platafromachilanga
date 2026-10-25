@@ -1,0 +1,29 @@
+{% extends 'base.html' %}
+{% from 'components/iconos.html' import icono %}
+{% from 'components/progreso.html' import progreso, progreso_movil %}
+
+{% block header %}{% include 'components/header_simple.html' %}{% endblock %}
+{% block body_class %}pagina-registro{% endblock %}
+
+{% block contenido %}
+<div class="contenedor registro">
+  <aside class="registro__lateral">
+    <a class="enlace-volver" href="{{ url_for('main.inicio') }}">
+      {{ icono('arrow-left', 'icono', 16) }} Volver al inicio
+    </a>
+    <p class="eyebrow"><span class="eyebrow__linea" aria-hidden="true"></span> Registro de comercio</p>
+    <h1 class="registro__titulo">{% block titulo_lateral %}Tu comercio, en el mapa{% endblock %}</h1>
+    <p class="registro__bajada">{% block bajada_lateral %}Cuatro pasos. Sin RFC obligatorio. Puedes completarlo después.{% endblock %}</p>
+    {{ progreso(paso, pasos) }}
+    <div class="registro__ayuda">
+      {{ icono('info', 'icono', 18) }}
+      <p>Tu avance se guarda en esta sesión. Si cierras el navegador, tendrás que empezar de nuevo.</p>
+    </div>
+  </aside>
+
+  <div class="registro__principal">
+    {{ progreso_movil(paso, pasos) }}
+    {% block paso %}{% endblock %}
+  </div>
+</div>
+{% endblock %}

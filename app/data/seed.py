@@ -1,0 +1,266 @@
+"""Datos de demostración del directorio y del panel."""
+
+from .. import db
+from ..models import Comercio, Producto, slugify
+
+
+def _horario(de="09:00", a="19:00", dias=None):
+    dias = set(dias or ["lunes", "martes", "miercoles", "jueves", "viernes", "sabado"])
+    return {
+        dia: {"abre": dia in dias, "de": de, "a": a}
+        for dia in ["lunes", "martes", "miercoles", "jueves", "viernes", "sabado", "domingo"]
+    }
+
+
+def seed_if_empty():
+    if Comercio.query.count() > 0:
+        return
+
+    datos = [
+        {
+            "nombre": "Mercado de la Merced",
+            "tipo": "mercado",
+            "giro": "abarrotes",
+            "descripcion": "Locales de abarrotes, chiles secos, especias y productos de la canasta básica en el corazón de la Merced.",
+            "anios_operando": "40 años",
+            "personas": 4,
+            "alcaldia": "Venustiano Carranza",
+            "colonia": "Centro",
+            "calle": "Calle de la Merced 120, Local 18",
+            "referencias": "Pasillo de chiles secos, junto a la entrada norte.",
+            "horario": _horario("08:00", "18:00", ["lunes", "martes", "miercoles", "jueves", "viernes", "sabado", "domingo"]),
+            "telefono": "55 5555 0101",
+            "whatsapp": "55 5555 0101",
+            "email": "merced@chilangaton.mx",
+            "contacto_nombre": "Rosa Martínez",
+            "metodos_pago": ["efectivo", "transferencia"],
+            "interes_pos": "si",
+            "visitas": 342,
+            "lat": 19.4265,
+            "lng": -99.1235,
+            "productos": [
+                ("Chile guajillo", "Chiles y especias", "$120", "kg"),
+                ("Chile pasilla", "Chiles y especias", "$140", "kg"),
+                ("Canasta básica", "Abarrotes", "$95", "paquete"),
+            ],
+        },
+        {
+            "nombre": "Tianguis El Salado",
+            "tipo": "tianguis",
+            "giro": "frutas",
+            "descripcion": "Frutas y verduras de temporada directo del campo. Puesto familiar con más de 15 años en la plancha.",
+            "anios_operando": "15 años",
+            "personas": 3,
+            "alcaldia": "Iztapalapa",
+            "colonia": "El Salado",
+            "calle": "Plancha 14, calle Ejido",
+            "referencias": "A un costado de la iglesia del barrio.",
+            "horario": _horario("07:00", "15:00", ["martes", "sabado"]),
+            "dias_tianguis": "Martes y sábado",
+            "numero_puesto": "P-14",
+            "telefono": "55 5555 0102",
+            "whatsapp": "55 5555 0102",
+            "email": "elsalado@chilangaton.mx",
+            "contacto_nombre": "Jorge Ramírez",
+            "metodos_pago": ["efectivo", "transferencia", "pedidos"],
+            "interes_pos": "si",
+            "visitas": 287,
+            "lat": 19.3650,
+            "lng": -99.0450,
+            "productos": [
+                ("Jitomate saladet", "Frutas y verduras", "$28", "kg"),
+                ("Aguacate hass", "Frutas y verduras", "$55", "kg"),
+                ("Naranja valencia", "Frutas y verduras", "$18", "kg"),
+                ("Mango ataulfo", "Frutas y verduras", "$42", "kg"),
+            ],
+        },
+        {
+            "nombre": "Abarrotes Doña Mari",
+            "tipo": "tienda",
+            "giro": "abarrotes",
+            "descripcion": "La tienda de la esquina: abarrotes, lácteos, botanas y recargas. Pedidos a domicilio en la colonia.",
+            "anios_operando": "12 años",
+            "personas": 2,
+            "alcaldia": "Coyoacán",
+            "colonia": "Del Carmen",
+            "calle": "Av. Universidad 1450, Local B",
+            "referencias": "Frente al parque de la colonia, esquina con Calle 5.",
+            "horario": _horario("08:30", "20:30", ["lunes", "martes", "miercoles", "jueves", "viernes", "sabado", "domingo"]),
+            "telefono": "55 5555 0103",
+            "whatsapp": "55 5555 0103",
+            "email": "donamari@chilangaton.mx",
+            "contacto_nombre": "María López",
+            "metodos_pago": ["efectivo", "transferencia", "vales", "pedidos"],
+            "interes_pos": "si",
+            "visitas": 218,
+            "lat": 19.3500,
+            "lng": -99.1620,
+            "productos": [
+                ("Leche entera", "Lácteos", "$26", "litro"),
+                ("Huevo blanco", "Abarrotes", "$48", "kg"),
+                ("Recarga de celular", "Servicios", "$20", "recarga"),
+            ],
+        },
+        {
+            "nombre": "Tamales La Güera",
+            "tipo": "local",
+            "giro": "alimentos",
+            "descripcion": "Tamales de guajillo, rajas y dulce; atole de temporada. Para llevar o por encargo.",
+            "anios_operando": "8 años",
+            "personas": 3,
+            "alcaldia": "Tlalpan",
+            "colonia": "Tlalpan Centro",
+            "calle": "Calle Juárez 32",
+            "referencias": "A media cuadra del mercado de Tlalpan.",
+            "horario": _horario("06:30", "14:00"),
+            "telefono": "55 5555 0104",
+            "whatsapp": "55 5555 0104",
+            "email": "laguera@chilangaton.mx",
+            "contacto_nombre": "Guadalupe Hernández",
+            "metodos_pago": ["efectivo", "transferencia", "pedidos"],
+            "interes_pos": "no",
+            "visitas": 176,
+            "lat": 19.2900,
+            "lng": -99.1800,
+            "productos": [
+                ("Tamal de guajillo", "Tamales", "$22", "pieza"),
+                ("Tamal de rajas", "Tamales", "$22", "pieza"),
+                ("Atole de arroz", "Bebidas", "$18", "vaso"),
+            ],
+        },
+        {
+            "nombre": "Artesanías Xochimilco",
+            "tipo": "local",
+            "giro": "artesanias",
+            "descripcion": "Bordados, barro y textiles hechos por artesanas de San Andrés. Piezas únicas y encargos.",
+            "anios_operando": "20 años",
+            "personas": 5,
+            "alcaldia": "Xochimilco",
+            "colonia": "San Andrés",
+            "calle": "Calle 5 de Mayo 8",
+            "referencias": "Junto al embarcadero principal.",
+            "horario": _horario("10:00", "18:00", ["miercoles", "jueves", "viernes", "sabado", "domingo"]),
+            "telefono": "55 5555 0105",
+            "whatsapp": "55 5555 0105",
+            "email": "xochimilco@chilangaton.mx",
+            "contacto_nombre": "Elena Flores",
+            "metodos_pago": ["efectivo", "transferencia", "tarjeta"],
+            "interes_pos": "ya",
+            "visitas": 154,
+            "lat": 19.2600,
+            "lng": -99.1050,
+            "productos": [
+                ("Blusa bordada", "Textiles", "$480", "pieza"),
+                ("Jarrón de barro", "Barro", "$320", "pieza"),
+                ("Rebozo de algodón", "Textiles", "$650", "pieza"),
+            ],
+        },
+        {
+            "nombre": "Frutería El Güero",
+            "tipo": "tienda",
+            "giro": "frutas",
+            "descripcion": "Fruta picada, jugos naturales y verdura fresca. Servicio rápido para la oficina y la casa.",
+            "anios_operando": "6 años",
+            "personas": 2,
+            "alcaldia": "Cuauhtémoc",
+            "colonia": "Doctores",
+            "calle": "Dr. Lavista 88",
+            "referencias": "Metro Hospital General, salida sur.",
+            "horario": _horario("07:00", "19:00", ["lunes", "martes", "miercoles", "jueves", "viernes"]),
+            "telefono": "55 5555 0106",
+            "whatsapp": "55 5555 0106",
+            "email": "elguero@chilangaton.mx",
+            "contacto_nombre": "Arturo Sánchez",
+            "metodos_pago": ["efectivo", "transferencia"],
+            "interes_pos": "si",
+            "visitas": 132,
+            "lat": 19.4200,
+            "lng": -99.1600,
+            "productos": [
+                ("Vaso de fruta", "Frutas y verduras", "$35", "vaso"),
+                ("Jugo verde", "Bebidas", "$32", "vaso"),
+                ("Jícama", "Frutas y verduras", "$24", "kg"),
+            ],
+        },
+        {
+            "nombre": "Ropa La Pulga",
+            "tipo": "tianguis",
+            "giro": "ropa",
+            "descripcion": "Ropa de segunda mano seleccionada, tenis y accesorios. Nuevos lotes cada domingo.",
+            "anios_operando": "9 años",
+            "personas": 2,
+            "alcaldia": "Iztacalco",
+            "colonia": "Agrícola Oriental",
+            "calle": "Plancha 22, calle Sur 16",
+            "referencias": "Atrás del deportivo, junto a los puestos de antojitos.",
+            "horario": _horario("08:00", "16:00", ["domingo"]),
+            "dias_tianguis": "Domingo",
+            "numero_puesto": "22",
+            "telefono": "55 5555 0107",
+            "whatsapp": "55 5555 0107",
+            "email": "lapulga@chilangaton.mx",
+            "contacto_nombre": "Luis Ortega",
+            "metodos_pago": ["efectivo", "transferencia"],
+            "interes_pos": "no",
+            "visitas": 98,
+            "lat": 19.3950,
+            "lng": -99.0900,
+            "productos": [
+                ("Chamarra de mezclilla", "Ropa", "$180", "pieza"),
+                ("Tenis deportivos", "Calzado", "$250", "par"),
+                ("Blusa casual", "Ropa", "$90", "pieza"),
+            ],
+        },
+        {
+            "nombre": "Fonda La Esperanza",
+            "tipo": "local",
+            "giro": "alimentos",
+            "descripcion": "Comida corrida casera, caldo del día y postres. Comedor familiar con servicio para llevar.",
+            "anios_operando": "15 años",
+            "personas": 4,
+            "alcaldia": "Gustavo A. Madero",
+            "colonia": "Nueva Atzacoalco",
+            "calle": "Av. San Juan de Aragón 410",
+            "referencias": "Frente a la secundaria, portón verde.",
+            "horario": _horario("09:00", "17:00", ["lunes", "martes", "miercoles", "jueves", "viernes", "sabado"]),
+            "telefono": "55 5555 0108",
+            "whatsapp": "55 5555 0108",
+            "email": "esperanza@chilangaton.mx",
+            "contacto_nombre": "Esperanza Ruiz",
+            "metodos_pago": ["efectivo", "transferencia", "pedidos"],
+            "interes_pos": "si",
+            "visitas": 201,
+            "lat": 19.4800,
+            "lng": -99.1100,
+            "productos": [
+                ("Comida corrida", "Comida", "$75", "comida"),
+                ("Caldo de pollo", "Comida", "$55", "plato"),
+                ("Agua de horchata", "Bebidas", "$20", "vaso"),
+            ],
+        },
+    ]
+
+    for i, data in enumerate(datos, start=1):
+        productos = data.pop("productos")
+        comercio = Comercio(
+            folio=f"CH-2026-{1000 + i}",
+            slug=f"demo-{i}",
+            estado="publicado",
+            **data,
+        )
+        db.session.add(comercio)
+        db.session.flush()
+        # El slug se genera con el nombre una vez que el objeto existe.
+        comercio.slug = f"{comercio.id}-{slugify(comercio.nombre)[:60]}"
+        for nombre, categoria, precio, unidad in productos:
+            db.session.add(
+                Producto(
+                    comercio_id=comercio.id,
+                    nombre=nombre,
+                    categoria=categoria,
+                    precio=precio,
+                    unidad=unidad,
+                )
+            )
+
+    db.session.commit()

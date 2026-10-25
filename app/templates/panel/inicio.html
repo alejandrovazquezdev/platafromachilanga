@@ -1,0 +1,189 @@
+{% extends 'base.html' %}
+{% from 'components/iconos.html' import icono %}
+
+{% block titulo %}Mi negocio · {{ comercio.nombre }} · Chilangatón{% endblock %}
+{% block descripcion %}Panel de tu comercio: visibilidad, productos, ficha pública y punto de venta.{% endblock %}
+
+{% block contenido %}
+<section class="panel-hero">
+  <div class="contenedor">
+    {% if demo %}
+    <div class="aviso-demo">
+      {{ icono('info', 'icono', 18) }}
+      <p>Estás viendo una ficha de ejemplo. <a href="{{ url_for('registro.paso1') }}">Registra tu comercio</a> para tener tu propio panel.</p>
+    </div>
+    {% endif %}
+    <div class="panel-hero__fila">
+      <div>
+        <p class="eyebrow"><span class="eyebrow__linea" aria-hidden="true"></span> Mi negocio</p>
+        <h1>{% if comercio.contacto_nombre %}Hola, {{ comercio.contacto_nombre.split(' ')[0] }}.{% else %}Hola.{% endif %}</h1>
+        <p class="panel-hero__bajada">{{ comercio.nombre }} · {{ comercio.colonia }}, {{ comercio.alcaldia }}</p>
+        <div class="panel-hero__badges">
+          <span class="estado estado--publicado"><span class="punto" aria-hidden="true"></span> Ficha publicada</span>
+          <span class="badge badge--folio">Folio {{ comercio.folio }}</span>
+        </div>
+      </div>
+      <div class="panel-hero__acciones">
+        <a class="btn btn--primario" href="{{ url_for('directorio.ficha', slug=comercio.slug) }}">
+          Ver mi ficha
+          {{ icono('external', 'btn__icono', 18) }}
+        </a>
+        <a class="btn btn--secundario" href="{{ url_for('panel.editar') }}">
+          {{ icono('edit', 'btn__icono', 18) }}
+          Editar ficha
+        </a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="contenedor panel">
+  <div class="panel__stats">
+    <article class="stat-card">
+      <span class="stat-card__icono">{{ icono('eye', 'icono', 22) }}</span>
+      <strong>{{ comercio.visitas }}</strong>
+      <span>Visitas a tu ficha</span>
+      <small>Esta semana</small>
+    </article>
+    <article class="stat-card">
+      <span class="stat-card__icono">{{ icono('package', 'icono', 22) }}</span>
+      <strong>{{ productos|length }}</strong>
+      <span>Productos publicados</span>
+      <small>De 6 recomendados</small>
+    </article>
+    <article class="stat-card">
+      <span class="stat-card__icono">{{ icono('chart', 'icono', 22) }}</span>
+      <strong>{{ porcentaje }}%</strong>
+      <span>Ficha completa</span>
+      <small>{{ 'Todo listo' if porcentaje == 100 else 'Completa lo que falta' }}</small>
+    </article>
+    <article class="stat-card">
+      <span class="stat-card__icono">{{ icono('card', 'icono', 22) }}</span>
+      <strong class="stat-card__texto">{{ comercio.interes_pos_label }}</strong>
+      <span>Punto de venta</span>
+      <small>Opcional</small>
+    </article>
+  </div>
+
+  <div class="panel__layout">
+    <div class="panel__principal">
+      <section class="panel-bloque">
+        <div class="panel-bloque__cabecera">
+          <div>
+            <h2>Completa tu ficha</h2>
+            <p>Una ficha completa recibe más visitas y genera más confianza.</p>
+          </div>
+          <div class="anillo" style="--pct: {{ porcentaje }};" aria-label="{{ porcentaje }}% completa">
+            <span>{{ porcentaje }}%</span>
+          </div>
+        </div>
+        <ul class="checklist">
+          {% for item in recomendaciones %}
+          <li class="checklist__item{% if item.hecho %} is-hecho{% endif %}">
+            <span class="checklist__icono">{{ icono('check' if item.hecho else 'plus', 'icono', 18) }}</span>
+            <div class="checklist__texto">
+              <strong>{{ item.titulo }}</strong>
+              <small>{{ item.detalle }}</small>
+            </div>
+            {% if not item.hecho %}
+            <a class="checklist__accion" href="{{ item.url }}">Editar</a>
+            {% else %}
+            <span class="checklist__hecho">Listo</span>
+            {% endif %}
+          </li>
+          {% endfor %}
+        </ul>
+      </section>
+
+      <section class="panel-bloque">
+        <div class="panel-bloque__cabecera">
+          <div>
+            <h2>Tus productos</h2>
+            <p>Lo que la gente ve primero en tu ficha.</p>
+          </div>
+          <a class="btn btn--secundario btn--sm" href="{{ url_for('panel.editar') }}">
+            {{ icono('plus', 'btn__icono', 16) }} Agregar
+          </a>
+        </div>
+        {% if productos %}
+        <div class="tabla-envoltura">
+          <table class="tabla">
+            <thead><tr><th>Producto</th><th>Categoría</th><th>Precio</th></tr></thead>
+            <tbody>
+              {% for producto in productos %}
+              <tr>
+                <td><strong>{{ producto.nombre }}</strong></td>
+                <td>{{ producto.categoria or '—' }}</td>
+                <td>{{ producto.precio|precio }}{% if producto.unidad %} / {{ producto.unidad }}{% endif %}</td>
+              </tr>
+              {% endfor %}
+            </tbody>
+          </table>
+        </div>
+        {% else %}
+        <div class="vacio vacio--compacto">
+          {{ icono('package', 'icono', 28) }}
+          <p>Aún no has publicado productos. Agrega al menos tres para que tu ficha sea más útil.</p>
+        </div>
+        {% endif %}
+      </section>
+
+      <section class="panel-bloque">
+        <div class="panel-bloque__cabecera">
+          <div>
+            <h2>Actividad reciente</h2>
+            <p>Un vistazo rápido a lo que está pasando con tu ficha.</p>
+          </div>
+        </div>
+        <ul class="actividad">
+          {% for item in actividad %}
+          <li class="actividad__item">
+            <span class="actividad__icono">{{ icono(item.icono, 'icono', 18) }}</span>
+            <div>
+              <strong>{{ item.titulo }}</strong>
+              <p>{{ item.detalle }}</p>
+            </div>
+            <span class="actividad__cuando">{{ item.cuando }}</span>
+          </li>
+          {% endfor %}
+        </ul>
+      </section>
+    </div>
+
+    <aside class="panel__lateral">
+      <section class="panel-bloque panel-bloque--qr">
+        <h2>Tu ficha pública</h2>
+        {% if qr_svg %}
+        <div class="qr-caja qr-caja--panel">{{ qr_svg|safe }}</div>
+        {% else %}
+        <div class="qr-caja qr-caja--vacia">{{ icono('qr', 'icono', 42) }}</div>
+        {% endif %}
+        <p class="panel-bloque__nota">Comparte este enlace o imprime el QR para tu local.</p>
+        <div class="copiar copiar--compacto">
+          <input type="text" readonly value="{{ url_for('directorio.ficha', slug=comercio.slug, _external=True) }}" aria-label="Enlace de tu ficha">
+          <button class="btn btn--secundario btn--sm" type="button" data-copiar-texto="{{ url_for('directorio.ficha', slug=comercio.slug, _external=True) }}">
+            {{ icono('copy', 'btn__icono', 16) }} Copiar
+          </button>
+        </div>
+      </section>
+
+      <section class="panel-bloque panel-bloque--pos">
+        <span class="panel-bloque__icono">{{ icono('card', 'icono', 26) }}</span>
+        <h2>Punto de venta</h2>
+        <p>Cobra con tarjeta, transferencia o vales. Si te interesa, te contactamos para cotizar el equipo.</p>
+        <a class="btn btn--primario btn--bloque" href="mailto:equipo@chilangaton.mx?subject=Quiero%20informaci%C3%B3n%20del%20punto%20de%20venta">
+          Solicitar información
+          {{ icono('arrow-right', 'btn__icono', 18) }}
+        </a>
+        <small>Sin costo ni compromiso.</small>
+      </section>
+
+      <section class="panel-bloque">
+        <h2>¿Necesitas ayuda?</h2>
+        <p>Estamos acompañando a los comercios durante el hackathon.</p>
+        <a class="enlace-flecha" href="{{ url_for('main.como_funciona') }}">Ver guía de registro {{ icono('arrow-right', 'icono', 16) }}</a>
+      </section>
+    </aside>
+  </div>
+</section>
+{% endblock %}

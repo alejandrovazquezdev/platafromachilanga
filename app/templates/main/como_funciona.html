@@ -1,0 +1,184 @@
+{% extends 'base.html' %}
+{% from 'components/iconos.html' import icono %}
+
+{% block titulo %}Cómo funciona · Chilangatón{% endblock %}
+{% block descripcion %}Qué implica registrar tu comercio, qué datos necesitas y qué pasa después. Sin RFC obligatorio y con control sobre tu visibilidad.{% endblock %}
+
+{% block contenido %}
+<section class="hero hero--interior">
+  <div class="contenedor hero__interior">
+    <p class="eyebrow"><span class="eyebrow__linea" aria-hidden="true"></span> Registro de comercio</p>
+    <h1>Registrar tu comercio,<br><span class="texto-guinda">sin vueltas.</span></h1>
+    <p class="hero__bajada">
+      Un formulario guiado de cuatro pasos para que tu mercado, tianguis o tienda
+      de barrio tenga una ficha pública y un panel para compartirla.
+    </p>
+    <div class="hero__acciones">
+      <a class="btn btn--primario btn--lg" href="{{ url_for('registro.paso1') }}">
+        Empezar registro
+        {{ icono('arrow-right', 'btn__icono', 20) }}
+      </a>
+      <a class="btn btn--secundario btn--lg" href="#requisitos">¿Qué necesito?</a>
+    </div>
+  </div>
+</section>
+
+<section class="seccion">
+  <div class="contenedor split split--ancho">
+    <div class="split__principal">
+      <p class="eyebrow"><span class="eyebrow__linea" aria-hidden="true"></span> Paso a paso</p>
+      <h2>Qué implica el registro</h2>
+      <p class="split__bajada">
+        No es un trámite ante la alcaldía ni una alta fiscal. Es una ficha para que
+        las personas encuentren tu comercio y sepan qué ofreces.
+      </p>
+      <ol class="pasos-lista pasos-lista--detalle">
+        {% for numero, titulo, texto in pasos %}
+        <li class="paso">
+          <span class="paso__numero">{{ numero }}</span>
+          <div>
+            <h3>{{ titulo }}</h3>
+            <p>{{ texto }}</p>
+            {% if loop.index == 1 %}
+            <p class="paso__nota">Solo el nombre, el tipo de comercio y el giro. El RFC es opcional.</p>
+            {% elif loop.index == 2 %}
+            <p class="paso__nota">Puedes mostrar solo tu colonia y una referencia, no tu dirección exacta.</p>
+            {% elif loop.index == 3 %}
+            <p class="paso__nota">Hasta 6 productos o servicios, con precio de referencia y forma de pago.</p>
+            {% else %}
+            <p class="paso__nota">Recibes un folio, tu ficha pública y un panel para compartirla.</p>
+            {% endif %}
+          </div>
+        </li>
+        {% endfor %}
+      </ol>
+      <div class="acciones-fila">
+        <a class="btn btn--primario" href="{{ url_for('registro.paso1') }}">
+          Registrar mi comercio
+          {{ icono('arrow-right', 'btn__icono', 18) }}
+        </a>
+        <span class="acciones-fila__nota">{{ icono('clock', 'icono', 16) }} Toma alrededor de 5 minutos</span>
+      </div>
+    </div>
+
+    <aside class="panel-requisitos" id="requisitos">
+      <h3>{{ icono('check', 'icono', 20) }} Lo que sí necesitas</h3>
+      <ul class="lista-check">
+        <li>Nombre del comercio y qué vendes.</li>
+        <li>Alcaldía, colonia y una referencia.</li>
+        <li>Un teléfono o WhatsApp.</li>
+        <li>Días y horarios de atención.</li>
+      </ul>
+      <hr>
+      <h3>{{ icono('x', 'icono', 20) }} Lo que NO necesitas</h3>
+      <ul class="lista-x">
+        <li>RFC o constancia fiscal.</li>
+        <li>Cuenta bancaria o terminal.</li>
+        <li>Escritura o contrato de local.</li>
+        <li>Internet en el local.</li>
+      </ul>
+      <p class="nota">
+        {{ icono('info', 'icono', 18) }}
+        Este prototipo no sustituye trámites oficiales de la alcaldía ni del SAT.
+      </p>
+    </aside>
+  </div>
+</section>
+
+<section class="seccion seccion--papel">
+  <div class="contenedor">
+    <div class="seccion__cabecera">
+      <p class="eyebrow"><span class="eyebrow__linea" aria-hidden="true"></span> Después del registro</p>
+      <h2>Qué pasa cuando terminas</h2>
+      <p>No se queda en un formulario: tu comercio queda publicado y con herramientas para compartirlo.</p>
+    </div>
+    <div class="beneficios beneficios--cuatro">
+      <article class="beneficio">
+        <span class="beneficio__icono">{{ icono('map-pin', 'icono', 26) }}</span>
+        <h3>Ficha pública</h3>
+        <p>Tu comercio aparece en el directorio y en el mapa con horarios, giro y productos.</p>
+      </article>
+      <article class="beneficio">
+        <span class="beneficio__icono">{{ icono('qr', 'icono', 26) }}</span>
+        <h3>QR y enlace</h3>
+        <p>Comparte tu ficha por WhatsApp o pégala en tu local con un código QR.</p>
+      </article>
+      <article class="beneficio">
+        <span class="beneficio__icono">{{ icono('chart', 'icono', 26) }}</span>
+        <h3>Panel sencillo</h3>
+        <p>Consulta visitas, productos publicados y qué te falta para completar tu ficha.</p>
+      </article>
+      <article class="beneficio">
+        <span class="beneficio__icono">{{ icono('card', 'icono', 26) }}</span>
+        <h3>Punto de venta</h3>
+        <p>Si te interesa, te contactamos para cotizar una terminal y cobrar con tarjeta.</p>
+      </article>
+    </div>
+  </div>
+</section>
+
+<section class="seccion" id="privacidad">
+  <div class="contenedor split">
+    <div class="split__principal">
+      <p class="eyebrow"><span class="eyebrow__linea" aria-hidden="true"></span> Privacidad y datos</p>
+      <h2>Tu información, bajo tu control</h2>
+      <p class="split__bajada">
+        Entendemos que la visibilidad puede ser un arma de doble filo. Por eso el
+        registro separa lo público de lo privado y te deja decidir qué mostrar.
+      </p>
+      <ul class="lista-beneficios">
+        <li>{{ icono('shield', 'icono', 20) }} <span><strong>Sin RFC obligatorio.</strong> Si lo das, es opcional y no se usa para trámites fiscales.</span></li>
+        <li>{{ icono('eye', 'icono', 20) }} <span><strong>Tú decides la ubicación.</strong> Puedes mostrar solo colonia y referencia, no el número exacto.</span></li>
+        <li>{{ icono('lock', 'icono', 20) }} <span><strong>Sin venta de datos.</strong> No compartimos tu información con terceros para publicidad.</span></li>
+        <li>{{ icono('x', 'icono', 20) }} <span><strong>Puedes ocultar tu ficha.</strong> Si cambias de opinión, solicitas retirarla desde tu panel.</span></li>
+      </ul>
+      <a class="enlace-flecha" href="{{ url_for('main.aviso_privacidad') }}">
+        Leer el aviso de privacidad completo
+        {{ icono('arrow-right', 'icono', 16) }}
+      </a>
+    </div>
+    <aside class="tarjeta-lateral">
+      <p class="tarjeta-lateral__eyebrow">Una duda común</p>
+      <h3>“¿Me van a cobrar impuestos por registrarme?”</h3>
+      <p>
+        No. Este registro es una ficha informativa para la plataforma; no te da de
+        alta ante el SAT ni sustituye tus obligaciones. Si tienes dudas fiscales,
+        acude a la autoridad o a un especialista.
+      </p>
+      <p class="nota">{{ icono('info', 'icono', 18) }} El registro es gratuito.</p>
+    </aside>
+  </div>
+</section>
+
+<section class="seccion seccion--papel" id="preguntas">
+  <div class="contenedor faq">
+    <div class="faq__intro">
+      <p class="eyebrow"><span class="eyebrow__linea" aria-hidden="true"></span> Antes de empezar</p>
+      <h2>Preguntas frecuentes</h2>
+      <p>Si algo no queda claro, escríbenos durante el hackathon y lo revisamos.</p>
+    </div>
+    <div class="faq__lista">
+      {% for pregunta, respuesta in faqs %}
+      <details class="faq__item">
+        <summary><span>{{ pregunta }}</span>{{ icono('chevron-down', 'faq__chevron', 20) }}</summary>
+        <p>{{ respuesta }}</p>
+      </details>
+      {% endfor %}
+    </div>
+  </div>
+</section>
+
+<section class="cta">
+  <div class="contenedor cta__inner">
+    <div>
+      <p class="eyebrow eyebrow--claro"><span class="eyebrow__linea" aria-hidden="true"></span> Empieza hoy</p>
+      <h2>Tu comercio ya existe.<br>Ahora que se encuentre.</h2>
+      <p>Solo necesitas 5 minutos y los datos básicos de tu negocio.</p>
+    </div>
+    <a class="btn btn--blanco btn--lg" href="{{ url_for('registro.paso1') }}">
+      Registrar mi comercio
+      {{ icono('arrow-right', 'btn__icono', 20) }}
+    </a>
+  </div>
+</section>
+{% endblock %}

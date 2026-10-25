@@ -1,0 +1,77 @@
+{% extends 'base.html' %}
+{% from 'components/iconos.html' import icono %}
+
+{% block titulo %}Registro publicado · {{ comercio.nombre }} · Chilangatón{% endblock %}
+{% block header %}{% include 'components/header_simple.html' %}{% endblock %}
+{% block body_class %}pagina-confirmacion{% endblock %}
+
+{% block contenido %}
+<section class="confirmacion">
+  <div class="contenedor confirmacion__grid">
+    <div class="confirmacion__principal">
+      <span class="confirmacion__icono">{{ icono('check', 'icono', 34) }}</span>
+      <p class="eyebrow"><span class="eyebrow__linea" aria-hidden="true"></span> Registro completado</p>
+      <h1>Tu comercio ya está<br><span class="texto-guinda">en el mapa.</span></h1>
+      <p class="confirmacion__bajada">
+        Publicamos la ficha de <strong>{{ comercio.nombre }}</strong>. Ya puedes compartirla,
+        revisar tu panel y completar lo que falte.
+      </p>
+      <div class="confirmacion__folio">
+        <span>Folio de registro</span>
+        <strong>{{ comercio.folio }}</strong>
+      </div>
+      <div class="hero__acciones">
+        <a class="btn btn--primario btn--lg" href="{{ url_for('directorio.ficha', slug=comercio.slug) }}">
+          Ver mi ficha pública
+          {{ icono('external', 'btn__icono', 18) }}
+        </a>
+        <a class="btn btn--secundario btn--lg" href="{{ url_for('panel.inicio') }}">Ir a mi panel</a>
+      </div>
+      <div class="confirmacion__compartir">
+        <label for="enlace-ficha">Comparte tu ficha</label>
+        <div class="copiar">
+          <input id="enlace-ficha" type="text" readonly value="{{ url_for('directorio.ficha', slug=comercio.slug, _external=True) }}">
+          <button class="btn btn--secundario btn--sm" type="button" data-copiar="#enlace-ficha">
+            {{ icono('copy', 'btn__icono', 16) }} Copiar
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <aside class="confirmacion__tarjeta">
+      {% if qr_svg %}
+      <div class="qr-caja" aria-label="Código QR de tu ficha">{{ qr_svg|safe }}</div>
+      <p class="qr-caja__leyenda">Escanea para abrir tu ficha</p>
+      {% else %}
+      <div class="qr-caja qr-caja--vacia">{{ icono('qr', 'icono', 48) }}</div>
+      {% endif %}
+      <h2>{{ comercio.nombre }}</h2>
+      <p>{{ comercio.tipo_label }} · {{ comercio.giro_label }}</p>
+      <p class="confirmacion__lugar">{{ icono('map-pin', 'icono', 16) }} {{ comercio.colonia }}, {{ comercio.alcaldia }}</p>
+      <span class="estado estado--publicado"><span class="punto" aria-hidden="true"></span> Ficha publicada</span>
+    </aside>
+  </div>
+
+  <div class="contenedor confirmacion__siguientes">
+    <h2>¿Qué sigue?</h2>
+    <div class="beneficios beneficios--tres">
+      <article class="beneficio">
+        <span class="beneficio__icono">{{ icono('share', 'icono', 24) }}</span>
+        <h3>Comparte tu enlace</h3>
+        <p>Mándalo por WhatsApp a tus clientes y pégalo en tu local.</p>
+      </article>
+      <article class="beneficio">
+        <span class="beneficio__icono">{{ icono('package', 'icono', 24) }}</span>
+        <h3>Completa tu oferta</h3>
+        <p>Agrega hasta 6 productos y una descripción más amplia.</p>
+      </article>
+      <article class="beneficio">
+        <span class="beneficio__icono">{{ icono('card', 'icono', 24) }}</span>
+        <h3>Pide tu punto de venta</h3>
+        <p>Si te interesa cobrar con tarjeta, un asesor puede contactarte.</p>
+      </article>
+    </div>
+    <p class="confirmacion__nota">{{ icono('info', 'icono', 16) }} Este es un prototipo: los datos que registres se usan para demostrar el flujo del Chilangatón.</p>
+  </div>
+</section>
+{% endblock %}

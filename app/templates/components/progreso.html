@@ -1,0 +1,25 @@
+{% from 'components/iconos.html' import icono %}
+{% macro progreso(paso, pasos) -%}
+<ol class="progreso" aria-label="Progreso del registro">
+  {% for item in pasos %}
+  <li class="progreso__item{% if item.n == paso %} is-activo{% elif item.n < paso %} is-completo{% endif %}"{% if item.n == paso %} aria-current="step"{% endif %}>
+    <span class="progreso__numero" aria-hidden="true">
+      {% if item.n < paso %}{{ icono('check', 'icono', 16) }}{% else %}{{ item.n }}{% endif %}
+    </span>
+    <span class="progreso__texto">
+      <strong>{{ item.titulo }}</strong>
+      <small>{{ item.desc }}</small>
+    </span>
+  </li>
+  {% endfor %}
+</ol>
+{%- endmacro %}
+
+{% macro progreso_movil(paso, pasos) -%}
+<div class="progreso-movil" aria-hidden="true">
+  <div class="progreso-movil__barra">
+    <span style="width: {{ (paso / pasos|length * 100)|round|int }}%"></span>
+  </div>
+  <p>Paso {{ paso }} de {{ pasos|length }} · {{ pasos[paso-1].titulo }}</p>
+</div>
+{%- endmacro %}

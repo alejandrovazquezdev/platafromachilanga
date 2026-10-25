@@ -1,0 +1,111 @@
+{% from 'components/iconos.html' import icono %}
+
+{% macro _id(nombre, id=None) -%}
+{{ id or ('campo-' ~ nombre|replace('_','-')|replace('[','')|replace(']','')) }}
+{%- endmacro %}
+
+{% macro campo(nombre, etiqueta, valor='', tipo='text', requerido=False, ayuda='', error='', placeholder='', autocomplete='', inputmode='', maxlength='', min='', max='', pattern='', id=None) -%}
+{% set cid = _id(nombre, id) %}
+{% set hint_id = cid ~ '-ayuda' %}
+{% set error_id = cid ~ '-error' %}
+<div class="campo{% if error %} campo--error{% endif %}">
+  <label class="campo__label" for="{{ cid }}">{{ etiqueta }}{% if requerido %} <span class="campo__req" aria-hidden="true">*</span>{% endif %}</label>
+  <input
+    class="campo__control"
+    id="{{ cid }}"
+    name="{{ nombre }}"
+    type="{{ tipo }}"
+    value="{{ valor or '' }}"
+    {% if placeholder %}placeholder="{{ placeholder }}"{% endif %}
+    {% if requerido %}required aria-required="true"{% endif %}
+    {% if autocomplete %}autocomplete="{{ autocomplete }}"{% endif %}
+    {% if inputmode %}inputmode="{{ inputmode }}"{% endif %}
+    {% if maxlength %}maxlength="{{ maxlength }}"{% endif %}
+    {% if min %}min="{{ min }}"{% endif %}
+    {% if max %}max="{{ max }}"{% endif %}
+    {% if pattern %}pattern="{{ pattern }}"{% endif %}
+    {% if error %}aria-invalid="true" aria-describedby="{{ error_id }}"{% elif ayuda %}aria-describedby="{{ hint_id }}"{% endif %}
+  >
+  {% if ayuda %}<p class="campo__ayuda" id="{{ hint_id }}">{{ ayuda }}</p>{% endif %}
+  {% if error %}<p class="campo__error" id="{{ error_id }}" role="alert">{{ error }}</p>{% endif %}
+</div>
+{%- endmacro %}
+
+{% macro textarea(nombre, etiqueta, valor='', requerido=False, ayuda='', error='', placeholder='', filas=4, maxlength='', id=None) -%}
+{% set cid = _id(nombre, id) %}
+{% set hint_id = cid ~ '-ayuda' %}
+{% set error_id = cid ~ '-error' %}
+<div class="campo{% if error %} campo--error{% endif %}">
+  <label class="campo__label" for="{{ cid }}">{{ etiqueta }}{% if requerido %} <span class="campo__req" aria-hidden="true">*</span>{% endif %}</label>
+  <textarea
+    class="campo__control campo__control--area"
+    id="{{ cid }}"
+    name="{{ nombre }}"
+    rows="{{ filas }}"
+    {% if placeholder %}placeholder="{{ placeholder }}"{% endif %}
+    {% if requerido %}required aria-required="true"{% endif %}
+    {% if maxlength %}maxlength="{{ maxlength }}"{% endif %}
+    {% if error %}aria-invalid="true" aria-describedby="{{ error_id }}"{% elif ayuda %}aria-describedby="{{ hint_id }}"{% endif %}
+  >{{ valor or '' }}</textarea>
+  {% if ayuda %}<p class="campo__ayuda" id="{{ hint_id }}">{{ ayuda }}</p>{% endif %}
+  {% if error %}<p class="campo__error" id="{{ error_id }}" role="alert">{{ error }}</p>{% endif %}
+</div>
+{%- endmacro %}
+
+{% macro select_campo(nombre, etiqueta, opciones, valor='', requerido=False, ayuda='', error='', placeholder='Elige una opción', id=None) -%}
+{% set cid = _id(nombre, id) %}
+{% set hint_id = cid ~ '-ayuda' %}
+{% set error_id = cid ~ '-error' %}
+<div class="campo{% if error %} campo--error{% endif %}">
+  <label class="campo__label" for="{{ cid }}">{{ etiqueta }}{% if requerido %} <span class="campo__req" aria-hidden="true">*</span>{% endif %}</label>
+  <div class="campo__select-wrap">
+    <select
+      class="campo__control campo__control--select"
+      id="{{ cid }}"
+      name="{{ nombre }}"
+      {% if requerido %}required aria-required="true"{% endif %}
+      {% if error %}aria-invalid="true" aria-describedby="{{ error_id }}"{% elif ayuda %}aria-describedby="{{ hint_id }}"{% endif %}
+    >
+      <option value="">{{ placeholder }}</option>
+      {% if opciones is mapping %}
+        {% for clave, etiqueta_opcion in opciones.items() %}
+          <option value="{{ clave }}"{% if valor == clave %} selected{% endif %}>{{ etiqueta_opcion }}</option>
+        {% endfor %}
+      {% else %}
+        {% for opcion in opciones %}
+          {% if opcion is mapping %}
+            <option value="{{ opcion.valor }}"{% if valor == opcion.valor %} selected{% endif %}>{{ opcion.etiqueta }}</option>
+          {% else %}
+            <option value="{{ opcion }}"{% if valor == opcion %} selected{% endif %}>{{ opcion }}</option>
+          {% endif %}
+        {% endfor %}
+      {% endif %}
+    </select>
+    {{ icono('chevron-down', 'campo__chevron', 18) }}
+  </div>
+  {% if ayuda %}<p class="campo__ayuda" id="{{ hint_id }}">{{ ayuda }}</p>{% endif %}
+  {% if error %}<p class="campo__error" id="{{ error_id }}" role="alert">{{ error }}</p>{% endif %}
+</div>
+{%- endmacro %}
+
+{% macro radio_tarjetas(nombre, opciones, valor='', error='', columnas='2') -%}
+<fieldset class="campo campo--fieldset{% if error %} campo--error{% endif %}">
+  <legend class="campo__label">{{ 'Tipo de comercio' if nombre == 'tipo' else 'Opción' }} <span class="campo__req" aria-hidden="true">*</span></legend>
+  <div class="radio-cards radio-cards--{{ columnas }}">
+    {% for clave, datos in opciones.items() %}
+    <label class="radio-card">
+      <input type="radio" name="{{ nombre }}" value="{{ clave }}" {% if valor == clave %}checked{% endif %} required>
+      <span class="radio-card__cuerpo">
+        <span class="radio-card__icono">{{ icono(datos.icono if datos is mapping and datos.icono else 'store', 'icono', 22) }}</span>
+        <span class="radio-card__texto">
+          <strong>{{ datos.label if datos is mapping else datos }}</strong>
+          {% if datos is mapping and datos.desc %}<small>{{ datos.desc }}</small>{% endif %}
+        </span>
+        <span class="radio-card__marca" aria-hidden="true"></span>
+      </span>
+    </label>
+    {% endfor %}
+  </div>
+  {% if error %}<p class="campo__error" role="alert">{{ error }}</p>{% endif %}
+</fieldset>
+{%- endmacro %}

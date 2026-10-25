@@ -1,0 +1,62 @@
+{% extends 'registro/base.html' %}
+{% from 'components/campos.html' import campo, textarea, select_campo, radio_tarjetas %}
+{% from 'components/iconos.html' import icono %}
+
+{% block titulo %}Paso 1 · Tu comercio · Chilangatón{% endblock %}
+{% block titulo_lateral %}Empecemos por lo esencial{% endblock %}
+{% block bajada_lateral %}Con estos datos podemos identificar tu comercio y empezar a construir su ficha.{% endblock %}
+
+{% block paso %}
+<form class="formulario" method="post" novalidate>
+  <input type="hidden" name="_csrf_token" value="{{ csrf_token() }}">
+  <div class="formulario__campo-trampa" aria-hidden="true">
+    <label for="sitio_web">No llenar</label>
+    <input type="text" id="sitio_web" name="sitio_web" tabindex="-1" autocomplete="off">
+  </div>
+
+  <div class="formulario__cabecera">
+    <span class="paso-chip">Paso 1 de 4</span>
+    <h2>Cuéntanos de tu comercio</h2>
+    <p>Lo básico para que la gente sepa quién eres y qué ofreces.</p>
+  </div>
+
+  {% if errores %}
+  <div class="alerta" role="alert">
+    {{ icono('alert', 'icono', 20) }}
+    <p>Revisa los campos marcados. No se guardó nada todavía.</p>
+  </div>
+  {% endif %}
+
+  {{ campo('nombre', 'Nombre del comercio', draft.get('nombre', ''), requerido=True, ayuda='Es el nombre con el que te conocen en el barrio.', error=errores.get('nombre'), placeholder='Ej. Abarrotes Doña Mari', maxlength=160, autocomplete='organization') }}
+
+  {{ radio_tarjetas('tipo', TIPOS, draft.get('tipo', 'tienda'), errores.get('tipo'), '2') }}
+
+  <div class="campos-grid">
+    {{ select_campo('giro', 'Giro principal', GIROS, draft.get('giro', ''), requerido=True, ayuda='Elige el que más se parezca a lo que vendes.', error=errores.get('giro')) }}
+    {{ select_campo('anios_operando', '¿Hace cuánto opera?', ['Menos de 1 año', '1 a 3 años', '4 a 10 años', 'Más de 10 años'], draft.get('anios_operando', ''), ayuda='Opcional. Nos ayuda a entender tu experiencia.') }}
+  </div>
+
+  {{ textarea('descripcion', 'Describe tu comercio', draft.get('descripcion', ''), ayuda='Una o dos frases: qué vendes, qué te distingue y a quién atiendes. Máximo 600 caracteres.', placeholder='Ej. La tienda de la esquina: abarrotes, lácteos y pedidos a domicilio en la colonia.', maxlength=600, filas=4) }}
+
+  <div class="campos-grid">
+    {{ campo('personas', 'Personas que trabajan contigo', draft.get('personas', ''), tipo='number', min='1', max='500', inputmode='numeric', ayuda='Incluyéndote. Si no lo sabes, déjalo vacío.') }}
+    {{ campo('rfc', 'RFC (opcional)', draft.get('rfc', ''), ayuda='No es obligatorio. No lo usamos para trámites fiscales.', error=errores.get('rfc'), maxlength=13, placeholder='XAXX010101000') }}
+  </div>
+
+  <div class="nota-caja">
+    {{ icono('shield', 'icono', 20) }}
+    <p>
+      <strong>Sin RFC puedes registrarte.</strong> Si decides darlo, queda como dato
+      opcional y no se muestra en tu ficha pública.
+    </p>
+  </div>
+
+  <div class="formulario__acciones">
+    <a class="btn btn--fantasma" href="{{ url_for('main.inicio') }}">Guardar y salir</a>
+    <button class="btn btn--primario" type="submit">
+      Continuar
+      {{ icono('arrow-right', 'btn__icono', 18) }}
+    </button>
+  </div>
+</form>
+{% endblock %}

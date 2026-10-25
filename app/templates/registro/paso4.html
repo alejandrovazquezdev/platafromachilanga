@@ -1,0 +1,113 @@
+{% extends 'registro/base.html' %}
+{% from 'components/campos.html' import campo, select_campo %}
+{% from 'components/iconos.html' import icono %}
+
+{% block titulo %}Paso 4 · Contacto y publicación · Chilangatón{% endblock %}
+{% block titulo_lateral %}Revisa y publica{% endblock %}
+{% block bajada_lateral %}Este es el último paso. Revisa tu ficha, deja un contacto y publica.{% endblock %}
+
+{% block paso %}
+<form class="formulario" method="post" novalidate>
+  <input type="hidden" name="_csrf_token" value="{{ csrf_token() }}">
+
+  <div class="formulario__cabecera">
+    <span class="paso-chip">Paso 4 de 4</span>
+    <h2>Contacto y publicación</h2>
+    <p>Así te van a contactar. Puedes cambiar estos datos después.</p>
+  </div>
+
+  {% if errores %}
+  <div class="alerta" role="alert">
+    {{ icono('alert', 'icono', 20) }}
+    <p>{{ errores.get('general') or 'Revisa los campos marcados para publicar.' }}</p>
+  </div>
+  {% endif %}
+
+  <div class="resumen">
+    <article class="resumen__bloque">
+      <div class="resumen__cabecera">
+        <h3>Tu comercio</h3>
+        <a href="{{ url_for('registro.paso1') }}">Editar</a>
+      </div>
+      <p class="resumen__nombre">{{ draft.get('nombre') }}</p>
+      <p class="resumen__meta">{{ TIPOS.get(draft.get('tipo'), {}).get('label', 'Comercio') }} · {{ GIROS.get(draft.get('giro'), 'Giro') }}</p>
+      {% if draft.get('descripcion') %}<p class="resumen__texto">{{ draft.get('descripcion') }}</p>{% endif %}
+    </article>
+
+    <article class="resumen__bloque">
+      <div class="resumen__cabecera">
+        <h3>Ubicación y horario</h3>
+        <a href="{{ url_for('registro.paso2') }}">Editar</a>
+      </div>
+      <p class="resumen__texto">
+        {{ draft.get('calle') }}<br>
+        {{ draft.get('colonia') }}, {{ draft.get('alcaldia') }}
+      </p>
+      <ul class="resumen__horario">
+        {% for clave, etiqueta in DIAS %}
+          {% if horario[clave].abre %}
+          <li><span>{{ etiqueta }}</span><strong>{{ horario[clave].de }}–{{ horario[clave].a }}</strong></li>
+          {% endif %}
+        {% endfor %}
+      </ul>
+    </article>
+
+    <article class="resumen__bloque">
+      <div class="resumen__cabecera">
+        <h3>Tu oferta</h3>
+        <a href="{{ url_for('registro.paso3') }}">Editar</a>
+      </div>
+      <ul class="resumen__productos">
+        {% for producto in draft.get('productos', []) %}
+        <li><span>{{ producto.nombre }}</span><strong>{{ producto.precio or 'A consultar' }}{% if producto.unidad %} / {{ producto.unidad }}{% endif %}</strong></li>
+        {% endfor %}
+      </ul>
+      <p class="resumen__meta">Pago: {{ draft.get('metodos_pago', [])|map('metodo_label')|join(', ') }}</p>
+      <p class="resumen__meta">Punto de venta: {{ draft.get('interes_pos', 'no')|interes_label }}</p>
+    </article>
+  </div>
+
+  <div class="campos-grid">
+    {{ campo('contacto_nombre', 'Nombre de la persona de contacto', draft.get('contacto_nombre', ''), requerido=True, error=errores.get('contacto_nombre'), maxlength=140, autocomplete='name', placeholder='Ej. María López') }}
+    {{ campo('telefono', 'Teléfono', draft.get('telefono', ''), tipo='tel', requerido=True, inputmode='tel', ayuda='10 dígitos. No se muestra completo en la ficha pública.', error=errores.get('telefono'), maxlength=24, autocomplete='tel', placeholder='55 1234 5678') }}
+  </div>
+
+  <div class="campos-grid">
+    {{ campo('whatsapp', 'WhatsApp (opcional)', draft.get('whatsapp', ''), tipo='tel', inputmode='tel', ayuda='Si lo dejas vacío, usamos el teléfono.', error=errores.get('whatsapp'), maxlength=24, autocomplete='tel', placeholder='55 1234 5678') }}
+    {{ campo('email', 'Correo electrónico (opcional)', draft.get('email', ''), tipo='email', ayuda='Para avisos de la plataforma. No se publica.', error=errores.get('email'), maxlength=140, autocomplete='email', placeholder='tu@correo.com') }}
+  </div>
+
+  {{ select_campo('como_se_entero', '¿Cómo te enteraste de la plataforma?', COMO_SE_ENTERO, draft.get('como_se_entero', ''), ayuda='Opcional. Nos ayuda a mejorar la difusión.') }}
+
+  <div class="consentimiento">
+    <label class="check check--consentimiento">
+      <input type="checkbox" name="consent" {% if draft.get('consent') %}checked{% endif %} required>
+      <span>
+        He leído y acepto el <a href="{{ url_for('main.aviso_privacidad') }}" target="_blank" rel="noopener">aviso de privacidad</a>.
+        Entiendo que mi ficha será pública y que puedo solicitar que se oculte.
+      </span>
+    </label>
+    {% if errores.get('consent') %}<p class="campo__error" role="alert">{{ errores.get('consent') }}</p>{% endif %}
+  </div>
+
+  <div class="nota-caja nota-caja--suave">
+    {{ icono('eye', 'icono', 20) }}
+    <p>
+      <strong>Esto se publica:</strong> nombre, tipo, giro, descripción, alcaldía,
+      colonia, referencia, horarios, productos, precios de referencia y formas de pago.
+      <strong>Esto no se publica:</strong> tu RFC, tu correo y el nombre de contacto.
+    </p>
+  </div>
+
+  <div class="formulario__acciones">
+    <a class="btn btn--fantasma" href="{{ url_for('registro.paso3') }}">
+      {{ icono('arrow-left', 'btn__icono', 18) }}
+      Atrás
+    </a>
+    <button class="btn btn--primario btn--lg" type="submit">
+      Publicar mi ficha
+      {{ icono('check', 'btn__icono', 20) }}
+    </button>
+  </div>
+</form>
+{% endblock %}

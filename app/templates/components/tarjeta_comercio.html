@@ -1,0 +1,30 @@
+{% from 'components/iconos.html' import icono %}
+{% macro tarjeta_comercio(comercio) -%}
+<article class="tarjeta-comercio">
+  <div class="tarjeta-comercio__cinta">
+    <span class="badge badge--tipo">{{ comercio.tipo_label }}</span>
+    <span class="tarjeta-comercio__giro">{{ comercio.giro_label }}</span>
+  </div>
+  <h3 class="tarjeta-comercio__nombre">
+    <a href="{{ url_for('directorio.ficha', slug=comercio.slug) }}">{{ comercio.nombre }}</a>
+  </h3>
+  <p class="tarjeta-comercio__ubicacion">
+    {{ icono('map-pin', 'icono', 16) }}
+    {{ comercio.colonia }}, {{ comercio.alcaldia }}
+  </p>
+  <p class="tarjeta-comercio__descripcion">{{ comercio.descripcion_corta or 'Un comercio de barrio que forma parte de la red.' }}</p>
+  <div class="tarjeta-comercio__meta">
+    <span class="tarjeta-comercio__horario{% if comercio.abierto_ahora %} is-abierto{% endif %}">
+      <span class="punto" aria-hidden="true"></span>
+      {{ 'Abierto ahora' if comercio.abierto_ahora else comercio.horario_hoy_texto }}
+    </span>
+    {% if comercio.metodos_pago_labels %}
+    <span class="tarjeta-comercio__pago">{{ comercio.metodos_pago_labels[0] }}{% if comercio.metodos_pago_labels|length > 1 %} +{{ comercio.metodos_pago_labels|length - 1 }}{% endif %}</span>
+    {% endif %}
+  </div>
+  <a class="tarjeta-comercio__enlace" href="{{ url_for('directorio.ficha', slug=comercio.slug) }}">
+    Ver ficha
+    {{ icono('arrow-right', 'icono', 16) }}
+  </a>
+</article>
+{%- endmacro %}

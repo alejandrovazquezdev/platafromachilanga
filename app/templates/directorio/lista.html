@@ -1,0 +1,108 @@
+{% extends 'base.html' %}
+{% from 'components/iconos.html' import icono %}
+{% from 'components/tarjeta_comercio.html' import tarjeta_comercio %}
+
+{% block titulo %}Directorio de comercio popular · Chilangatón{% endblock %}
+{% block descripcion %}Encuentra mercados, tianguis y tiendas de barrio por alcaldía, giro y tipo de comercio.{% endblock %}
+
+{% block head_extra %}
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
+{% endblock %}
+
+{% block contenido %}
+<section class="directorio-hero">
+  <div class="contenedor">
+    <p class="eyebrow"><span class="eyebrow__linea" aria-hidden="true"></span> Directorio</p>
+    <div class="directorio-hero__fila">
+      <div>
+        <h1>Comercio popular,<br><span class="texto-guinda">a la vuelta de la esquina.</span></h1>
+        <p>Busca por alcaldía, giro o tipo de comercio. Esta es una muestra de demostración del Chilangatón.</p>
+      </div>
+      <div class="directorio-hero__contador">
+        <strong>{{ total }}</strong>
+        <span>{{ 'comercio' if total == 1 else 'comercios' }} en el mapa</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="contenedor directorio">
+  <form class="filtros" method="get" action="{{ url_for('directorio.lista') }}">
+    <div class="filtros__busqueda">
+      <label class="sr-only" for="filtro-q">Buscar comercio</label>
+      <span class="filtros__lupa">{{ icono('search', 'icono', 20) }}</span>
+      <input id="filtro-q" type="search" name="q" value="{{ filtros.q }}" placeholder="Busca por nombre, colonia o giro…">
+    </div>
+    <div class="filtros__selects">
+      <label class="sr-only" for="filtro-alcaldia">Alcaldía</label>
+      <select id="filtro-alcaldia" name="alcaldia">
+        <option value="">Todas las alcaldías</option>
+        {% for alcaldia in ALCALDIAS %}
+        <option value="{{ alcaldia }}" {% if filtros.alcaldia == alcaldia %}selected{% endif %}>{{ alcaldia }}</option>
+        {% endfor %}
+      </select>
+      <label class="sr-only" for="filtro-giro">Giro</label>
+      <select id="filtro-giro" name="giro">
+        <option value="">Todos los giros</option>
+        {% for clave, etiqueta in GIROS.items() %}
+        <option value="{{ clave }}" {% if filtros.giro == clave %}selected{% endif %}>{{ etiqueta }}</option>
+        {% endfor %}
+      </select>
+      <label class="sr-only" for="filtro-tipo">Tipo</label>
+      <select id="filtro-tipo" name="tipo">
+        <option value="">Todos los tipos</option>
+        {% for clave, datos in TIPOS.items() %}
+        <option value="{{ clave }}" {% if filtros.tipo == clave %}selected{% endif %}>{{ datos.label }}</option>
+        {% endfor %}
+      </select>
+    </div>
+    <div class="filtros__acciones">
+      <button class="btn btn--primario btn--sm" type="submit">Filtrar</button>
+      <a class="filtros__limpiar" href="{{ url_for('directorio.lista') }}">Limpiar</a>
+    </div>
+  </form>
+
+  <div class="directorio__layout">
+    <aside class="directorio__mapa">
+      <div class="mapa" id="mapa-directorio" data-mapa>
+        <div class="mapa__fallback">
+          {{ icono('map-pin', 'icono', 28) }}
+          <p>El mapa interactivo no está disponible. Puedes explorar los comercios en la lista.</p>
+        </div>
+      </div>
+      <p class="mapa__leyenda">{{ icono('info', 'icono', 15) }} Ubicaciones aproximadas por alcaldía para esta demostración.</p>
+      <div class="directorio__cta">
+        <h2>¿Tu comercio no está aquí?</h2>
+        <p>Registra tu mercado, tianguis o tienda y aparece en el mapa del barrio.</p>
+        <a class="btn btn--primario btn--bloque btn--sm" href="{{ url_for('registro.paso1') }}">
+          Registrar mi comercio
+          {{ icono('arrow-right', 'btn__icono', 16) }}
+        </a>
+      </div>
+    </aside>
+
+    <div class="directorio__lista">
+      {% if comercios %}
+      <div class="grid-cards grid-cards--directorio">
+        {% for comercio in comercios %}
+          {{ tarjeta_comercio(comercio) }}
+        {% endfor %}
+      </div>
+      {% else %}
+      <div class="vacio">
+        {{ icono('search', 'icono', 32) }}
+        <h2>No encontramos comercios con esos filtros</h2>
+        <p>Prueba con otra alcaldía, giro o palabra. También puedes registrar tu comercio.</p>
+        <a class="btn btn--primario" href="{{ url_for('registro.paso1') }}">Registrar mi comercio</a>
+      </div>
+      {% endif %}
+    </div>
+  </div>
+</section>
+
+<script type="application/json" id="datos-mapa">{{ mapa_json|safe }}</script>
+{% endblock %}
+
+{% block scripts %}
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" defer></script>
+{% endblock %}

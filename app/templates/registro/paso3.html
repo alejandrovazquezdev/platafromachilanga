@@ -1,0 +1,158 @@
+{% extends 'registro/base.html' %}
+{% from 'components/iconos.html' import icono %}
+
+{% block titulo %}Paso 3 · Tu oferta · Chilangatón{% endblock %}
+{% block titulo_lateral %}Muestra lo que vendes{% endblock %}
+{% block bajada_lateral %}Productos, precios de referencia y formas de pago. Es lo que la gente busca antes de visitarte.{% endblock %}
+
+{% block paso %}
+<form class="formulario" method="post" novalidate data-form-productos>
+  <input type="hidden" name="_csrf_token" value="{{ csrf_token() }}">
+
+  <div class="formulario__cabecera">
+    <span class="paso-chip">Paso 3 de 4</span>
+    <h2>Tu oferta y formas de pago</h2>
+    <p>Publica hasta 6 productos o servicios. No necesitas fotos para empezar.</p>
+  </div>
+
+  {% if errores %}
+  <div class="alerta" role="alert">
+    {{ icono('alert', 'icono', 20) }}
+    <p>Revisa los campos marcados para continuar.</p>
+  </div>
+  {% endif %}
+
+  <fieldset class="campo campo--fieldset">
+    <legend class="campo__label">Productos o servicios <span class="campo__req" aria-hidden="true">*</span></legend>
+    <p class="campo__ayuda">El precio es de referencia; puedes escribir “a consultar”.</p>
+    <div class="productos" data-productos>
+      {% for producto in productos_form %}
+      <div class="producto-fila" data-producto>
+        <div class="campo">
+          <label class="campo__label" for="producto-nombre-{{ loop.index }}">Producto</label>
+          <input class="campo__control" id="producto-nombre-{{ loop.index }}" name="producto_nombre[]" value="{{ producto.get('nombre', '') }}" maxlength="140" placeholder="Ej. Chile guajillo">
+        </div>
+        <div class="campo">
+          <label class="campo__label" for="producto-categoria-{{ loop.index }}">Categoría</label>
+          <input class="campo__control" id="producto-categoria-{{ loop.index }}" name="producto_categoria[]" value="{{ producto.get('categoria', '') }}" maxlength="60" placeholder="Ej. Chiles y especias" list="categorias-producto">
+        </div>
+        <div class="campo">
+          <label class="campo__label" for="producto-precio-{{ loop.index }}">Precio</label>
+          <input class="campo__control" id="producto-precio-{{ loop.index }}" name="producto_precio[]" value="{{ producto.get('precio', '') }}" maxlength="40" placeholder="Ej. $120">
+        </div>
+        <div class="campo">
+          <label class="campo__label" for="producto-unidad-{{ loop.index }}">Unidad</label>
+          <input class="campo__control" id="producto-unidad-{{ loop.index }}" name="producto_unidad[]" value="{{ producto.get('unidad', '') }}" maxlength="40" placeholder="kg, pieza, litro">
+        </div>
+        <button class="producto-fila__quitar" type="button" data-quitar-producto aria-label="Quitar este producto">
+          {{ icono('trash', 'icono', 18) }}
+        </button>
+      </div>
+      {% endfor %}
+    </div>
+    {% if errores.get('productos') %}<p class="campo__error" role="alert">{{ errores.get('productos') }}</p>{% endif %}
+    <button class="btn btn--secundario btn--sm" type="button" data-agregar-producto>
+      {{ icono('plus', 'btn__icono', 18) }}
+      Agregar otro producto
+    </button>
+    <p class="contador-productos" data-contador-productos>0 de 6 productos</p>
+  </fieldset>
+
+  <datalist id="categorias-producto">
+    <option value="Abarrotes"></option>
+    <option value="Frutas y verduras"></option>
+    <option value="Alimentos preparados"></option>
+    <option value="Bebidas"></option>
+    <option value="Artesanías"></option>
+    <option value="Ropa y calzado"></option>
+    <option value="Servicios"></option>
+  </datalist>
+
+  <fieldset class="campo campo--fieldset">
+    <legend class="campo__label">Formas de pago <span class="campo__req" aria-hidden="true">*</span></legend>
+    <p class="campo__ayuda">Marca todas las que aceptas hoy.</p>
+    <div class="opciones-grid">
+      {% for clave, etiqueta in METODOS.items() %}
+      <label class="check-card">
+        <input type="checkbox" name="metodos_pago" value="{{ clave }}" {% if clave in draft.get('metodos_pago', []) %}checked{% endif %}>
+        <span class="check-card__cuerpo">
+          <strong>{{ etiqueta }}</strong>
+          <small>
+            {% if clave == 'efectivo' %}Lo de siempre, sin terminal.
+            {% elif clave == 'transferencia' %}SPEI o depósito.
+            {% elif clave == 'tarjeta' %}Terminal o cobro digital.
+            {% elif clave == 'vales' %}Despensa o apoyos.
+            {% else %}Pedidos y entregas por WhatsApp.{% endif %}
+          </small>
+        </span>
+      </label>
+      {% endfor %}
+    </div>
+    {% if errores.get('metodos_pago') %}<p class="campo__error" role="alert">{{ errores.get('metodos_pago') }}</p>{% endif %}
+  </fieldset>
+
+  <fieldset class="campo campo--fieldset">
+    <legend class="campo__label">Punto de venta <span class="campo__req" aria-hidden="true">*</span></legend>
+    <p class="campo__ayuda">Una terminal te permite cobrar con tarjeta. No es obligatorio.</p>
+    <div class="opciones-grid opciones-grid--tres">
+      {% for clave, etiqueta in INTERES_POS.items() %}
+      <label class="opcion-radio">
+        <input type="radio" name="interes_pos" value="{{ clave }}" {% if draft.get('interes_pos', 'no') == clave %}checked{% endif %} required>
+        <span class="opcion-radio__cuerpo">
+          <strong>{{ etiqueta }}</strong>
+          <small>
+            {% if clave == 'si' %}Te contactamos para cotizar equipo y comisiones.
+            {% elif clave == 'no' %}Puedes pedirlo después desde tu panel.
+            {% else %}Queremos ayudarte a integrarlo.{% endif %}
+          </small>
+        </span>
+      </label>
+      {% endfor %}
+    </div>
+    {% if errores.get('interes_pos') %}<p class="campo__error" role="alert">{{ errores.get('interes_pos') }}</p>{% endif %}
+  </fieldset>
+
+  <div class="nota-caja">
+    {{ icono('info', 'icono', 20) }}
+    <p>
+      <strong>No necesitas fotos ni inventario completo.</strong> Con tres productos
+      basta para que la gente se dé una idea. Después puedes enriquecer tu ficha.
+    </p>
+  </div>
+
+  <div class="formulario__acciones">
+    <a class="btn btn--fantasma" href="{{ url_for('registro.paso2') }}">
+      {{ icono('arrow-left', 'btn__icono', 18) }}
+      Atrás
+    </a>
+    <button class="btn btn--primario" type="submit">
+      Continuar
+      {{ icono('arrow-right', 'btn__icono', 18) }}
+    </button>
+  </div>
+</form>
+
+<template id="plantilla-producto">
+  <div class="producto-fila" data-producto>
+    <div class="campo">
+      <label class="campo__label">Producto</label>
+      <input class="campo__control" aria-label="Producto" name="producto_nombre[]" maxlength="140" placeholder="Ej. Chile guajillo">
+    </div>
+    <div class="campo">
+      <label class="campo__label">Categoría</label>
+      <input class="campo__control" aria-label="Categoría" name="producto_categoria[]" maxlength="60" placeholder="Ej. Chiles y especias" list="categorias-producto">
+    </div>
+    <div class="campo">
+      <label class="campo__label">Precio</label>
+      <input class="campo__control" aria-label="Precio" name="producto_precio[]" maxlength="40" placeholder="Ej. $120">
+    </div>
+    <div class="campo">
+      <label class="campo__label">Unidad</label>
+      <input class="campo__control" aria-label="Unidad" name="producto_unidad[]" maxlength="40" placeholder="kg, pieza, litro">
+    </div>
+    <button class="producto-fila__quitar" type="button" data-quitar-producto aria-label="Quitar este producto">
+      {{ icono('trash', 'icono', 18) }}
+    </button>
+  </div>
+</template>
+{% endblock %}

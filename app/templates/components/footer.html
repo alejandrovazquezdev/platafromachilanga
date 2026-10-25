@@ -1,0 +1,59 @@
+{% from 'components/iconos.html' import icono %}
+<footer class="site-footer">
+  <div class="contenedor footer__grid">
+    <div class="footer__marca">
+      <div class="footer__logo-caja">
+        <picture>
+          <source type="image/webp" srcset="{{ url_for('static', filename='img/logo-gobierno-500.webp') }}" sizes="210px">
+          <img src="{{ url_for('static', filename='img/logo-gobierno-500.png') }}" alt="Gobierno de la Ciudad de México" width="500" height="152">
+        </picture>
+      </div>
+      <p class="footer__descripcion">
+        Una plataforma para que mercados, tianguis y tiendas de barrio sean visibles,
+        vendan más y den el paso a la digitalización.
+      </p>
+      <span class="footer__sello">{{ icono('heart', 'icono', 16) }} Hecho en la CDMX</span>
+    </div>
+
+    <div class="footer__col">
+      <h2 class="footer__titulo">Plataforma</h2>
+      <ul class="footer__lista">
+        <li><a href="{{ url_for('registro.paso1') }}">Registrar mi comercio</a></li>
+        <li><a href="{{ url_for('directorio.lista') }}">Directorio</a></li>
+        <li><a href="{{ url_for('panel.inicio') }}">Mi negocio</a></li>
+        <li><a href="{{ url_for('main.como_funciona') }}">Cómo funciona</a></li>
+      </ul>
+    </div>
+
+    <div class="footer__col">
+      <h2 class="footer__titulo">Recursos</h2>
+      <ul class="footer__lista">
+        <li><a href="{{ url_for('main.como_funciona') }}#requisitos">¿Qué necesito?</a></li>
+        <li><a href="{{ url_for('main.como_funciona') }}#privacidad">Privacidad y datos</a></li>
+        <li><a href="{{ url_for('main.aviso_privacidad') }}">Aviso de privacidad</a></li>
+        <li><a href="{{ url_for('main.como_funciona') }}#preguntas">Preguntas frecuentes</a></li>
+      </ul>
+    </div>
+
+    <div class="footer__col">
+      <h2 class="footer__titulo">Contacto</h2>
+      <ul class="footer__lista footer__lista--contacto">
+        <li>{{ icono('map-pin', 'icono', 16) }} Ciudad de México</li>
+        <li>{{ icono('mail', 'icono', 16) }} Equipo Chilangatón</li>
+        <li>{{ icono('clock', 'icono', 16) }} Lun–Vie, 9:00–18:00</li>
+      </ul>
+      <a class="footer__enlace" href="{{ url_for('registro.paso1') }}">
+        Registrar mi comercio
+        {{ icono('arrow-right', 'icono', 16) }}
+      </a>
+    </div>
+  </div>
+
+  <div class="contenedor footer__bottom">
+    <p>© {{ anio_actual }} Chilangatón · Reto 1. Prototipo para el hackathon.</p>
+    <p class="footer__aviso">
+      No es un sitio oficial del Gobierno de la Ciudad de México. Los datos de los
+      comercios del directorio son de demostración.
+    </p>
+  </div>
+</footer>

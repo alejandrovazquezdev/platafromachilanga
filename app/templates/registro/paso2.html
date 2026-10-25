@@ -1,0 +1,89 @@
+{% extends 'registro/base.html' %}
+{% from 'components/campos.html' import campo, textarea, select_campo %}
+{% from 'components/iconos.html' import icono %}
+
+{% block titulo %}Paso 2 · Ubicación y horarios · Chilangatón{% endblock %}
+{% block titulo_lateral %}Que te puedan encontrar{% endblock %}
+{% block bajada_lateral %}Con tu alcaldía, colonia y horarios armamos la ubicación de tu ficha.{% endblock %}
+
+{% block paso %}
+<form class="formulario" method="post" novalidate>
+  <input type="hidden" name="_csrf_token" value="{{ csrf_token() }}">
+
+  <div class="formulario__cabecera">
+    <span class="paso-chip">Paso 2 de 4</span>
+    <h2>¿Dónde y cuándo te encuentran?</h2>
+    <p>No necesitas geolocalización exacta: con la colonia y una referencia basta para empezar.</p>
+  </div>
+
+  {% if errores %}
+  <div class="alerta" role="alert">
+    {{ icono('alert', 'icono', 20) }}
+    <p>Revisa los campos marcados para continuar.</p>
+  </div>
+  {% endif %}
+
+  <div class="campos-grid">
+    {{ select_campo('alcaldia', 'Alcaldía', ALCALDIAS, draft.get('alcaldia', ''), requerido=True, error=errores.get('alcaldia')) }}
+    {{ campo('colonia', 'Colonia o barrio', draft.get('colonia', ''), requerido=True, error=errores.get('colonia'), maxlength=90, placeholder='Ej. Del Carmen') }}
+  </div>
+
+  {{ campo('calle', 'Calle y número, o referencia', draft.get('calle', ''), requerido=True, ayuda='Si no tienes número, escribe una referencia: “frente al parque”, “junto a la iglesia”.', error=errores.get('calle'), maxlength=180, placeholder='Ej. Av. Universidad 1450, Local B') }}
+
+  {{ textarea('referencias', 'Referencias para llegar', draft.get('referencias', ''), ayuda='Opcional. Un punto conocido ayuda mucho a quien visita por primera vez.', placeholder='Ej. Frente al parque, portón verde, a media cuadra del mercado.', maxlength=300, filas=3) }}
+
+  <fieldset class="campo campo--fieldset" data-tianguis-campos{% if draft.get('tipo') != 'tianguis' %} hidden{% endif %}>
+    <legend class="campo__label">Datos de tianguis</legend>
+    <div class="campos-grid">
+      {{ campo('dias_tianguis', '¿Qué días instalas?', draft.get('dias_tianguis', ''), ayuda='Ej. Martes y sábado, de 7:00 a 15:00.', error=errores.get('dias_tianguis'), maxlength=140, placeholder='Martes y sábado') }}
+      {{ campo('numero_puesto', 'Número o nombre del puesto', draft.get('numero_puesto', ''), ayuda='Opcional. Te ayuda a ubicarte dentro de la plancha.', maxlength=40, placeholder='Ej. P-14') }}
+    </div>
+  </fieldset>
+
+  <fieldset class="campo campo--fieldset">
+    <legend class="campo__label">Días y horarios de atención <span class="campo__req" aria-hidden="true">*</span></legend>
+    <p class="campo__ayuda">Marca los días que abres y el horario. Puedes ajustarlo después.</p>
+    <div class="horario" data-horario>
+      {% for clave, etiqueta in DIAS %}
+      {% set dia = horario[clave] %}
+      <div class="horario__fila{% if not dia.abre %} is-cerrado{% endif %}">
+        <label class="check">
+          <input type="checkbox" name="abre_{{ clave }}" data-horario-check {% if dia.abre %}checked{% endif %}>
+          <span>{{ etiqueta }}</span>
+        </label>
+        <div class="horario__horas">
+          <input class="campo__control campo__control--hora" type="time" name="de_{{ clave }}" value="{{ dia.de }}" data-horario-hora aria-label="Hora de apertura del {{ etiqueta|lower }}" {% if not dia.abre %}disabled{% endif %}>
+          <span aria-hidden="true">a</span>
+          <input class="campo__control campo__control--hora" type="time" name="a_{{ clave }}" value="{{ dia.a }}" data-horario-hora aria-label="Hora de cierre del {{ etiqueta|lower }}" {% if not dia.abre %}disabled{% endif %}>
+        </div>
+        {% if errores.get('horario_' ~ clave) %}
+        <p class="campo__error">{{ errores.get('horario_' ~ clave) }}</p>
+        {% endif %}
+      </div>
+      {% endfor %}
+    </div>
+    {% if errores.get('horario') %}<p class="campo__error" role="alert">{{ errores.get('horario') }}</p>{% endif %}
+  </fieldset>
+
+  <div class="mapa-preview" aria-hidden="true">
+    <div class="mapa-preview__grilla"></div>
+    <div class="mapa-preview__pin">{{ icono('map-pin', 'icono', 22) }}</div>
+    <div class="mapa-preview__texto">
+      <strong>{{ draft.get('nombre', 'Tu comercio') }}</strong>
+      <span><span data-preview-colonia>{{ draft.get('colonia') or 'Tu colonia' }}</span>, <span data-preview-alcaldia>{{ draft.get('alcaldia') or 'tu alcaldía' }}</span></span>
+    </div>
+    <span class="mapa-preview__sello">Vista previa</span>
+  </div>
+
+  <div class="formulario__acciones">
+    <a class="btn btn--fantasma" href="{{ url_for('registro.paso1') }}">
+      {{ icono('arrow-left', 'btn__icono', 18) }}
+      Atrás
+    </a>
+    <button class="btn btn--primario" type="submit">
+      Continuar
+      {{ icono('arrow-right', 'btn__icono', 18) }}
+    </button>
+  </div>
+</form>
+{% endblock %}

@@ -1,0 +1,59 @@
+{% from 'components/iconos.html' import icono %}
+<div class="franja">
+  <div class="contenedor franja__inner">
+    <span><strong>Chilangatón 2026</strong> · Reto 1</span>
+    <span class="franja__der">Comercio popular y barrial · Prototipo</span>
+  </div>
+</div>
+<header class="site-header" data-header>
+  <div class="contenedor header__inner">
+    <a class="marca" href="{{ url_for('main.inicio') }}" aria-label="Chilangatón, ir al inicio">
+      <picture>
+        <source
+          type="image/webp"
+          srcset="{{ url_for('static', filename='img/logo-gobierno-500.webp') }} 500w, {{ url_for('static', filename='img/logo-gobierno-1000.webp') }} 1000w"
+          sizes="230px"
+        >
+        <img
+          class="marca__logo"
+          src="{{ url_for('static', filename='img/logo-gobierno-500.png') }}"
+          srcset="{{ url_for('static', filename='img/logo-gobierno-500.png') }} 500w, {{ url_for('static', filename='img/logo-gobierno-1000.png') }} 1000w"
+          sizes="230px"
+          alt="Gobierno de la Ciudad de México"
+          width="500"
+          height="152"
+        >
+      </picture>
+      <span class="marca__separador" aria-hidden="true"></span>
+      <span class="marca__texto">
+        <strong>Chilangatón</strong>
+        <small>Comercio popular</small>
+      </span>
+    </a>
+
+    <button class="nav-toggle" type="button" aria-expanded="false" aria-controls="menu-principal" data-menu-toggle>
+      <span class="sr-only">Abrir menú</span>
+      {{ icono('menu', 'nav-toggle__abrir', 24) }}
+      {{ icono('x', 'nav-toggle__cerrar', 24) }}
+    </button>
+
+    <nav class="nav" id="menu-principal" aria-label="Navegación principal">
+      <a class="nav__link{% if request.endpoint == 'main.como_funciona' %} is-active{% endif %}" href="{{ url_for('main.como_funciona') }}">Cómo funciona</a>
+      <a class="nav__link{% if request.endpoint and request.endpoint.startswith('directorio.') %} is-active{% endif %}" href="{{ url_for('directorio.lista') }}">Directorio</a>
+      <a class="nav__link{% if request.endpoint and request.endpoint.startswith('panel.') %} is-active{% endif %}" href="{{ url_for('panel.inicio') }}">Mi negocio</a>
+      <a class="btn btn--primario btn--sm nav__cta" href="{{ url_for('registro.paso1') }}">
+        Registrar mi comercio
+        {{ icono('arrow-right', 'btn__icono', 18) }}
+      </a>
+    </nav>
+  </div>
+</header>
+{% with messages = get_flashed_messages(with_categories=true) %}
+  {% if messages %}
+  <div class="contenedor avisos" role="status">
+    {% for categoria, mensaje in messages %}
+    <div class="aviso aviso--{{ categoria }}">{{ mensaje }}</div>
+    {% endfor %}
+  </div>
+  {% endif %}
+{% endwith %}
