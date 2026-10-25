@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Panel de Administración - Plataforma Chilanga</title>
+  <link rel="stylesheet" href="dashboard.css">
+</head>
+<body>
+  <div class="content-wrapper">
+    <header class="dashboard-header">
+      <h1>PANEL DE CONTROL</h1>
+      <p>Gestión Interna de tu Tienda Local</p>
+    </header>
+    <main class="container">
+      <section class="card company-info">
+        <h2>Mi Empresa</h2>
+        <p><strong>Nombre:</strong> Textiles Chilangos S.A.</p>
+        <p><strong>Giro:</strong> Ropa y artesanías locales</p>
+        <p><strong>Ubicación:</strong> Centro Histórico, CDMX</p>
+        <p><strong>Estatus:</strong> Tienda Activa 🟢</p>
+      </section>
+      <section class="card">
+        <h2>Agregar Producto</h2>
+        <form id="product-form">
+          <div class="form-group">
+            <label for="prod-name">Nombre del Producto:</label>
+            <input type="text" id="prod-name" required placeholder="Ej. Camiseta Artesanal">
+          </div>
+          <div class="form-group">
+            <label for="prod-price">Precio ($ MXN):</label>
+            <input type="number" id="prod-price" required placeholder="0.00" min="0" step="0.01">
+          </div>
+          <div class="form-group">
+            <label for="prod-desc">Descripción Breve:</label>
+            <textarea id="prod-desc" rows="2" placeholder="Detalles del artículo..."></textarea>
+          </div>
+          <button type="submit" class="btn-add">Subir a la Tienda</button>
+        </form>
+      </section>
+      <section class="card">
+        <h2>Tu Tienda en Vivo</h2>
+        <div class="products-grid" id="products-container">
+          <div class="product-item">
+            <div class="product-placeholder-img">📦</div>
+            <div class="product-details">
+              <h4>Gorra Conmemorativa CDMX</h4>
+              <p>$250.00</p>
+            </div>
+          </div>
+          <div class="product-item">
+            <div class="product-placeholder-img">📦</div>
+            <div class="product-details">
+              <h4>Sudadera Guinda Logo 2026</h4>
+              <p>$450.00</p>
+            </div>
+          </div>
+        </div>
+      </section>
+    </main>
+  </div>
+  <footer class="main-footer">
+    <p>Plataforma Chilanga © 2026 - Conectando el comercio local</p>
+  </footer>
+  <script src="dashboard.js"></script>
+</body>
+</html>

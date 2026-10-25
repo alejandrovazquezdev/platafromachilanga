@@ -5,13 +5,27 @@
 </head>
 <body>
 <header class="cabeza">
-Iniciar Sesion
+<image class="img" src="logo2.png">
+<label><h1>PLATAFORMA CHILANGA </h1></label>
 </header>
-<main>
-<label>Usuario</label>
-<input type="text" id="input1" placeholder="Nombre de usuario"/>
-<label>Contraseña</label>
-<input type="password" id="input2" placeholder="Contraseña"/>
+<main class="cuerpo">
+<form  method="POST" class="inicio">
+<h2>Iniciar Sesion</h2>
+<div class="conten">	
+<label for="usuario">Usuario</label>
+<input type="text" id="input1" name="usuario" placeholder="Nombre de usuario" required/></div>
+<div class="conten">
+<label for="contra">Contraseña</label>
+<input type="password" id="input2"name="contra" placeholder="Contraseña" required />
+</div>
 <p>
 <button class="btn" id="inicio">Iniciar Sesion</button>
-</
+</form>
+</main>
+<footer class="pie">
+<image class="imagen" src="fondo.png">
+<label>Contacto: whattsapp 2722341869</label>
+</footer>
+<script src="IS.js"></script>
+</body>
+</html>
