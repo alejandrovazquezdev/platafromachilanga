@@ -1,9 +1,9 @@
 from __future__ import annotations
 
-from flask import Blueprint, redirect, render_template, session, url_for
+from flask import Blueprint, flash, redirect, render_template, request, session, url_for
 
 from .. import db
-from ..models import Comercio
+from ..models import Comercio, Producto
 
 panel_bp = Blueprint("panel", __name__)
 
@@ -20,16 +20,75 @@ def _qr_svg(comercio: Comercio) -> str | None:
         return None
 
 
+def _comercio_actual() -> Comercio | None:
+    comercio_id = session.get("comercio_id")
+    if not comercio_id:
+        return None
+    return db.session.get(Comercio, comercio_id)
+
+
+def _ir_a_login():
+    return redirect(url_for("auth.login", next=request.path))
+
+
+@panel_bp.route("/panel")
+def inicio():
+    comercio = _comercio_actual()
+    if comercio is None:
+        return _ir_a_login()
+
+    productos = sorted(comercio.productos, key=lambda p: p.id, reverse=True)
+    return render_template(
+        "panel/dashboard.html",
+        comercio=comercio,
+        productos=productos,
+        cuenta=comercio.cuenta,
+    )
+
+
+@panel_bp.post("/panel/productos")
+def agregar_producto():
+    comercio = _comercio_actual()
+    if comercio is None:
+        return _ir_a_login()
+
+    nombre = (request.form.get("nombre") or "").strip()[:140]
+    precio_raw = (request.form.get("precio") or "").strip().replace("$", "").replace(",", "")
+    descripcion = (request.form.get("descripcion") or "").strip()[:240]
+
+    if len(nombre) < 2:
+        flash("Escribe el nombre del producto.", "error")
+        return redirect(url_for("panel.inicio"))
+
+    try:
+        precio = float(precio_raw)
+        if precio < 0:
+            raise ValueError
+        precio_texto = f"${precio:,.2f}"
+    except (TypeError, ValueError):
+        flash("Escribe un precio válido, por ejemplo 250.00.", "error")
+        return redirect(url_for("panel.inicio"))
+
+    db.session.add(
+        Producto(
+            comercio_id=comercio.id,
+            nombre=nombre,
+            categoria="Producto",
+            precio=precio_texto,
+            unidad="pieza",
+            descripcion=descripcion,
+        )
+    )
+    db.session.commit()
+    flash("Producto agregado a tu tienda.", "ok")
+    return redirect(url_for("panel.inicio"))
+
+
 @panel_bp.route("/panel/editar")
 def editar():
-    comercio = None
-    comercio_id = session.get("comercio_id")
-    if comercio_id:
-        comercio = db.session.get(Comercio, comercio_id)
+    comercio = _comercio_actual()
     if comercio is None:
-        comercio = Comercio.query.order_by(Comercio.visitas.desc()).first()
-    if comercio is None:
-        return redirect(url_for("registro.paso1"))
+        return _ir_a_login()
 
     session["registro_draft"] = {
         "nombre": comercio.nombre,
@@ -65,6 +124,8 @@ def editar():
         "whatsapp": comercio.whatsapp,
         "email": comercio.email,
         "como_se_entero": comercio.como_se_entero,
+        "password": "",
+        "password_confirm": "",
         "consent": True,
     }
     session["editando_id"] = comercio.id
@@ -74,99 +135,11 @@ def editar():
 
 @panel_bp.route("/panel/ficha-imprimible")
 def ficha_imprimible():
-    comercio = None
-    comercio_id = session.get("comercio_id")
-    if comercio_id:
-        comercio = db.session.get(Comercio, comercio_id)
+    comercio = _comercio_actual()
     if comercio is None:
-        comercio = Comercio.query.order_by(Comercio.visitas.desc()).first()
-    if comercio is None:
-        return redirect(url_for("registro.paso1"))
+        return _ir_a_login()
     return render_template(
         "panel/ficha_imprimible.html",
         comercio=comercio,
         qr_svg=_qr_svg(comercio),
-    )
-
-
-@panel_bp.route("/panel")
-def inicio():
-    comercio = None
-    comercio_id = session.get("comercio_id")
-    if comercio_id:
-        comercio = db.session.get(Comercio, comercio_id)
-
-    demo = comercio is None
-    if comercio is None:
-        comercio = Comercio.query.order_by(Comercio.visitas.desc()).first()
-    if comercio is None:
-        return redirect(url_for("registro.paso1"))
-
-    productos = list(comercio.productos)
-    recomendaciones = [
-        {
-            "hecho": bool(comercio.descripcion),
-            "titulo": "Agrega una descripción de tu comercio",
-            "detalle": "Una o dos frases ayudan a que la gente sepa qué encontrar.",
-            "url": url_for("panel.editar"),
-        },
-        {
-            "hecho": len(productos) >= 3,
-            "titulo": "Publica al menos 3 productos",
-            "detalle": "Muestra lo que más vendes y el precio de referencia.",
-            "url": url_for("panel.editar"),
-        },
-        {
-            "hecho": bool(comercio.horario),
-            "titulo": "Confirma tus horarios",
-            "detalle": "La gente decide visitarte si sabe cuándo estás abierto.",
-            "url": url_for("panel.editar"),
-        },
-        {
-            "hecho": bool(comercio.whatsapp),
-            "titulo": "Activa pedidos por WhatsApp",
-            "detalle": "Un canal directo para pedidos y dudas del barrio.",
-            "url": url_for("panel.editar"),
-        },
-    ]
-
-    actividad = [
-        {
-            "icono": "eye",
-            "titulo": "Tu ficha recibió visitas",
-            "detalle": f"{max(comercio.visitas, 0)} personas vieron tu comercio esta semana.",
-            "cuando": "Hoy",
-        },
-        {
-            "icono": "package",
-            "titulo": "Productos publicados",
-            "detalle": f"{len(productos)} productos visibles en tu ficha.",
-            "cuando": "Esta semana",
-        },
-        {
-            "icono": "card",
-            "titulo": (
-                "Interés en punto de venta"
-                if comercio.interes_pos == "si"
-                else "Punto de venta"
-            ),
-            "detalle": (
-                "Un asesor puede contactarte para cotizar el equipo."
-                if comercio.interes_pos == "si"
-                else "Puedes solicitar información cuando quieras."
-            ),
-            "cuando": "Pendiente",
-        },
-    ]
-
-    return render_template(
-        "panel/inicio.html",
-        comercio=comercio,
-        productos=productos,
-        demo=demo,
-        porcentaje=comercio.porcentaje_completo,
-        recomendaciones=recomendaciones,
-        actividad=actividad,
-        qr_svg=_qr_svg(comercio),
-        ultimo_folio=session.get("ultimo_folio"),
     )

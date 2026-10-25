@@ -25,7 +25,9 @@ explorar un directorio y conocer su panel de visibilidad.
 | `/registro/confirmacion/<folio>` | Confirmación, folio y QR |
 | `/directorio` | Directorio con filtros y mapa |
 | `/comercio/<slug>` | Ficha pública |
-| `/panel` | Panel del comercio |
+| `/iniciar-sesion` | Login del negocio (diseño del equipo, funcional) |
+| `/panel` | Dashboard del negocio: datos y alta de productos |
+| `/salir` | Cerrar sesión |
 | `/noticias` | Noticias útiles: regulación, apoyos, trámites |
 | `/marco-legal` | Lo legal en simple, con fuentes oficiales |
 | `/preguntas-frecuentes` | FAQ completa |
@@ -77,6 +79,19 @@ python -m pytest -q
 
 Cubren páginas públicas, salud, CSRF, flujo completo de registro, edición, noticias,
 búsqueda difusa, digitalización, suscripciones push y acceso al panel de operación.
+
+## Cuenta del negocio y dashboard
+
+El registro pide **correo y contraseña**; con ellos se crea una cuenta (`Cuenta`) ligada
+al comercio. El login usa el diseño original de `IS.html` y el dashboard usa el de
+`dashboard.html` + `dashboard.css`, sin rediseñarlos.
+
+- Login: `/iniciar-sesion` (también `/login`).
+- Dashboard: `/panel`.
+- Productos: el formulario del dashboard crea productos reales y se reflejan en la
+  ficha pública.
+- La contraseña se guarda con hash de Werkzeug; nunca en texto plano.
+- Cuenta demo para probar: `donamari@chilangaton.mx` / `Chilangaton2026`.
 
 ## Módulos nuevos
 

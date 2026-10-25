@@ -3,7 +3,7 @@
 from .. import db
 from datetime import datetime
 
-from ..models import Comercio, Noticia, Producto, slugify
+from ..models import Comercio, Cuenta, Noticia, Producto, slugify
 
 
 def _horario(de="09:00", a="19:00", dias=None):
@@ -380,4 +380,18 @@ Puedes editar tu ficha desde el panel cuando quieras; los cambios se reflejan en
             slug = f"{base}-{i}"
             i += 1
         db.session.add(Noticia(slug=slug, **item))
+    db.session.commit()
+
+
+
+def seed_cuentas():
+    """Crea una cuenta demo para probar el login del dashboard."""
+    comercio = Comercio.query.filter_by(email="donamari@chilangaton.mx").first()
+    if comercio is None:
+        return
+    if Cuenta.query.filter_by(comercio_id=comercio.id).first():
+        return
+    cuenta = Cuenta(comercio_id=comercio.id, email=comercio.email)
+    cuenta.set_password("Chilangaton2026")
+    db.session.add(cuenta)
     db.session.commit()

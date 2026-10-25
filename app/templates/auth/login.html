@@ -1,0 +1,55 @@
+<!doctype html>
+<html lang="es-MX">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Iniciar sesión · Plataforma Chilanga</title>
+  <link rel="icon" type="image/png" href="{{ url_for('static', filename='img/favicon.png') }}">
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/IS.css') }}">
+  <style>
+    html, body { min-height: 100%; }
+    body { margin: 0; font-family: 'Segoe UI', Roboto, sans-serif; background: #fff; display: flex; flex-direction: column; min-height: 100vh; }
+    .cabeza { flex: none; height: auto; max-height: none; }
+    .cuerpo { flex: 1; height: auto; max-height: none; padding-bottom: 18px; }
+    .pie { flex: none; height: auto; max-height: none; margin-top: auto; }
+    .error { margin: 0 auto 12px; max-width: 340px; padding: 9px 12px; border: 1px solid #b00020; border-radius: 4px; background: #fdecef; color: #8a0018; font-size: .85rem; }
+    .registro-link { margin: 14px auto 0; font-size: .85rem; color: #555; }
+    .registro-link a { color: maroon; font-weight: 700; }
+    .conten { margin: 0 auto 12px; width: min(320px, 90%); text-align: left; }
+    .conten label { display: block; margin-bottom: 4px; font-size: .9rem; color: #333; }
+    .conten input { width: 100%; padding: 9px; border: 1px solid #bbb; border-radius: 4px; font: inherit; }
+    .inicio { padding: 18px 0 8px; }
+    .btn { width: min(320px, 90%); padding: 10px; border: 0; border-radius: 4px; color: #fff; font: inherit; font-weight: 700; cursor: pointer; }
+  </style>
+</head>
+<body>
+  <header class="cabeza">
+    <img class="img" src="{{ url_for('static', filename='img/logo2.png') }}" alt="Plataforma Chilanga">
+    <label><h1>PLATAFORMA CHILANGA</h1></label>
+  </header>
+
+  <main class="cuerpo">
+    <form method="post" class="inicio" action="{{ url_for('auth.login') }}">
+      <input type="hidden" name="_csrf_token" value="{{ csrf_token() }}">
+      <input type="hidden" name="next" value="{{ next }}">
+      <h2>Iniciar Sesión</h2>
+      {% if error %}<p class="error" role="alert">{{ error }}</p>{% endif %}
+      <div class="conten">
+        <label for="input1">Correo electrónico</label>
+        <input type="email" id="input1" name="usuario" placeholder="tu@correo.com" autocomplete="username" required>
+      </div>
+      <div class="conten">
+        <label for="input2">Contraseña</label>
+        <input type="password" id="input2" name="contra" placeholder="Contraseña" autocomplete="current-password" required>
+      </div>
+      <p><button class="btn" id="inicio" type="submit">Iniciar Sesión</button></p>
+    </form>
+    <p class="registro-link">¿Aún no tienes cuenta? <a href="{{ url_for('registro.paso1') }}">Registra tu comercio</a></p>
+  </main>
+
+  <footer class="pie">
+    <img class="imagen" src="{{ url_for('static', filename='img/fondo.png') }}" alt="">
+    <label>Contacto: WhatsApp 272 234 1869</label>
+  </footer>
+</body>
+</html>

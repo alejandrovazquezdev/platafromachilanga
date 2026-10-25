@@ -78,6 +78,8 @@ def paso4_data(token, **overrides):
         "telefono": "5512345678",
         "whatsapp": "5512345678",
         "email": "prueba@example.com",
+        "password": "ClaveSegura123",
+        "password_confirm": "ClaveSegura123",
         "como_se_entero": "Redes sociales",
         "consent": "on",
     }

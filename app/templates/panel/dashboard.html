@@ -1,0 +1,103 @@
+<!doctype html>
+<html lang="es-MX">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Panel de Administración - {{ comercio.nombre }}</title>
+  <link rel="icon" type="image/png" href="{{ url_for('static', filename='img/favicon.png') }}">
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/dashboard.css') }}">
+  <style>
+    .dashboard-actions { max-width: 1200px; margin: 18px auto 0; padding: 0 20px; display: flex; flex-wrap: wrap; gap: 8px; justify-content: flex-end; }
+    .dashboard-actions a { padding: 8px 11px; border: 1px solid var(--guinda-cdmx); border-radius: 4px; color: var(--guinda-cdmx); text-decoration: none; font-size: .82rem; font-weight: 600; background: #fff; }
+    .dashboard-actions a:hover { background: var(--guinda-cdmx); color: #fff; }
+    .dashboard-actions a.salir { border-color: #999; color: #555; }
+    .flash { max-width: 1200px; margin: 12px auto -20px; padding: 0 20px; }
+    .flash p { margin: 0; padding: 10px 12px; border-radius: 4px; background: #e8f3ea; color: #245b36; border-left: 4px solid #2f6b4f; font-size: .86rem; }
+    .flash p.error { background: #fdecef; color: #8a0018; border-left-color: #b00020; }
+    .company-info .cuenta { font-size: .82rem; color: #777; margin-top: 10px; }
+    .empty-products { padding: 16px; text-align: center; color: #777; font-size: .88rem; background: var(--gris-claro); border-radius: 6px; }
+    .product-details small { display: block; margin-top: 3px; color: #777; font-size: .78rem; }
+    @media (max-width: 640px) { .dashboard-actions { justify-content: flex-start; } }
+  </style>
+</head>
+<body>
+  <div class="content-wrapper">
+    <header class="dashboard-header">
+      <h1>PANEL DE CONTROL</h1>
+      <p>Gestión Interna de tu Tienda Local</p>
+    </header>
+
+    <div class="dashboard-actions">
+      <a href="{{ url_for('directorio.ficha', slug=comercio.slug) }}" target="_blank" rel="noopener">Ver mi ficha pública</a>
+      <a href="{{ url_for('panel.editar') }}">Editar información</a>
+      <a href="{{ url_for('panel.ficha_imprimible') }}" target="_blank" rel="noopener">Descargar / Imprimir QR</a>
+      <a class="salir" href="{{ url_for('auth.logout') }}">Cerrar sesión</a>
+    </div>
+
+    {% with messages = get_flashed_messages(with_categories=true) %}
+      {% if messages %}
+      <div class="flash" role="status">
+        {% for categoria, mensaje in messages %}
+        <p class="{{ 'error' if categoria == 'error' else '' }}">{{ mensaje }}</p>
+        {% endfor %}
+      </div>
+      {% endif %}
+    {% endwith %}
+
+    <main class="container">
+      <section class="card company-info">
+        <h2>Mi Empresa</h2>
+        <p><strong>Nombre:</strong> {{ comercio.nombre }}</p>
+        <p><strong>Giro:</strong> {{ comercio.giro_label }}</p>
+        <p><strong>Ubicación:</strong> {{ comercio.colonia }}, {{ comercio.alcaldia }}</p>
+        <p><strong>Estatus:</strong> Tienda Activa 🟢</p>
+        <p><strong>Contacto:</strong> {{ comercio.telefono }}{% if comercio.email %} · {{ comercio.email }}{% endif %}</p>
+        <p class="cuenta">Cuenta: {{ cuenta.email if cuenta else comercio.email }}</p>
+      </section>
+
+      <section class="card">
+        <h2>Agregar Producto</h2>
+        <form id="product-form" method="post" action="{{ url_for('panel.agregar_producto') }}">
+          <input type="hidden" name="_csrf_token" value="{{ csrf_token() }}">
+          <div class="form-group">
+            <label for="prod-name">Nombre del Producto:</label>
+            <input type="text" id="prod-name" name="nombre" required maxlength="140" placeholder="Ej. Camiseta Artesanal">
+          </div>
+          <div class="form-group">
+            <label for="prod-price">Precio ($ MXN):</label>
+            <input type="number" id="prod-price" name="precio" required placeholder="0.00" min="0" step="0.01">
+          </div>
+          <div class="form-group">
+            <label for="prod-desc">Descripción Breve:</label>
+            <textarea id="prod-desc" name="descripcion" rows="2" maxlength="240" placeholder="Detalles del artículo..."></textarea>
+          </div>
+          <button type="submit" class="btn-add">Subir a la Tienda</button>
+        </form>
+        <p class="cuenta" style="margin:10px 0 0;font-size:.76rem;color:#777;">Lo que subas aparece también en tu ficha pública.</p>
+      </section>
+
+      <section class="card">
+        <h2>Tu Tienda en Vivo</h2>
+        <div class="products-grid" id="products-container">
+          {% for producto in productos %}
+          <div class="product-item">
+            <div class="product-placeholder-img">📦</div>
+            <div class="product-details">
+              <h4>{{ producto.nombre }}</h4>
+              <p>{{ producto.precio or 'A consultar' }}</p>
+              {% if producto.descripcion %}<small>{{ producto.descripcion }}</small>{% endif %}
+            </div>
+          </div>
+          {% else %}
+          <div class="empty-products">Aún no has subido productos. Usa el formulario para agregar el primero.</div>
+          {% endfor %}
+        </div>
+      </section>
+    </main>
+  </div>
+
+  <footer class="main-footer">
+    <p>Plataforma Chilanga © 2026 - Conectando el comercio local</p>
+  </footer>
+</body>
+</html>

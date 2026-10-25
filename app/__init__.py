@@ -44,6 +44,7 @@ def create_app(config_object="config.Config") -> Flask:
     from . import models  # noqa: F401  (registra los modelos)
 
     from .routes.admin import admin_bp
+    from .routes.auth import auth_bp
     from .routes.chat import chat_bp
     from .routes.directorio import directorio_bp
     from .routes.geocoding import geocoding_bp
@@ -54,6 +55,7 @@ def create_app(config_object="config.Config") -> Flask:
     from .routes.registro import registro_bp
 
     app.register_blueprint(main_bp)
+    app.register_blueprint(auth_bp)
     app.register_blueprint(registro_bp)
     app.register_blueprint(directorio_bp)
     app.register_blueprint(panel_bp)
@@ -190,9 +192,10 @@ def create_app(config_object="config.Config") -> Flask:
     with app.app_context():
         db.create_all()
         if app.config.get("SEED_DATA", True):
-            from .data.seed import seed_if_empty, seed_noticias
+            from .data.seed import seed_cuentas, seed_if_empty, seed_noticias
 
             seed_if_empty()
             seed_noticias()
+            seed_cuentas()
 
     return app

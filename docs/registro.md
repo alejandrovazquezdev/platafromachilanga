@@ -107,3 +107,15 @@ proveedores externos definen comisiones y contratos; Chilangatón no retiene ven
 
 La tabla `solicitudes_digitalizacion` guarda los leads del formulario. Se pueden
 ver en el panel de operación (`/admin/`), junto con noticias y dispositivos push.
+
+
+## Cuenta, login y dashboard
+
+- El paso 4 pide **correo electrónico y contraseña** (mínimo 8 caracteres).
+- Se crea una fila en `cuentas` ligada al `Comercio`; la contraseña se guarda con
+  `generate_password_hash`.
+- Login: `/iniciar-sesion`. Dashboard: `/panel`.
+- El diseño de login y dashboard proviene de `IS.html`/`dashboard.html` del equipo;
+  se conservaron sus hojas `IS.css` y `dashboard.css` y solo se conectaron a Flask.
+- El formulario del dashboard crea `Producto` y los muestra en la tienda y en la ficha.
+- Cuenta demo: `donamari@chilangaton.mx` / `Chilangaton2026`.

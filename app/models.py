@@ -6,6 +6,8 @@ import unicodedata
 from datetime import datetime
 from zoneinfo import ZoneInfo
 
+from werkzeug.security import check_password_hash, generate_password_hash
+
 from . import db
 from .constants import (
     CATEGORIAS_NOTICIA,
@@ -292,3 +294,29 @@ class SolicitudDigitalizacion(db.Model):
 
     def __repr__(self) -> str:
         return f"<SolicitudDigitalizacion {self.nombre}>"
+
+
+class Cuenta(db.Model):
+    """Credenciales de acceso del comercio (correo + contraseña)."""
+
+    __tablename__ = "cuentas"
+
+    id = db.Column(db.Integer, primary_key=True)
+    comercio_id = db.Column(
+        db.Integer, db.ForeignKey("comercios.id"), unique=True, nullable=False
+    )
+    email = db.Column(db.String(140), unique=True, nullable=False, index=True)
+    password_hash = db.Column(db.String(255), nullable=False)
+    activa = db.Column(db.Boolean, default=True, nullable=False)
+    creada_en = db.Column(db.DateTime, default=lambda: datetime.now(CDMX_TZ).replace(tzinfo=None))
+
+    comercio = db.relationship("Comercio", backref=db.backref("cuenta", uselist=False))
+
+    def set_password(self, password: str) -> None:
+        self.password_hash = generate_password_hash(password)
+
+    def check_password(self, password: str) -> bool:
+        return bool(self.password_hash) and check_password_hash(self.password_hash, password)
+
+    def __repr__(self) -> str:
+        return f"<Cuenta {self.email}>"

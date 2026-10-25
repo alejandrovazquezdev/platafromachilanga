@@ -16,7 +16,7 @@ from flask import (
 
 from .. import db
 from ..constants import ALCALDIAS, ALCALDIA_COORDS, COMO_SE_ENTERO, DIAS, GIROS, INTERES_POS, METODOS, TIPOS
-from ..models import Comercio, Producto, nuevo_folio, nuevo_slug
+from ..models import Comercio, Cuenta, Producto, nuevo_folio, nuevo_slug
 
 registro_bp = Blueprint("registro", __name__)
 
@@ -235,9 +235,12 @@ def _validar_paso4(form, draft: dict) -> dict:
     draft["contacto_nombre"] = _texto(form, "contacto_nombre", 140)
     draft["telefono"] = _texto(form, "telefono", 24)
     draft["whatsapp"] = _texto(form, "whatsapp", 24)
-    draft["email"] = _texto(form, "email", 140)
+    draft["email"] = _texto(form, "email", 140).lower()
+    draft["password"] = form.get("password") or ""
+    draft["password_confirm"] = form.get("password_confirm") or ""
     draft["como_se_entero"] = _texto(form, "como_se_entero", 80)
     draft["consent"] = form.get("consent") == "on"
+    edit_id = session.get(EDIT_KEY)
 
     if len(draft["contacto_nombre"]) < 3:
         errores["contacto_nombre"] = "Escribe el nombre de la persona de contacto."
@@ -245,8 +248,21 @@ def _validar_paso4(form, draft: dict) -> dict:
         errores["telefono"] = "Escribe un teléfono de 10 dígitos."
     if draft["whatsapp"] and not _telefono_valido(draft["whatsapp"]):
         errores["whatsapp"] = "Revisa el número de WhatsApp."
-    if draft["email"] and not RE_EMAIL.match(draft["email"]):
-        errores["email"] = "Revisa el correo electrónico."
+    if not RE_EMAIL.match(draft["email"]):
+        errores["email"] = "Escribe un correo válido; será tu usuario para entrar."
+    else:
+        existente = Cuenta.query.filter(Cuenta.email == draft["email"])
+        if edit_id:
+            existente = existente.filter(Cuenta.comercio_id != edit_id)
+        if existente.first():
+            errores["email"] = "Ese correo ya tiene una cuenta. Usa otro o inicia sesión."
+
+    if not edit_id or draft["password"] or draft["password_confirm"]:
+        if len(draft["password"]) < 8:
+            errores["password"] = "La contraseña debe tener al menos 8 caracteres."
+        if draft["password"] != draft["password_confirm"]:
+            errores["password_confirm"] = "Las contraseñas no coinciden."
+
     if draft["como_se_entero"] and draft["como_se_entero"] not in COMO_SE_ENTERO:
         draft["como_se_entero"] = ""
     if not draft["consent"]:
@@ -399,6 +415,16 @@ def _crear_comercio(draft: dict) -> Comercio:
         db.session.flush()
         for producto in draft.get("productos") or []:
             db.session.add(Producto(comercio_id=comercio.id, **producto))
+
+        cuenta = Cuenta.query.filter_by(comercio_id=comercio.id).first()
+        if cuenta is None and draft.get("password"):
+            cuenta = Cuenta(comercio_id=comercio.id, email=draft["email"])
+            db.session.add(cuenta)
+        if cuenta is not None:
+            cuenta.email = draft["email"]
+            if draft.get("password"):
+                cuenta.set_password(draft["password"])
+
         db.session.commit()
         session.pop(EDIT_KEY, None)
         return comercio
@@ -434,6 +460,9 @@ def _crear_comercio(draft: dict) -> Comercio:
     )
     db.session.add(comercio)
     db.session.flush()
+    cuenta = Cuenta(comercio_id=comercio.id, email=draft["email"])
+    cuenta.set_password(draft["password"])
+    db.session.add(cuenta)
     for producto in draft.get("productos") or []:
         db.session.add(Producto(comercio_id=comercio.id, **producto))
     db.session.commit()

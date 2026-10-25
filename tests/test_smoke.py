@@ -5,8 +5,62 @@ from .conftest import csrf, paso1_data, paso2_data, paso3_data, paso4_data
 
 
 def test_paginas_publicas(client):
-    for ruta in ("/", "/como-funciona", "/aviso-de-privacidad", "/directorio", "/panel"):
+    for ruta in ("/", "/como-funciona", "/aviso-de-privacidad", "/directorio"):
         assert client.get(ruta).status_code == 200, ruta
+    respuesta = client.get("/panel")
+    assert respuesta.status_code == 302
+    assert "/iniciar-sesion" in respuesta.headers["Location"]
+
+
+def _login_demo(client):
+    html = client.get("/iniciar-sesion").get_data(as_text=True)
+    import re
+
+    token = re.search(r'name="_csrf_token" value="([^"]+)"', html).group(1)
+    return client.post(
+        "/iniciar-sesion",
+        data={"_csrf_token": token, "usuario": "donamari@chilangaton.mx", "contra": "Chilangaton2026"},
+        follow_redirects=False,
+    )
+
+
+def test_login_demo_y_dashboard(client, app):
+    respuesta = _login_demo(client)
+    assert respuesta.status_code == 302
+    assert "/panel" in respuesta.headers["Location"]
+    panel = client.get("/panel")
+    assert panel.status_code == 200
+    assert "PANEL DE CONTROL" in panel.get_data(as_text=True)
+    assert "Abarrotes Doña Mari" in panel.get_data(as_text=True)
+
+
+def test_agregar_producto_dashboard(client, app):
+    _login_demo(client)
+    html = client.get("/panel").get_data(as_text=True)
+    import re
+
+    token = re.search(r'name="_csrf_token" value="([^"]+)"', html).group(1)
+    respuesta = client.post(
+        "/panel/productos",
+        data={"_csrf_token": token, "nombre": "Producto Nuevo", "precio": "123.50", "descripcion": "Prueba"},
+    )
+    assert respuesta.status_code == 302
+    panel = client.get("/panel")
+    assert "Producto Nuevo" in panel.get_data(as_text=True)
+    assert "$123.50" in panel.get_data(as_text=True)
+
+
+def test_login_invalido(client):
+    import re
+
+    html = client.get("/iniciar-sesion").get_data(as_text=True)
+    token = re.search(r'name="_csrf_token" value="([^"]+)"', html).group(1)
+    respuesta = client.post(
+        "/iniciar-sesion",
+        data={"_csrf_token": token, "usuario": "nadie@example.com", "contra": "mal"},
+    )
+    assert respuesta.status_code == 200
+    assert "incorrectos" in respuesta.get_data(as_text=True)
 
 
 def test_salud(client):
@@ -63,6 +117,9 @@ def test_flujo_registro_completo(client, app):
 
     with app.app_context():
         assert Comercio.query.filter_by(nombre="Tamales de Prueba").count() == 1
+        from app.models import Cuenta
+
+        assert Cuenta.query.filter_by(email="prueba@example.com").count() == 1
 
 
 def test_directorio_filtra(client):
@@ -73,8 +130,12 @@ def test_directorio_filtra(client):
 
 
 def test_editar_comercio(client, app):
+    _login_demo(client)
     with app.app_context():
-        comercio = Comercio.query.first()
+        from app.models import Cuenta
+
+        cuenta = Cuenta.query.filter_by(email="donamari@chilangaton.mx").first()
+        comercio = cuenta.comercio
         comercio_id = comercio.id
         folio = comercio.folio
 

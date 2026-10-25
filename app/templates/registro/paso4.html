@@ -74,7 +74,17 @@
 
   <div class="campos-grid">
     {{ campo('whatsapp', 'WhatsApp (opcional)', draft.get('whatsapp', ''), tipo='tel', inputmode='tel', ayuda='Si lo dejas vacío, usamos el teléfono.', error=errores.get('whatsapp'), maxlength=24, autocomplete='tel', placeholder='55 1234 5678') }}
-    {{ campo('email', 'Correo electrónico (opcional)', draft.get('email', ''), tipo='email', ayuda='Para avisos de la plataforma. No se publica.', error=errores.get('email'), maxlength=140, autocomplete='email', placeholder='tu@correo.com') }}
+    {{ campo('email', 'Correo electrónico', draft.get('email', ''), tipo='email', requerido=True, ayuda='Será tu usuario para iniciar sesión. No se publica.', error=errores.get('email'), maxlength=140, autocomplete='email', placeholder='tu@correo.com') }}
+  </div>
+
+  <div class="campos-grid">
+    {{ campo('password', 'Contraseña', '', tipo='password', requerido=not session.get('editando_id'), ayuda='Al menos 8 caracteres. La usarás para entrar a Mi Negocio.' if not session.get('editando_id') else 'Déjala vacía para conservar la contraseña actual.', error=errores.get('password'), maxlength=128, autocomplete='new-password') }}
+    {{ campo('password_confirm', 'Confirmar contraseña', '', tipo='password', requerido=not session.get('editando_id'), ayuda='Escríbela de nuevo.', error=errores.get('password_confirm'), maxlength=128, autocomplete='new-password') }}
+  </div>
+
+  <div class="nota-caja nota-caja--suave">
+    {{ icono('lock', 'icono', 20) }}
+    <p><strong>Tu cuenta:</strong> el correo y la contraseña sirven para entrar a “Mi Negocio”. No se muestran en tu ficha pública.</p>
   </div>
 
   {{ select_campo('como_se_entero', '¿Cómo te enteraste de la plataforma?', COMO_SE_ENTERO, draft.get('como_se_entero', ''), ayuda='Opcional. Nos ayuda a mejorar la difusión.') }}
