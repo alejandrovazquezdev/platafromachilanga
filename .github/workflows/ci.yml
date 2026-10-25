@@ -68,9 +68,9 @@ jobs:
       - name: Reiniciar servicio
         run: |
           set -e
-          sudo -n /bin/systemctl restart platafromachilanga.service
+          sudo -n /usr/bin/systemctl restart platafromachilanga.service
           sleep 4
-          sudo -n /bin/systemctl is-active platafromachilanga.service
+          sudo -n /usr/bin/systemctl is-active platafromachilanga.service
 
       - name: Health check
         run: |
