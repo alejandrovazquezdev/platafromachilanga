@@ -92,6 +92,7 @@ al comercio. El login usa el diseño original de `IS.html` y el dashboard usa el
   ficha pública.
 - La contraseña se guarda con hash de Werkzeug; nunca en texto plano.
 - Cuenta demo para probar: `donamari@chilangaton.mx` / `Chilangaton2026`.
+  Es solo para el hackathon; cámbiale la contraseña o elimínala antes de un uso real.
 
 ## Módulos nuevos
 
