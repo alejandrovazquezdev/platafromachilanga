@@ -56,8 +56,7 @@ def login():
 
 @auth_bp.route("/salir")
 def logout():
-    session.pop("comercio_id", None)
-    session.pop("cuenta_id", None)
+    session.clear()
     flash("Cerraste sesión.", "ok")
     return redirect(url_for("auth.login"))
 
