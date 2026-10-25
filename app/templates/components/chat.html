@@ -1,0 +1,38 @@
+{% from 'components/iconos.html' import icono %}
+<div class="chat-widget" data-chat>
+  <button class="chat-toggle" type="button" data-chat-toggle aria-expanded="false" aria-controls="chat-panel">
+    {{ icono('chat', 'chat-toggle__abrir', 24) }}
+    {{ icono('x', 'chat-toggle__cerrar', 24) }}
+    <span class="sr-only">Abrir asistente</span>
+  </button>
+
+  <section class="chat-panel" id="chat-panel" data-chat-panel aria-label="Asistente Chilanga" hidden>
+    <header class="chat-panel__cabecera">
+      <span class="chat-panel__avatar">{{ icono('chat', 'icono', 20) }}</span>
+      <div>
+        <strong>Chilanga</strong>
+        <small>Asistente del barrio</small>
+      </div>
+      <button class="chat-panel__cerrar" type="button" data-chat-cerrar aria-label="Cerrar asistente">{{ icono('x', 'icono', 18) }}</button>
+    </header>
+
+    <div class="chat-mensajes" data-chat-mensajes aria-live="polite">
+      <div class="chat-burbuja chat-burbuja--bot">
+        Hola. Puedo ayudarte con el registro, tus datos, el punto de venta o las noticias. ¿Qué necesitas?
+      </div>
+    </div>
+
+    <div class="chat-sugerencias" data-chat-sugerencias>
+      <button type="button" data-chat-sugerencia="¿Cómo registro mi comercio?">Registrar mi comercio</button>
+      <button type="button" data-chat-sugerencia="¿Necesito RFC?">¿Necesito RFC?</button>
+      <button type="button" data-chat-sugerencia="¿Qué es el punto de venta?">Punto de venta</button>
+    </div>
+
+    <form class="chat-form" data-chat-form>
+      <label class="sr-only" for="chat-input">Escribe tu pregunta</label>
+      <input id="chat-input" name="mensaje" type="text" maxlength="800" placeholder="Escribe tu pregunta…" autocomplete="off" required>
+      <button type="submit" aria-label="Enviar pregunta">{{ icono('arrow-right', 'icono', 18) }}</button>
+    </form>
+    <p class="chat-aviso">Respuestas informativas. No sustituyen asesoría legal o fiscal.</p>
+  </section>
+</div>

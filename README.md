@@ -26,8 +26,13 @@ explorar un directorio y conocer su panel de visibilidad.
 | `/directorio` | Directorio con filtros y mapa |
 | `/comercio/<slug>` | Ficha pública |
 | `/panel` | Panel del comercio |
+| `/noticias` | Noticias útiles: regulación, apoyos, trámites |
+| `/marco-legal` | Lo legal en simple, con fuentes oficiales |
+| `/preguntas-frecuentes` | FAQ completa |
+| `/digitaliza` | Punto de venta, inventario y diagnóstico |
 | `/aviso-de-privacidad` | Aviso de privacidad |
 | `/salud` | Health check |
+| `/admin/login` | Panel secreto de operación (noticias y notificaciones) |
 
 ## Desarrollo local
 
@@ -61,7 +66,34 @@ DATABASE_URL=sqlite:///instance/chilangaton.db
 python -m pytest -q
 ```
 
-Cubren páginas públicas, salud, CSRF, flujo completo de registro y edición.
+Cubren páginas públicas, salud, CSRF, flujo completo de registro, edición, noticias,
+búsqueda difusa, digitalización, suscripciones push y acceso al panel de operación.
+
+## Módulos nuevos
+
+- **Noticias**: 6 contenidos hardcodeados en `app/data/seed.py`; el admin puede crear
+  más y se guardan en SQLite.
+- **Marco legal**: resumen informativo con enlaces a CDMX, SEDECO, SAT, LFPDPPP,
+  COFEPRIS y PROFECO. No es asesoría legal.
+- **Digitaliza**: módulo de punto de venta, inventario y diagnóstico. Se inspira en
+  la operación de caja/inventario de MERP (`main`), **sin pasarela de pagos**; es un
+  beneficio del registro y captura solicitudes de diagnóstico.
+- **Chatbot “Chilanga”**: asistente con OpenAI (`gpt-5.6-luna`) que responde dudas
+  de la web. La API key vive solo en `.env` del servidor.
+- **Notificaciones Web Push**: prompt móvil, service worker, VAPID y envío desde el
+  panel de operación.
+- **Panel secreto**: `/admin/login` (no enlazado en la web). Contraseña en
+  `ADMIN_PASSWORD` dentro de `.env`; sin ella, el panel responde 404.
+
+## Búsqueda y mapa
+
+- Búsqueda difusa en directorio y noticias: ignora acentos, mayúsculas y tolera
+  errores leves (`app/search.py`).
+- Mapa con Leaflet + Esri Light Gray, geocodificación gratuita con Nominatim
+  (`/api/geocodificar`) y “Centrar en mi ubicación” con la geolocalización del
+  navegador.
+- Los datos de demostración están hardcodeados; el registro y las altas del admin
+  persisten en SQLite.
 
 ## Diseño
 

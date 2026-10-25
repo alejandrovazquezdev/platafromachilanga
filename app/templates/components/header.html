@@ -1,8 +1,8 @@
 {% from 'components/iconos.html' import icono %}
 <div class="franja">
   <div class="contenedor franja__inner">
-    <span><strong>Chilangatón 2026</strong> · Reto 1</span>
-    <span class="franja__der">Comercio popular y barrial · Prototipo</span>
+    <span><strong>Chilangatón</strong> · Comercio popular</span>
+    <span class="franja__der">Ciudad de México</span>
   </div>
 </div>
 <header class="site-header" data-header>
@@ -38,8 +38,9 @@
     </button>
 
     <nav class="nav" id="menu-principal" aria-label="Navegación principal">
-      <a class="nav__link{% if request.endpoint == 'main.como_funciona' %} is-active{% endif %}" href="{{ url_for('main.como_funciona') }}">Cómo funciona</a>
+      <a class="nav__link{% if request.endpoint and request.endpoint.startswith('noticias.') %} is-active{% endif %}" href="{{ url_for('noticias.lista') }}">Noticias</a>
       <a class="nav__link{% if request.endpoint and request.endpoint.startswith('directorio.') %} is-active{% endif %}" href="{{ url_for('directorio.lista') }}">Directorio</a>
+      <a class="nav__link{% if request.endpoint == 'main.digitaliza' %} is-active{% endif %}" href="{{ url_for('main.digitaliza') }}">Digitaliza</a>
       <a class="nav__link{% if request.endpoint and request.endpoint.startswith('panel.') %} is-active{% endif %}" href="{{ url_for('panel.inicio') }}">Mi negocio</a>
       <a class="btn btn--primario btn--sm nav__cta" href="{{ url_for('registro.paso1') }}">
         Registrar mi comercio

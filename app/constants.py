@@ -119,3 +119,23 @@ ALCALDIA_COORDS = {
     "Venustiano Carranza": (19.423, -99.100),
     "Xochimilco": (19.257, -99.104),
 }
+
+CATEGORIAS_NOTICIA = {
+    "regulacion": {"label": "Regulación", "icono": "shield", "clase": "regulacion"},
+    "apoyos": {"label": "Apoyos", "icono": "heart", "clase": "apoyos"},
+    "tramites": {"label": "Trámites", "icono": "file", "clase": "tramites"},
+    "digitalizacion": {"label": "Digitalización", "icono": "card", "clase": "digitalizacion"},
+    "seguridad": {"label": "Seguridad", "icono": "alert", "clase": "seguridad"},
+    "avisos": {"label": "Avisos", "icono": "bell", "clase": "avisos"},
+}
+
+MESES = [
+    "enero", "febrero", "marzo", "abril", "mayo", "junio",
+    "julio", "agosto", "septiembre", "octubre", "noviembre", "diciembre",
+]
+
+
+def categoria_noticia_label(value):
+    return CATEGORIAS_NOTICIA.get(value, {}).get("label", "Aviso")
+
+CATEGORIAS_NOTICIA_LABELS = {clave: datos["label"] for clave, datos in CATEGORIAS_NOTICIA.items()}

@@ -8,6 +8,7 @@ from sqlalchemy import or_
 from .. import db
 from ..constants import ALCALDIAS, GIROS, TIPOS
 from ..models import Comercio
+from ..search import filtrar
 
 directorio_bp = Blueprint("directorio", __name__)
 
@@ -18,6 +19,7 @@ def _filtros():
         "alcaldia": (request.args.get("alcaldia") or "").strip(),
         "giro": (request.args.get("giro") or "").strip(),
         "tipo": (request.args.get("tipo") or "").strip(),
+        "abierto": request.args.get("abierto") == "1",
     }
 
 
@@ -26,16 +28,6 @@ def lista():
     filtros = _filtros()
     query = Comercio.query.filter_by(estado="publicado")
 
-    if filtros["q"]:
-        like = f"%{filtros['q']}%"
-        query = query.filter(
-            or_(
-                Comercio.nombre.ilike(like),
-                Comercio.colonia.ilike(like),
-                Comercio.descripcion.ilike(like),
-                Comercio.alcaldia.ilike(like),
-            )
-        )
     if filtros["alcaldia"] in ALCALDIAS:
         query = query.filter_by(alcaldia=filtros["alcaldia"])
     if filtros["giro"] in GIROS:
@@ -44,6 +36,22 @@ def lista():
         query = query.filter_by(tipo=filtros["tipo"])
 
     comercios = query.order_by(Comercio.visitas.desc(), Comercio.nombre.asc()).all()
+    if filtros["abierto"]:
+        comercios = [c for c in comercios if c.abierto_ahora]
+    if filtros["q"]:
+        comercios = filtrar(
+            comercios,
+            filtros["q"],
+            lambda c: [
+                c.nombre,
+                c.colonia,
+                c.alcaldia,
+                c.giro_label,
+                c.tipo_label,
+                c.descripcion,
+                " ".join(p.nombre for p in c.productos),
+            ],
+        )
     mapa = [c.to_public_dict() for c in comercios]
     return render_template(
         "directorio/lista.html",

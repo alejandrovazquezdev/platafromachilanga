@@ -1,0 +1,109 @@
+{% extends 'admin/base_admin.html' %}
+{% from 'components/iconos.html' import icono %}
+
+{% block titulo %}Resumen · Operación Chilangatón{% endblock %}
+
+{% block contenido %}
+<div class="admin-cabecera">
+  <div>
+    <p class="eyebrow"><span class="eyebrow__linea" aria-hidden="true"></span> Operación</p>
+    <h1>Resumen del día</h1>
+    <p>Lo que está pasando en la plataforma y lo que necesita tu atención.</p>
+  </div>
+  <div class="admin-cabecera__acciones">
+    <a class="btn btn--primario" href="{{ url_for('admin.noticia_form') }}">
+      {{ icono('plus', 'btn__icono', 18) }}
+      Nueva noticia
+    </a>
+    <a class="btn btn--secundario" href="{{ url_for('admin.notificar') }}">Enviar aviso</a>
+  </div>
+</div>
+
+{% if not push_ok %}
+<div class="alerta alerta--admin">
+  {{ icono('alert', 'icono', 20) }}
+  <p>Web Push no está configurado. Revisa las llaves VAPID en <code>.env</code> antes de enviar notificaciones.</p>
+</div>
+{% endif %}
+
+<div class="admin-stats">
+  <article class="admin-stat"><span>{{ icono('file', 'icono', 20) }}</span><strong>{{ stats.noticias }}</strong><small>Noticias totales</small></article>
+  <article class="admin-stat"><span>{{ icono('check', 'icono', 20) }}</span><strong>{{ stats.publicadas }}</strong><small>Publicadas</small></article>
+  <article class="admin-stat"><span>{{ icono('bell', 'icono', 20) }}</span><strong>{{ stats.suscripciones }}</strong><small>Dispositivos suscritos</small></article>
+  <article class="admin-stat"><span>{{ icono('store', 'icono', 20) }}</span><strong>{{ stats.comercios }}</strong><small>Comercios registrados</small></article>
+  <article class="admin-stat"><span>{{ icono('card', 'icono', 20) }}</span><strong>{{ stats.solicitudes }}</strong><small>Solicitudes de digitalización</small></article>
+</div>
+
+<div class="admin-grid">
+  <section class="admin-card admin-card--ancho">
+    <div class="admin-card__cabecera">
+      <h2>Últimas noticias</h2>
+      <a href="{{ url_for('admin.noticias') }}">Ver todas</a>
+    </div>
+    {% if ultimas %}
+    <div class="tabla-envoltura">
+      <table class="tabla">
+        <thead><tr><th>Título</th><th>Categoría</th><th>Estado</th><th>Fecha</th><th></th></tr></thead>
+        <tbody>
+          {% for noticia in ultimas %}
+          <tr>
+            <td><strong>{{ noticia.titulo }}</strong></td>
+            <td>{{ noticia.categoria_label }}</td>
+            <td><span class="admin-pill {% if noticia.publicada %}admin-pill--ok{% endif %}">{{ 'Publicada' if noticia.publicada else 'Borrador' }}</span></td>
+            <td>{{ noticia.fecha_larga }}</td>
+            <td><a href="{{ url_for('admin.noticia_form', noticia_id=noticia.id) }}">Editar</a></td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+    {% else %}
+    <p class="admin-vacio">Todavía no hay noticias. Crea la primera.</p>
+    {% endif %}
+  </section>
+
+  <aside class="admin-card">
+    <div class="admin-card__cabecera"><h2>Acciones rápidas</h2></div>
+    <div class="admin-acciones">
+      <a href="{{ url_for('admin.noticia_form') }}">{{ icono('plus', 'icono', 18) }} Crear noticia</a>
+      <a href="{{ url_for('admin.notificar') }}">{{ icono('megaphone', 'icono', 18) }} Enviar aviso</a>
+      <a href="{{ url_for('admin.suscripciones') }}">{{ icono('bell', 'icono', 18) }} Ver dispositivos</a>
+      <a href="{{ url_for('main.digitaliza') }}" target="_blank" rel="noopener">{{ icono('external', 'icono', 18) }} Módulo de digitalización</a>
+    </div>
+  </aside>
+</div>
+
+<div class="admin-grid">
+  <section class="admin-card">
+    <div class="admin-card__cabecera"><h2>Últimos envíos</h2><a href="{{ url_for('admin.notificar') }}">Historial</a></div>
+    {% if logs %}
+    <ul class="admin-lista">
+      {% for log in logs %}
+      <li>
+        <div><strong>{{ log.titulo }}</strong><small>{{ log.enviada_en.strftime('%d/%m/%Y %H:%M') if log.enviada_en else '' }}</small></div>
+        <span class="admin-pill">{{ log.exitos }}/{{ log.total }} entregados</span>
+      </li>
+      {% endfor %}
+    </ul>
+    {% else %}
+    <p class="admin-vacio">Aún no se han enviado notificaciones.</p>
+    {% endif %}
+  </section>
+
+  <section class="admin-card">
+    <div class="admin-card__cabecera"><h2>Solicitudes de digitalización</h2></div>
+    {% if solicitudes %}
+    <ul class="admin-lista">
+      {% for s in solicitudes %}
+      <li>
+        <div><strong>{{ s.nombre }}{% if s.comercio %} · {{ s.comercio }}{% endif %}</strong><small>{{ s.telefono }} · {{ s.alcaldia or 'Sin alcaldía' }}</small></div>
+        <span class="admin-pill">{{ s.interes }}</span>
+      </li>
+      {% endfor %}
+    </ul>
+    {% else %}
+    <p class="admin-vacio">Sin solicitudes por ahora.</p>
+    {% endif %}
+  </section>
+</div>
+{% endblock %}

@@ -22,6 +22,8 @@
         <li><a href="{{ url_for('directorio.lista') }}">Directorio</a></li>
         <li><a href="{{ url_for('panel.inicio') }}">Mi negocio</a></li>
         <li><a href="{{ url_for('main.como_funciona') }}">Cómo funciona</a></li>
+        <li><a href="{{ url_for('main.digitaliza') }}">Digitaliza tu negocio</a></li>
+        <li><a href="{{ url_for('noticias.lista') }}">Noticias</a></li>
       </ul>
     </div>
 
@@ -31,7 +33,8 @@
         <li><a href="{{ url_for('main.como_funciona') }}#requisitos">¿Qué necesito?</a></li>
         <li><a href="{{ url_for('main.como_funciona') }}#privacidad">Privacidad y datos</a></li>
         <li><a href="{{ url_for('main.aviso_privacidad') }}">Aviso de privacidad</a></li>
-        <li><a href="{{ url_for('main.como_funciona') }}#preguntas">Preguntas frecuentes</a></li>
+        <li><a href="{{ url_for('main.preguntas_frecuentes') }}">Preguntas frecuentes</a></li>
+        <li><a href="{{ url_for('main.marco_legal') }}">Marco legal</a></li>
       </ul>
     </div>
 
@@ -50,7 +53,7 @@
   </div>
 
   <div class="contenedor footer__bottom">
-    <p>© {{ anio_actual }} Chilangatón · Reto 1. Prototipo para el hackathon.</p>
+    <p>© {{ anio_actual }} Chilangatón. Prototipo para el hackathon.</p>
     <p class="footer__aviso">
       No es un sitio oficial del Gobierno de la Ciudad de México. Los datos de los
       comercios del directorio son de demostración.

@@ -106,6 +106,11 @@
           </a>
         </div>
         {% if productos %}
+        <div class="panel-chips">
+          {% for producto in productos %}
+          <span>{{ producto.nombre }}{% if producto.precio %} · {{ producto.precio }}{% endif %}</span>
+          {% endfor %}
+        </div>
         <div class="tabla-envoltura">
           <table class="tabla">
             <thead><tr><th>Producto</th><th>Categoría</th><th>Precio</th></tr></thead>
@@ -158,7 +163,11 @@
         {% else %}
         <div class="qr-caja qr-caja--vacia">{{ icono('qr', 'icono', 42) }}</div>
         {% endif %}
-        <p class="panel-bloque__nota">Comparte este enlace o imprime el QR para tu local.</p>
+        <p class="panel-bloque__nota">Comparte este enlace o imprime la ficha con QR para tu local.</p>
+        <a class="btn btn--secundario btn--bloque btn--sm" href="{{ url_for('panel.ficha_imprimible') }}" target="_blank" rel="noopener">
+          {{ icono('qr', 'btn__icono', 16) }}
+          Descargar / Imprimir ficha
+        </a>
         <div class="copiar copiar--compacto">
           <input type="text" readonly value="{{ url_for('directorio.ficha', slug=comercio.slug, _external=True) }}" aria-label="Enlace de tu ficha">
           <button class="btn btn--secundario btn--sm" type="button" data-copiar-texto="{{ url_for('directorio.ficha', slug=comercio.slug, _external=True) }}">

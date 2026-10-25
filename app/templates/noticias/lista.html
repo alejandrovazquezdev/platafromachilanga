@@ -1,0 +1,76 @@
+{% extends 'base.html' %}
+{% from 'components/iconos.html' import icono %}
+{% from 'components/tarjeta_noticia.html' import tarjeta_noticia %}
+
+{% block titulo %}Noticias para tu comercio · Chilangatón{% endblock %}
+{% block descripcion %}Regulaciones, apoyos, trámites y consejos prácticos para mercados, tianguis y tiendas de barrio.{% endblock %}
+
+{% block contenido %}
+<section class="noticias-hero">
+  <div class="contenedor">
+    <p class="eyebrow"><span class="eyebrow__linea" aria-hidden="true"></span> Noticias útiles</p>
+    <div class="noticias-hero__fila">
+      <div>
+        <h1>Lo que cambia,<br><span class="texto-guinda">lo que te conviene saber.</span></h1>
+        <p>Regulaciones, apoyos, trámites y consejos para que tu comercio no se quede atrás.</p>
+      </div>
+      <div class="noticias-hero__contador">
+        <strong>{{ total }}</strong>
+        <span>{{ 'noticia' if total == 1 else 'noticias' }}</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="contenedor noticias">
+  <div class="noticias__barra">
+    <div class="chips" aria-label="Filtrar por categoría">
+      <a class="chip{% if not categoria %} is-activo{% endif %}" href="{{ url_for('noticias.lista', q=q) }}">Todas</a>
+      {% for clave, datos in CATEGORIAS_NOTICIA.items() %}
+      <a class="chip{% if categoria == clave %} is-activo{% endif %}" href="{{ url_for('noticias.lista', categoria=clave, q=q) }}">{{ datos.label }}</a>
+      {% endfor %}
+    </div>
+    <form class="noticias__busqueda" method="get" action="{{ url_for('noticias.lista') }}">
+      {% if categoria %}<input type="hidden" name="categoria" value="{{ categoria }}">{% endif %}
+      <label class="sr-only" for="noticias-q">Buscar noticia</label>
+      <span class="filtros__lupa">{{ icono('search', 'icono', 18) }}</span>
+      <input id="noticias-q" type="search" name="q" value="{{ q }}" placeholder="Buscar por tema…">
+      <button class="btn btn--secundario btn--sm" type="submit">Buscar</button>
+    </form>
+  </div>
+
+  <div class="aviso-noticias">
+    {{ icono('info', 'icono', 18) }}
+    <p>
+      Contenido informativo de ejemplo para el prototipo. Antes de tomar una decisión,
+      confirma requisitos, fechas y montos en la fuente oficial o en tu alcaldía.
+    </p>
+  </div>
+
+  {% if noticias %}
+  <div class="noticias-grid">
+    {% for noticia in noticias %}
+      {{ tarjeta_noticia(noticia) }}
+    {% endfor %}
+  </div>
+  {% else %}
+  <div class="vacio">
+    {{ icono('search', 'icono', 32) }}
+    <h2>No hay noticias con esos filtros</h2>
+    <p>Prueba con otra categoría o palabra. También puedes revisar las preguntas frecuentes.</p>
+    <a class="btn btn--primario" href="{{ url_for('main.preguntas_frecuentes') }}">Ver preguntas frecuentes</a>
+  </div>
+  {% endif %}
+
+  <div class="noticias__cta">
+    <div>
+      <h2>¿Quieres que te avisemos?</h2>
+      <p>Activa las notificaciones en tu celular y recibe las noticias importantes de tu comercio.</p>
+    </div>
+    <button class="btn btn--primario" type="button" data-activar-avisos>
+      {{ icono('bell', 'btn__icono', 18) }}
+      Activar avisos
+    </button>
+  </div>
+</section>
+{% endblock %}

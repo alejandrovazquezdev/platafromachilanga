@@ -1,6 +1,7 @@
 {% extends 'base.html' %}
 {% from 'components/iconos.html' import icono %}
 {% from 'components/tarjeta_comercio.html' import tarjeta_comercio %}
+{% from 'components/tarjeta_noticia.html' import tarjeta_noticia %}
 
 {% block titulo %}Chilangatón · Tu comercio, en el mapa de la ciudad{% endblock %}
 {% block descripcion %}Registra tu mercado, tianguis o tienda de barrio: hazlo visible, publica tus productos y da el paso a la digitalización. Gratis y sin RFC obligatorio.{% endblock %}
@@ -9,7 +10,7 @@
 <section class="hero">
   <div class="contenedor hero__grid">
     <div class="hero__texto">
-      <p class="eyebrow"><span class="eyebrow__linea" aria-hidden="true"></span> Reto 1 · Comercio popular y barrial</p>
+      <p class="eyebrow"><span class="eyebrow__linea" aria-hidden="true"></span> Comercio popular y barrial</p>
       <h1 class="hero__titulo">Tu comercio, <span class="texto-guinda">en el mapa</span> de la ciudad.</h1>
       <p class="hero__bajada">
         Mercados, tianguis y tiendas de barrio: registra tu negocio, hazlo visible y
@@ -63,15 +64,8 @@
             <span>{{ icono('eye', 'icono', 15) }} 218 visitas</span>
           </div>
         </article>
+        <p class="hero__ejemplo">Así se ve tu ficha pública</p>
 
-        <div class="flotante flotante--pos">
-          {{ icono('card', 'icono', 20) }}
-          <span><strong>Punto de venta</strong><small>Listo para cobrar con tarjeta</small></span>
-        </div>
-        <div class="flotante flotante--barrio">
-          {{ icono('heart', 'icono', 20) }}
-          <span><strong>+128</strong><small>vecinos vieron tu ficha</small></span>
-        </div>
       </div>
     </div>
   </div>
@@ -184,6 +178,28 @@
   </div>
 </section>
 
+<section class="seccion seccion--papel" id="noticias">
+  <div class="contenedor">
+    <div class="seccion__cabecera seccion__cabecera--fila">
+      <div>
+        <p class="eyebrow"><span class="eyebrow__linea" aria-hidden="true"></span> Noticias para tu comercio</p>
+        <h2>Lo que conviene saber</h2>
+        <p>Regulaciones, apoyos y consejos prácticos, explicados sin vueltas.</p>
+      </div>
+      <a class="btn btn--secundario" href="{{ url_for('noticias.lista') }}">
+        Ver todas
+        {{ icono('arrow-right', 'btn__icono', 18) }}
+      </a>
+    </div>
+    <div class="noticias-grid">
+      {% for noticia in noticias_destacadas %}
+        {{ tarjeta_noticia(noticia) }}
+      {% endfor %}
+    </div>
+    <p class="noticias__nota">{{ icono('info', 'icono', 14) }} Contenido informativo de ejemplo; confirma siempre en la fuente oficial.</p>
+  </div>
+</section>
+
 <section class="seccion" id="preguntas">
   <div class="contenedor faq">
     <div class="faq__intro">
@@ -193,8 +209,8 @@
         Sabemos que la visibilidad y los datos preocupan. Estas son las respuestas
         cortas; el detalle está en el aviso de privacidad.
       </p>
-      <a class="enlace-flecha" href="{{ url_for('main.aviso_privacidad') }}">
-        Leer el aviso de privacidad
+      <a class="enlace-flecha" href="{{ url_for('main.preguntas_frecuentes') }}">
+        Ver todas las preguntas
         {{ icono('arrow-right', 'icono', 16) }}
       </a>
     </div>

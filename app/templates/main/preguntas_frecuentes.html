@@ -1,0 +1,58 @@
+{% extends 'base.html' %}
+{% from 'components/iconos.html' import icono %}
+
+{% block titulo %}Preguntas frecuentes · Chilangatón{% endblock %}
+{% block descripcion %}Respuestas sobre el registro de comercios, datos personales, punto de venta y notificaciones.{% endblock %}
+
+{% block contenido %}
+<section class="hero hero--interior hero--compacto">
+  <div class="contenedor hero__interior">
+    <p class="eyebrow"><span class="eyebrow__linea" aria-hidden="true"></span> Ayuda</p>
+    <h1>Preguntas frecuentes</h1>
+    <p class="hero__bajada">Lo que más nos preguntan los comercios antes de registrarse.</p>
+  </div>
+</section>
+
+<section class="seccion">
+  <div class="contenedor faq faq--pagina">
+    <div class="faq__intro">
+      <h2>Antes de empezar</h2>
+      <p>
+        Si no encuentras tu duda, el asistente de la esquina puede ayudarte. También
+        puedes revisar el marco legal en simple.
+      </p>
+      <a class="btn btn--secundario btn--sm" href="{{ url_for('main.marco_legal') }}">
+        {{ icono('shield', 'btn__icono', 16) }}
+        Ver marco legal
+      </a>
+      <div class="faq__ayuda">
+        {{ icono('bell', 'icono', 18) }}
+        <p>¿Quieres recibir avisos de nuevas noticias? Actívalos desde tu celular.</p>
+        <button class="btn btn--primario btn--sm" type="button" data-activar-avisos>Activar avisos</button>
+      </div>
+    </div>
+    <div class="faq__lista">
+      {% for pregunta, respuesta in faqs %}
+      <details class="faq__item">
+        <summary><span>{{ pregunta }}</span>{{ icono('chevron-down', 'faq__chevron', 20) }}</summary>
+        <p>{{ respuesta }}</p>
+      </details>
+      {% endfor %}
+    </div>
+  </div>
+</section>
+
+<section class="cta">
+  <div class="contenedor cta__inner">
+    <div>
+      <p class="eyebrow eyebrow--claro"><span class="eyebrow__linea" aria-hidden="true"></span> Sin costo</p>
+      <h2>¿Listo para que te encuentren?</h2>
+      <p>El registro toma unos 5 minutos y no necesitas RFC.</p>
+    </div>
+    <a class="btn btn--blanco btn--lg" href="{{ url_for('registro.paso1') }}">
+      Registrar mi comercio
+      {{ icono('arrow-right', 'btn__icono', 20) }}
+    </a>
+  </div>
+</section>
+{% endblock %}

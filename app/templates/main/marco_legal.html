@@ -1,0 +1,149 @@
+{% extends 'base.html' %}
+{% from 'components/iconos.html' import icono %}
+
+{% block titulo %}Marco legal del registro · Chilangatón{% endblock %}
+{% block descripcion %}Qué implica registrar un comercio en la CDMX: aviso de funcionamiento, tianguis, RFC, alimentos, datos personales y punto de venta.{% endblock %}
+
+{% block contenido %}
+<section class="hero hero--interior hero--compacto">
+  <div class="contenedor hero__interior">
+    <p class="eyebrow"><span class="eyebrow__linea" aria-hidden="true"></span> Información útil</p>
+    <h1>Lo legal,<br><span class="texto-guinda">en simple.</span></h1>
+    <p class="hero__bajada">
+      Qué implica registrar tu comercio, qué trámites pueden aplicar y qué no te
+      pedimos en esta plataforma. Sin letras chiquitas.
+    </p>
+    <p class="meta-linea">Última revisión: 25 de octubre de 2026.</p>
+  </div>
+</section>
+
+<section class="seccion">
+  <div class="contenedor prosa prosa--amplia">
+    <div class="prosa__aviso">
+      {{ icono('info', 'icono', 20) }}
+      <p>
+        Este es un resumen informativo para un prototipo de hackathon. <strong>No es
+        asesoría legal ni fiscal</strong> y no sustituye la revisión de la ley, la
+        alcaldía o un especialista.
+      </p>
+    </div>
+
+    <h2>1. Registrarte aquí no te registra ante el gobierno</h2>
+    <p>
+      Chilangatón es una plataforma independiente. Cuando completas el formulario,
+      creas una ficha pública para que las personas encuentren tu comercio; no
+      tramitas tu licencia de funcionamiento, no te das de alta en el SAT y no
+      sustituyes ningún trámite oficial.
+    </p>
+
+    <h2>2. Aviso o licencia de funcionamiento</h2>
+    <p>
+      La <strong>Ley de Establecimientos Mercantiles de la Ciudad de México</strong>
+      regula la operación de locales y establecimientos. Según el giro, el tamaño
+      del local y el impacto que genera, puede aplicarte un <strong>aviso de
+      funcionamiento</strong>, una licencia o una autorización específica.
+    </p>
+    <p>
+      También pueden aplicar reglas de <strong>uso de suelo</strong>, protección
+      civil, anuncios y horarios. El trámite se presenta ante la alcaldía
+      correspondiente; si tu local está en un mercado público, la administración
+      del mercado puede orientarte primero.
+    </p>
+    <ul>
+      <li>Pregunta en la ventanilla de tu alcaldía si tu actividad requiere aviso, licencia o ambos.</li>
+      <li>Revisa el uso de suelo del inmueble antes de firmar una renta.</li>
+      <li>Guarda copia de cada trámite y de sus comprobantes de pago.</li>
+    </ul>
+
+    <h2>3. Tianguis y mercados públicos</h2>
+    <p>
+      Los tianguis y mercados tienen reglas propias que combinan la coordinación
+      de la alcaldía, la administración del mercado o de la plancha y, en algunos
+      casos, programas de SEDECO. La ubicación, el número de puesto y los días de
+      operación suelen estar regulados.
+    </p>
+    <p>
+      Si tu comercio está en un tianguis, pregunta a la coordinación cuáles son
+      los requisitos de empadronamiento y las cuotas de operación. En esta
+      plataforma solo publicamos la referencia que tú nos compartes.
+    </p>
+
+    <h2>4. RFC y obligaciones fiscales</h2>
+    <p>
+      <strong>El RFC no es obligatorio para registrarte en Chilangatón.</strong>
+      Eso no significa que no tengas obligaciones fiscales: si realizas una
+      actividad comercial, puedes estar sujeto a obligaciones ante el SAT según tu
+      régimen y tus ingresos.
+    </p>
+    <p>
+      La plataforma no calcula impuestos, no emite facturas y no reporta tus
+      ventas al SAT. Si tienes dudas sobre tu situación fiscal, acude al SAT o a
+      una persona especialista.
+    </p>
+
+    <h2>5. Alimentos, salud y manejo de residuos</h2>
+    <p>
+      Si vendes alimentos preparados, bebidas o productos perecederos, pueden
+      aplicar requisitos sanitarios de la autoridad local y de COFEPRIS, además de
+      reglas de manejo de residuos y limpieza del espacio público.
+    </p>
+    <p>
+      Mantén separados los residuos, revisa la cadena de frío de lo que vendes y
+      pregunta en tu alcaldía por las condiciones sanitarias de tu giro.
+    </p>
+
+    <h2>6. Datos personales</h2>
+    <p>
+      La <strong>Ley Federal de Protección de Datos Personales en Posesión de los
+      Particulares (LFPDPPP)</strong> protege los datos que nos compartes. En esta
+      plataforma recabamos datos del comercio, ubicación, oferta y contacto para
+      publicar tu ficha y operar el servicio.
+    </p>
+    <ul>
+      <li>El RFC y el correo son opcionales; el correo no se publica.</li>
+      <li>Puedes pedir acceso, rectificación, cancelación u oposición a tus datos.</li>
+      <li>Puedes solicitar que tu ficha deje de aparecer en el directorio.</li>
+      <li>No vendemos tus datos ni los usamos para publicidad de terceros.</li>
+    </ul>
+    <p>
+      El detalle está en el <a href="{{ url_for('main.aviso_privacidad') }}">aviso de privacidad</a>.
+    </p>
+
+    <h2>7. Punto de venta y cobros</h2>
+    <p>
+      Una terminal o punto de venta es un servicio de un proveedor financiero o
+      tecnológico. Antes de contratar, revisa la comisión por transacción, la
+      renta, el plazo de depósito, las penalizaciones y las condiciones de
+      cancelación.
+    </p>
+    <p>
+      Chilangatón no cobra por el registro ni retiene tus ventas. Si te conectamos
+      con un proveedor, la relación contractual será entre tú y ese proveedor.
+      Puedes acudir a PROFECO si tienes un problema de consumo.
+    </p>
+
+    <h2>8. Qué no hacemos</h2>
+    <ul>
+      <li>No sustituimos trámites de la alcaldía, SEDECO, SAT, COFEPRIS o PROFECO.</li>
+      <li>No damos asesoría legal, fiscal o financiera personalizada.</li>
+      <li>No garantizamos que un trámite sea aprobado ni que un apoyo se otorgue.</li>
+      <li>No publicamos tu RFC, tu correo ni el nombre de la persona de contacto.</li>
+    </ul>
+
+    <h2>9. Fuentes para revisar</h2>
+    <div class="fuentes">
+      <a href="https://www.cdmx.gob.mx/" target="_blank" rel="noopener noreferrer">Gobierno de la Ciudad de México {{ icono('external', 'icono', 14) }}</a>
+      <a href="https://www.sedeco.cdmx.gob.mx/" target="_blank" rel="noopener noreferrer">SEDECO CDMX {{ icono('external', 'icono', 14) }}</a>
+      <a href="https://www.sat.gob.mx/" target="_blank" rel="noopener noreferrer">SAT {{ icono('external', 'icono', 14) }}</a>
+      <a href="https://www.diputados.gob.mx/LeyesBiblio/pdf/LFPDPPP.pdf" target="_blank" rel="noopener noreferrer">LFPDPPP (PDF) {{ icono('external', 'icono', 14) }}</a>
+      <a href="https://www.gob.mx/cofepris" target="_blank" rel="noopener noreferrer">COFEPRIS {{ icono('external', 'icono', 14) }}</a>
+      <a href="https://www.gob.mx/profeco" target="_blank" rel="noopener noreferrer">PROFECO {{ icono('external', 'icono', 14) }}</a>
+    </div>
+
+    <div class="prosa__acciones">
+      <a class="btn btn--primario" href="{{ url_for('registro.paso1') }}">Registrar mi comercio</a>
+      <a class="btn btn--secundario" href="{{ url_for('main.preguntas_frecuentes') }}">Preguntas frecuentes</a>
+    </div>
+  </div>
+</section>
+{% endblock %}

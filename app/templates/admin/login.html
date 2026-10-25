@@ -1,0 +1,33 @@
+<!doctype html>
+<html lang="es-MX">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Acceso · Chilangatón</title>
+  <meta name="robots" content="noindex, nofollow">
+  <link rel="icon" type="image/png" href="{{ url_for('static', filename='img/favicon.png') }}">
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/estilos.css') }}">
+</head>
+<body class="admin-login-body">
+  <main class="admin-login">
+    <div class="admin-login__marca">
+      <img src="{{ url_for('static', filename='img/logo-gobierno-500.png') }}" alt="Gobierno de la Ciudad de México" width="500" height="152">
+      <span>Chilangatón · Operación</span>
+    </div>
+    <form class="admin-login__caja" method="post">
+      <input type="hidden" name="_csrf_token" value="{{ csrf_token() }}">
+      <input type="hidden" name="next" value="{{ next }}">
+      <p class="eyebrow"><span class="eyebrow__linea" aria-hidden="true"></span> Acceso restringido</p>
+      <h1>Panel de operación</h1>
+      <p>Este espacio es para el equipo que publica noticias y envía avisos.</p>
+      {% if error %}<div class="alerta" role="alert">{{ error }}</div>{% endif %}
+      <div class="campo">
+        <label class="campo__label" for="admin-password">Contraseña</label>
+        <input class="campo__control" id="admin-password" name="password" type="password" required autofocus autocomplete="current-password">
+      </div>
+      <button class="btn btn--primario btn--bloque" type="submit">Entrar</button>
+    </form>
+    <a class="admin-login__volver" href="{{ url_for('main.inicio') }}">Volver al sitio</a>
+  </main>
+</body>
+</html>

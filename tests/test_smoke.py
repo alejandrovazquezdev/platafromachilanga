@@ -102,3 +102,91 @@ def test_editar_comercio(client, app):
         editado = db.session.get(Comercio, comercio_id)
         assert editado.nombre == "Nombre Editado"
         assert editado.folio == folio
+
+
+def test_paginas_nuevas(client):
+    for ruta in (
+        "/noticias/",
+        "/marco-legal",
+        "/preguntas-frecuentes",
+        "/digitaliza",
+        "/manifest.webmanifest",
+        "/sw.js",
+    ):
+        assert client.get(ruta).status_code == 200, ruta
+
+
+def test_noticia_detalle(client, app):
+    from app.models import Noticia
+
+    with app.app_context():
+        noticia = Noticia.query.filter_by(publicada=True).first()
+        slug = noticia.slug
+        titulo = noticia.titulo
+    respuesta = client.get(f"/noticias/{slug}")
+    assert respuesta.status_code == 200
+    assert titulo in respuesta.get_data(as_text=True)
+
+
+def test_busqueda_difusa(client):
+    respuesta = client.get("/directorio?q=coyacan")
+    assert respuesta.status_code == 200
+    assert "Abarrotes Doña Mari" in respuesta.get_data(as_text=True)
+
+
+def test_digitaliza_solicitud(client, app):
+    from app.models import SolicitudDigitalizacion
+
+    token = csrf(client, "/digitaliza")
+    respuesta = client.post(
+        "/digitaliza",
+        data={
+            "_csrf_token": token,
+            "nombre": "Prueba Digitaliza",
+            "comercio": "Fonda de prueba",
+            "telefono": "5512345678",
+            "alcaldia": "Tlalpan",
+            "interes": "terminal",
+            "consent": "on",
+        },
+    )
+    assert respuesta.status_code == 302
+    with app.app_context():
+        assert SolicitudDigitalizacion.query.count() == 1
+
+
+def test_admin_requiere_login(client, app):
+    app.config["ADMIN_PASSWORD"] = "clave-de-prueba"
+    respuesta = client.get("/admin/")
+    assert respuesta.status_code == 302
+    assert "/admin/login" in respuesta.headers["Location"]
+
+
+def test_admin_login(client, app):
+    app.config["ADMIN_PASSWORD"] = "clave-de-prueba"
+    html = client.get("/admin/login").get_data(as_text=True)
+    import re
+
+    token = re.search(r'name="_csrf_token" value="([^"]+)"', html).group(1)
+    respuesta = client.post(
+        "/admin/login",
+        data={"_csrf_token": token, "password": "clave-de-prueba"},
+        follow_redirects=False,
+    )
+    assert respuesta.status_code == 302
+    assert client.get("/admin/").status_code == 200
+    assert client.get("/admin/noticias").status_code == 200
+
+
+def test_suscripcion_push(client):
+    html = client.get("/").get_data(as_text=True)
+    import re
+
+    token = re.search(r'name="csrf-token" content="([^"]+)"', html).group(1)
+    respuesta = client.post(
+        "/api/notificaciones/suscribir",
+        json={"endpoint": "https://example.com/push/test", "keys": {"p256dh": "clave", "auth": "auth"}},
+        headers={"X-CSRF-Token": token},
+    )
+    assert respuesta.status_code == 200
+    assert respuesta.get_json()["ok"] is True

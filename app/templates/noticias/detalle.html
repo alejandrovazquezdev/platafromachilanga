@@ -1,0 +1,108 @@
+{% extends 'base.html' %}
+{% from 'components/iconos.html' import icono %}
+{% from 'components/tarjeta_noticia.html' import tarjeta_noticia %}
+
+{% block titulo %}{{ noticia.titulo }} · Chilangatón{% endblock %}
+{% block descripcion %}{{ noticia.resumen }}{% endblock %}
+
+{% block contenido %}
+<div class="contenedor migas">
+  <a href="{{ url_for('noticias.lista') }}">Noticias</a>
+  <span aria-hidden="true">/</span>
+  <span>{{ noticia.categoria_label }}</span>
+</div>
+
+<article class="noticia">
+  <div class="contenedor noticia__grid">
+    <div class="noticia__principal">
+      <div class="noticia__cabecera">
+        <span class="noticia-badge noticia-badge--{{ noticia.categoria_clase }}">
+          {{ icono(noticia.categoria_icono, 'icono', 15) }}
+          {{ noticia.categoria_label }}
+        </span>
+        <time datetime="{{ noticia.creada_en.isoformat() if noticia.creada_en else '' }}">{{ noticia.fecha_larga }}</time>
+      </div>
+      <h1>{{ noticia.titulo }}</h1>
+      <p class="noticia__resumen">{{ noticia.resumen }}</p>
+
+      <div class="noticia__cuerpo">
+        {% for parrafo in noticia.parrafos %}
+        <p>{{ parrafo }}</p>
+        {% endfor %}
+      </div>
+
+      {% if noticia.fuente_nombre %}
+      <div class="noticia__fuente">
+        <div>
+          <span>Fuente</span>
+          <strong>{{ noticia.fuente_nombre }}</strong>
+        </div>
+        {% if noticia.fuente_url %}
+        <a class="btn btn--secundario btn--sm" href="{{ noticia.fuente_url }}" target="_blank" rel="noopener noreferrer">
+          Ir a la fuente
+          {{ icono('external', 'btn__icono', 16) }}
+        </a>
+        {% endif %}
+      </div>
+      {% endif %}
+
+      <div class="noticia__acciones">
+        <button class="btn btn--fantasma btn--sm" type="button" data-copiar-texto="{{ url_for('noticias.detalle', slug=noticia.slug, _external=True) }}">
+          {{ icono('share', 'btn__icono', 16) }}
+          Compartir noticia
+        </button>
+        <a class="enlace-flecha" href="{{ url_for('noticias.lista') }}">Volver a noticias</a>
+      </div>
+
+      <p class="noticia__nota">
+        {{ icono('info', 'icono', 15) }}
+        Contenido informativo de ejemplo. Verifica siempre la fuente oficial antes de tomar una decisión.
+      </p>
+    </div>
+
+    <aside class="noticia__lateral">
+      <div class="tarjeta-lateral tarjeta-lateral--aviso">
+        <span class="tarjeta-lateral__icono">{{ icono('bell', 'icono', 22) }}</span>
+        <h2>Recibe estos avisos</h2>
+        <p>Activa las notificaciones y te avisamos cuando haya algo importante para tu comercio.</p>
+        <button class="btn btn--primario btn--bloque btn--sm" type="button" data-activar-avisos>
+          Activar avisos
+        </button>
+      </div>
+
+      <div class="tarjeta-lateral tarjeta-lateral--compacta">
+        <p class="tarjeta-lateral__eyebrow">¿Tienes dudas?</p>
+        <h3>Preguntas frecuentes</h3>
+        <p>Resolvemos lo básico sobre el registro, tus datos y el punto de venta.</p>
+        <a class="enlace-flecha" href="{{ url_for('main.preguntas_frecuentes') }}">Ver preguntas {{ icono('arrow-right', 'icono', 16) }}</a>
+      </div>
+
+      <div class="tarjeta-lateral tarjeta-lateral--compacta">
+        <p class="tarjeta-lateral__eyebrow">Marco legal</p>
+        <h3>Lo legal, en simple</h3>
+        <p>Qué implica registrarte, qué trámites existen y qué no te pedimos.</p>
+        <a class="enlace-flecha" href="{{ url_for('main.marco_legal') }}">Leer la guía {{ icono('arrow-right', 'icono', 16) }}</a>
+      </div>
+    </aside>
+  </div>
+</article>
+
+{% if relacionadas %}
+<section class="seccion seccion--papel">
+  <div class="contenedor">
+    <div class="seccion__cabecera seccion__cabecera--fila">
+      <div>
+        <p class="eyebrow"><span class="eyebrow__linea" aria-hidden="true"></span> Sigue leyendo</p>
+        <h2>Otras noticias de {{ noticia.categoria_label|lower }}</h2>
+      </div>
+      <a class="btn btn--secundario" href="{{ url_for('noticias.lista', categoria=noticia.categoria) }}">Ver categoría</a>
+    </div>
+    <div class="noticias-grid">
+      {% for item in relacionadas %}
+        {{ tarjeta_noticia(item) }}
+      {% endfor %}
+    </div>
+  </div>
+</section>
+{% endif %}
+{% endblock %}

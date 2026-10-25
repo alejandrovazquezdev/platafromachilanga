@@ -149,6 +149,19 @@ def _validar_paso2(form, draft: dict) -> dict:
     draft["referencias"] = _texto(form, "referencias", 300)
     draft["dias_tianguis"] = _texto(form, "dias_tianguis", 140)
     draft["numero_puesto"] = _texto(form, "numero_puesto", 40)
+    draft["ubicacion_label"] = _texto(form, "ubicacion_label", 300)
+    try:
+        lat = float(form.get("lat", ""))
+        lng = float(form.get("lng", ""))
+        if 14.0 <= lat <= 20.0 and -100.5 <= lng <= -98.0:
+            draft["lat"] = lat
+            draft["lng"] = lng
+        else:
+            draft.pop("lat", None)
+            draft.pop("lng", None)
+    except (TypeError, ValueError):
+        draft.pop("lat", None)
+        draft.pop("lng", None)
 
     if draft["alcaldia"] not in ALCALDIAS:
         errores["alcaldia"] = "Elige tu alcaldía."
@@ -348,6 +361,8 @@ def paso4():
 
 def _crear_comercio(draft: dict) -> Comercio:
     lat, lng = ALCALDIA_COORDS.get(draft.get("alcaldia"), (19.4326, -99.1332))
+    if draft.get("lat") is not None and draft.get("lng") is not None:
+        lat, lng = float(draft["lat"]), float(draft["lng"])
     telefono = draft.get("telefono", "")
     edit_id = session.get(EDIT_KEY)
     if edit_id:

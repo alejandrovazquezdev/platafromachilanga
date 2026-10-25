@@ -1,0 +1,68 @@
+<!doctype html>
+<html lang="es-MX">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Ficha de {{ comercio.nombre }} · Chilangatón</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/estilos.css') }}">
+</head>
+<body>
+  <div class="ficha-print">
+    <div class="ficha-print__acciones">
+      <button class="btn btn--primario btn--sm" type="button" onclick="window.print()">Imprimir o guardar PDF</button>
+      <a class="btn btn--secundario btn--sm" href="{{ url_for('panel.inicio') }}">Volver al panel</a>
+    </div>
+
+    <header class="ficha-print__cabecera">
+      <img src="{{ url_for('static', filename='img/logo-gobierno-500.png') }}" alt="Gobierno de la Ciudad de México">
+      <div>
+        <strong>Chilangatón</strong><br>
+        <small>Comercio popular · Ciudad de México</small>
+      </div>
+    </header>
+
+    <div class="ficha-print__cuerpo">
+      <div>
+        <p class="eyebrow">{{ comercio.tipo_label }} · {{ comercio.giro_label }}</p>
+        <h1>{{ comercio.nombre }}</h1>
+        <p>{{ comercio.descripcion or 'Comercio de barrio registrado en Chilangatón.' }}</p>
+
+        <h2>Ubicación</h2>
+        <p>{{ comercio.calle }}<br>{{ comercio.colonia }}, {{ comercio.alcaldia }}</p>
+        {% if comercio.referencias %}<p>{{ comercio.referencias }}</p>{% endif %}
+
+        <h2>Contacto</h2>
+        <p>{{ comercio.telefono }}{% if comercio.whatsapp %} · WhatsApp {{ comercio.whatsapp }}{% endif %}</p>
+
+        <h2>Horario</h2>
+        <ul>
+          {% for clave, etiqueta in DIAS %}
+          {% set dia = (comercio.horario or {}).get(clave) or {} %}
+          <li>{{ etiqueta }}: {% if dia.get('abre') %}{{ dia.get('de') }}–{{ dia.get('a') }}{% else %}Cerrado{% endif %}</li>
+          {% endfor %}
+        </ul>
+
+        <h2>Productos</h2>
+        <ul>
+          {% for producto in comercio.productos %}
+          <li>{{ producto.nombre }}{% if producto.precio %} — {{ producto.precio }}{% endif %}{% if producto.unidad %} / {{ producto.unidad }}{% endif %}</li>
+          {% else %}
+          <li>Consulta la ficha en línea para ver la oferta actualizada.</li>
+          {% endfor %}
+        </ul>
+      </div>
+
+      <aside class="ficha-print__qr">
+        {% if qr_svg %}{{ qr_svg|safe }}{% endif %}
+        <small>Escanea para ver la ficha pública</small>
+        <p><strong>{{ comercio.folio }}</strong></p>
+      </aside>
+    </div>
+
+    <p class="ficha-print__pie">
+      Chilangatón es un prototipo independiente. No es un sitio oficial del Gobierno de la Ciudad de México.
+      Verifica la información en la ficha pública: {{ url_for('directorio.ficha', slug=comercio.slug, _external=True) }}
+    </p>
+  </div>
+</body>
+</html>

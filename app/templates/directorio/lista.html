@@ -31,7 +31,7 @@
     <div class="filtros__busqueda">
       <label class="sr-only" for="filtro-q">Buscar comercio</label>
       <span class="filtros__lupa">{{ icono('search', 'icono', 20) }}</span>
-      <input id="filtro-q" type="search" name="q" value="{{ filtros.q }}" placeholder="Busca por nombre, colonia o giro…">
+      <input id="filtro-q" type="search" name="q" value="{{ filtros.q }}" placeholder="Busca por nombre, colonia o producto…">
     </div>
     <div class="filtros__selects">
       <label class="sr-only" for="filtro-alcaldia">Alcaldía</label>
@@ -62,6 +62,18 @@
     </div>
   </form>
 
+  <div class="filtros-rapidos" aria-label="Filtros rápidos">
+    <span class="filtros-rapidos__etiqueta">Filtrar:</span>
+    <a class="chip{% if not filtros.tipo %} is-activo{% endif %}" href="{{ url_for('directorio.lista', q=filtros.q, alcaldia=filtros.alcaldia, giro=filtros.giro, abierto='1' if filtros.abierto else none) }}">Todos</a>
+    {% for clave, datos in TIPOS.items() %}
+    <a class="chip{% if filtros.tipo == clave %} is-activo{% endif %}" href="{{ url_for('directorio.lista', q=filtros.q, alcaldia=filtros.alcaldia, giro=filtros.giro, tipo=clave, abierto='1' if filtros.abierto else none) }}">{{ datos.label }}</a>
+    {% endfor %}
+    <a class="chip chip--abierto{% if filtros.abierto %} is-activo{% endif %}" href="{{ url_for('directorio.lista', q=filtros.q, alcaldia=filtros.alcaldia, giro=filtros.giro, tipo=filtros.tipo, abierto='' if filtros.abierto else '1') }}">
+      <span class="punto" aria-hidden="true"></span>
+      Abierto ahora
+    </a>
+  </div>
+
   <div class="directorio__layout">
     <aside class="directorio__mapa">
       <div class="mapa" id="mapa-directorio" data-mapa>
@@ -71,6 +83,13 @@
         </div>
       </div>
       <p class="mapa__leyenda">{{ icono('info', 'icono', 15) }} Ubicaciones aproximadas por alcaldía para esta demostración.</p>
+      <div class="mapa-acciones">
+        <button class="btn btn--secundario btn--sm" type="button" data-centrar-ubicacion>
+          {{ icono('map-pin', 'btn__icono', 16) }}
+          Centrar en mi ubicación
+        </button>
+        <span class="mapa-acciones__estado" data-ubicacion-estado></span>
+      </div>
       <div class="directorio__cta">
         <h2>¿Tu comercio no está aquí?</h2>
         <p>Registra tu mercado, tianguis o tienda y aparece en el mapa del barrio.</p>
@@ -85,7 +104,7 @@
       {% if comercios %}
       <div class="grid-cards grid-cards--directorio">
         {% for comercio in comercios %}
-          {{ tarjeta_comercio(comercio) }}
+          {{ tarjeta_comercio(comercio, mostrar_mapa=True) }}
         {% endfor %}
       </div>
       {% else %}

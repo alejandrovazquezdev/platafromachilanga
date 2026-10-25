@@ -43,6 +43,9 @@ def editar():
         "colonia": comercio.colonia,
         "calle": comercio.calle,
         "referencias": comercio.referencias,
+        "lat": comercio.lat,
+        "lng": comercio.lng,
+        "ubicacion_label": "",
         "horario": comercio.horario or {},
         "dias_tianguis": comercio.dias_tianguis,
         "numero_puesto": comercio.numero_puesto,
@@ -67,6 +70,23 @@ def editar():
     session["editando_id"] = comercio.id
     session["comercio_id"] = comercio.id
     return redirect(url_for("registro.paso1"))
+
+
+@panel_bp.route("/panel/ficha-imprimible")
+def ficha_imprimible():
+    comercio = None
+    comercio_id = session.get("comercio_id")
+    if comercio_id:
+        comercio = db.session.get(Comercio, comercio_id)
+    if comercio is None:
+        comercio = Comercio.query.order_by(Comercio.visitas.desc()).first()
+    if comercio is None:
+        return redirect(url_for("registro.paso1"))
+    return render_template(
+        "panel/ficha_imprimible.html",
+        comercio=comercio,
+        qr_svg=_qr_svg(comercio),
+    )
 
 
 @panel_bp.route("/panel")

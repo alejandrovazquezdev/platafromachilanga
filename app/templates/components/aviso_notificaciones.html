@@ -1,0 +1,12 @@
+{% from 'components/iconos.html' import icono %}
+<div class="aviso-push" data-aviso-push hidden>
+  <span class="aviso-push__icono">{{ icono('bell', 'icono', 22) }}</span>
+  <div class="aviso-push__texto">
+    <strong>¿Te avisamos de lo importante?</strong>
+    <p>Noticias, fechas y recordatorios para tu comercio. Puedes desactivarlos cuando quieras.</p>
+  </div>
+  <div class="aviso-push__acciones">
+    <button class="btn btn--primario btn--sm" type="button" data-activar-avisos>Activar avisos</button>
+    <button class="aviso-push__cerrar" type="button" data-cerrar-aviso aria-label="Ahora no">Ahora no</button>
+  </div>
+</div>

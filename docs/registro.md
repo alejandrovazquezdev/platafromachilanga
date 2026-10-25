@@ -93,3 +93,17 @@ Producto
 - La ubicación es aproximada por alcaldía; no hay geocodificación.
 - El QR y los enlaces usan el dominio de despliegue.
 - La base es SQLite para simplificar el hackathon; puede migrarse a PostgreSQL.
+
+## Módulo Digitaliza (beneficio del registro)
+
+Se inspira en la operación de **caja, ventas e inventario** del proyecto
+`~/dev/merp`, rama `main`: terminal, cierre de caja, productos y reportes. **No se
+implementa la pasarela de pagos ni el cobro en línea**; el objetivo es orientar y
+capturar una solicitud de diagnóstico, no procesar dinero.
+
+El módulo se presenta como un beneficio para quien ya registró su comercio:
+diagnóstico sin costo, propuesta de terminal/inventario y acompañamiento. Los
+proveedores externos definen comisiones y contratos; Chilangatón no retiene ventas.
+
+La tabla `solicitudes_digitalizacion` guarda los leads del formulario. Se pueden
+ver en el panel de operación (`/admin/`), junto con noticias y dispositivos push.

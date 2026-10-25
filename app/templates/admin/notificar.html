@@ -1,0 +1,66 @@
+{% extends 'admin/base_admin.html' %}
+{% from 'components/iconos.html' import icono %}
+
+{% block titulo %}Notificaciones · Operación Chilangatón{% endblock %}
+
+{% block contenido %}
+<div class="admin-cabecera">
+  <div>
+    <p class="eyebrow"><span class="eyebrow__linea" aria-hidden="true"></span> Avisos</p>
+    <h1>Notificaciones</h1>
+    <p>Envía un aviso corto a los dispositivos que activaron notificaciones.</p>
+  </div>
+  <span class="admin-pill">{{ suscripciones }} dispositivo(s) activo(s)</span>
+</div>
+
+{% if not push_ok %}
+<div class="alerta alerta--admin">
+  {{ icono('alert', 'icono', 20) }}
+  <p>Web Push no está configurado. Agrega <code>VAPID_PUBLIC_KEY</code>, la llave privada y <code>VAPID_SUBJECT</code> en <code>.env</code>, y reinicia el servicio.</p>
+</div>
+{% endif %}
+
+<div class="admin-grid">
+  <section class="admin-card">
+    <div class="admin-card__cabecera"><h2>Aviso rápido</h2></div>
+    <form class="formulario formulario--admin" method="post">
+      <input type="hidden" name="_csrf_token" value="{{ csrf_token() }}">
+      <div class="campo">
+        <label class="campo__label" for="aviso-titulo">Título</label>
+        <input class="campo__control" id="aviso-titulo" name="titulo" maxlength="200" required placeholder="Ej. Actualiza tu ficha esta semana">
+      </div>
+      <div class="campo">
+        <label class="campo__label" for="aviso-cuerpo">Mensaje</label>
+        <textarea class="campo__control campo__control--area" id="aviso-cuerpo" name="cuerpo" maxlength="400" required rows="4" placeholder="Un recordatorio breve para los comercios."></textarea>
+      </div>
+      <div class="campo">
+        <label class="campo__label" for="aviso-url">Enlace (opcional)</label>
+        <input class="campo__control" id="aviso-url" name="url" type="url" maxlength="300" placeholder="https://chilangaton.devs-quarkz.com/noticias">
+      </div>
+      <button class="btn btn--primario" type="submit" {% if not push_ok %}disabled{% endif %}>Enviar a todos</button>
+    </form>
+  </section>
+
+  <section class="admin-card">
+    <div class="admin-card__cabecera"><h2>Historial</h2></div>
+    {% if logs %}
+    <div class="tabla-envoltura">
+      <table class="tabla tabla--admin">
+        <thead><tr><th>Mensaje</th><th>Resultado</th><th>Fecha</th></tr></thead>
+        <tbody>
+          {% for log in logs %}
+          <tr>
+            <td><strong>{{ log.titulo }}</strong><br><small>{{ log.cuerpo }}</small></td>
+            <td>{{ log.exitos }}/{{ log.total }} <span class="admin-pill">fallos {{ log.fallos }}</span></td>
+            <td>{{ log.enviada_en.strftime('%d/%m/%Y %H:%M') if log.enviada_en else '' }}</td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+    {% else %}
+    <p class="admin-vacio">Aún no hay envíos.</p>
+    {% endif %}
+  </section>
+</div>
+{% endblock %}

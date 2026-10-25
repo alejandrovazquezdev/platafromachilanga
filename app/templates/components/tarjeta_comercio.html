@@ -1,5 +1,5 @@
 {% from 'components/iconos.html' import icono %}
-{% macro tarjeta_comercio(comercio) -%}
+{% macro tarjeta_comercio(comercio, mostrar_mapa=False) -%}
 <article class="tarjeta-comercio">
   <div class="tarjeta-comercio__cinta">
     <span class="badge badge--tipo">{{ comercio.tipo_label }}</span>
@@ -22,9 +22,17 @@
     <span class="tarjeta-comercio__pago">{{ comercio.metodos_pago_labels[0] }}{% if comercio.metodos_pago_labels|length > 1 %} +{{ comercio.metodos_pago_labels|length - 1 }}{% endif %}</span>
     {% endif %}
   </div>
-  <a class="tarjeta-comercio__enlace" href="{{ url_for('directorio.ficha', slug=comercio.slug) }}">
-    Ver ficha
-    {{ icono('arrow-right', 'icono', 16) }}
-  </a>
+  <div class="tarjeta-comercio__acciones">
+    <a class="tarjeta-comercio__enlace" href="{{ url_for('directorio.ficha', slug=comercio.slug) }}">
+      Ver ficha
+      {{ icono('arrow-right', 'icono', 16) }}
+    </a>
+    {% if mostrar_mapa %}
+    <button class="tarjeta-comercio__mapa" type="button" data-centrar-comercio="{{ comercio.slug }}" aria-label="Ver {{ comercio.nombre }} en el mapa">
+      {{ icono('map-pin', 'icono', 14) }}
+      Ver en mapa
+    </button>
+    {% endif %}
+  </div>
 </article>
 {%- endmacro %}

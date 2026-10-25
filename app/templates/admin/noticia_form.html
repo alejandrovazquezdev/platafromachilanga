@@ -1,0 +1,72 @@
+{% extends 'admin/base_admin.html' %}
+{% from 'components/iconos.html' import icono %}
+{% from 'components/campos.html' import campo, select_campo, textarea %}
+
+{% block titulo %}{{ 'Editar' if noticia else 'Nueva' }} noticia · Operación Chilangatón{% endblock %}
+
+{% block contenido %}
+<div class="admin-cabecera">
+  <div>
+    <p class="eyebrow"><span class="eyebrow__linea" aria-hidden="true"></span> Contenido</p>
+    <h1>{{ 'Editar noticia' if noticia else 'Nueva noticia' }}</h1>
+    <p>Se publica en <a href="{{ url_for('noticias.lista') }}" target="_blank" rel="noopener">/noticias</a>.</p>
+  </div>
+  <a class="btn btn--secundario" href="{{ url_for('admin.noticias') }}">{{ icono('arrow-left', 'btn__icono', 18) }} Volver</a>
+</div>
+
+<form class="formulario formulario--admin" method="post">
+  <input type="hidden" name="_csrf_token" value="{{ csrf_token() }}">
+
+  {% if errores and errores.get('general') %}
+  <div class="alerta" role="alert">{{ icono('alert', 'icono', 18) }}<p>{{ errores.get('general') }}</p></div>
+  {% endif %}
+  <div class="formulario__cabecera">
+    <h2>Contenido</h2>
+    <p>Los datos iniciales de noticias están hardcodeados en el seed; lo que crees aquí se guarda en SQLite.</p>
+  </div>
+
+  {{ campo('titulo', 'Título', valores.get('titulo', noticia.titulo if noticia else ''), requerido=True, maxlength=200, ) }}
+  {{ textarea('resumen', 'Resumen', valores.get('resumen', noticia.resumen if noticia else ''), requerido=True, maxlength=320, filas=2, ayuda='Una o dos frases que se ven en la tarjeta y en la notificación.') }}
+
+  <div class="campos-grid">
+    {{ select_campo('categoria', 'Categoría', CATEGORIAS_NOTICIA_LABELS, valores.get('categoria', noticia.categoria if noticia else 'avisos'), requerido=True) }}
+    <div class="campo">
+      <label class="campo__label" for="fuente_nombre">Fuente</label>
+      <input class="campo__control" id="fuente_nombre" name="fuente_nombre" value="{{ valores.get('fuente_nombre', noticia.fuente_nombre if noticia else '') }}" maxlength="120" placeholder="SEDECO CDMX">
+    </div>
+  </div>
+
+  {{ campo('fuente_url', 'Enlace de la fuente', valores.get('fuente_url', noticia.fuente_url if noticia else ''), tipo='url', maxlength=300, placeholder='https://…') }}
+  {{ textarea('cuerpo', 'Cuerpo de la noticia', valores.get('cuerpo', noticia.cuerpo if noticia else ''), requerido=True, filas=12, ayuda='Separa los párrafos con una línea en blanco.') }}
+
+  {% if valores %}
+    {% set marcada_publicada = valores.get('publicada') == 'on' %}
+    {% set marcada_destacada = valores.get('destacada') == 'on' %}
+  {% else %}
+    {% set marcada_publicada = noticia.publicada if noticia else True %}
+    {% set marcada_destacada = noticia.destacada if noticia else False %}
+  {% endif %}
+  <div class="admin-checks">
+    <label class="check">
+      <input type="checkbox" name="publicada" {% if marcada_publicada %}checked{% endif %}>
+      <span>Publicada en el sitio</span>
+    </label>
+    <label class="check">
+      <input type="checkbox" name="destacada" {% if marcada_destacada %}checked{% endif %}>
+      <span>Destacar en la portada</span>
+    </label>
+    <label class="check">
+      <input type="checkbox" name="notificar">
+      <span>Enviar notificación push ahora</span>
+    </label>
+  </div>
+  {% if not push_ok %}
+  <p class="campo__ayuda">Web Push no está configurado; el checkbox no enviará nada hasta que agregues las llaves VAPID.</p>
+  {% endif %}
+
+  <div class="formulario__acciones">
+    <a class="btn btn--fantasma" href="{{ url_for('admin.noticias') }}">Cancelar</a>
+    <button class="btn btn--primario" type="submit">{{ 'Guardar cambios' if noticia else 'Crear noticia' }}</button>
+  </div>
+</form>
+{% endblock %}

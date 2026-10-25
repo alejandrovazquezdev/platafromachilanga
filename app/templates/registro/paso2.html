@@ -3,6 +3,10 @@
 {% from 'components/iconos.html' import icono %}
 
 {% block titulo %}Paso 2 · Ubicación y horarios · Chilangatón{% endblock %}
+
+{% block head_extra %}
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
+{% endblock %}
 {% block titulo_lateral %}Que te puedan encontrar{% endblock %}
 {% block bajada_lateral %}Con tu alcaldía, colonia y horarios armamos la ubicación de tu ficha.{% endblock %}
 
@@ -65,14 +69,28 @@
     {% if errores.get('horario') %}<p class="campo__error" role="alert">{{ errores.get('horario') }}</p>{% endif %}
   </fieldset>
 
-  <div class="mapa-preview" aria-hidden="true">
-    <div class="mapa-preview__grilla"></div>
-    <div class="mapa-preview__pin">{{ icono('map-pin', 'icono', 22) }}</div>
-    <div class="mapa-preview__texto">
-      <strong>{{ draft.get('nombre', 'Tu comercio') }}</strong>
-      <span><span data-preview-colonia>{{ draft.get('colonia') or 'Tu colonia' }}</span>, <span data-preview-alcaldia>{{ draft.get('alcaldia') or 'tu alcaldía' }}</span></span>
+  <div class="geocodificar">
+    <div class="geocodificar__cabecera">
+      <div>
+        <h3>Ubica tu comercio en el mapa</h3>
+        <p>Opcional. Busca tu dirección o colonia y ajusta el pin. Si no lo haces, usamos el centro de tu alcaldía.</p>
+      </div>
+      <span class="geocodificar__fuente">OpenStreetMap</span>
     </div>
-    <span class="mapa-preview__sello">Vista previa</span>
+    <div class="geocodificar__fila">
+      <label class="sr-only" for="busqueda-ubicacion">Buscar dirección</label>
+      <input class="campo__control" id="busqueda-ubicacion" type="text" placeholder="Ej. Calle Juárez 32, Tlalpan Centro, Tlalpan" value="{{ draft.get('calle', '') }}{% if draft.get('colonia') %}, {{ draft.get('colonia') }}{% endif %}{% if draft.get('alcaldia') %}, {{ draft.get('alcaldia') }}{% endif %}">
+      <button class="btn btn--secundario" type="button" data-geocodificar>Ubicar</button>
+    </div>
+    <p class="geocodificar__estado" data-geocodificar-estado>
+      {% if draft.get('lat') %}Ubicación guardada. Puedes ajustar el pin en el mapa.{% else %}Aún no has ubicado tu comercio.{% endif %}
+    </p>
+    <div class="mapa mapa--registro" id="mapa-registro" data-mapa-registro data-lat="{{ draft.get('lat', '') }}" data-lng="{{ draft.get('lng', '') }}">
+      <div class="mapa__fallback">{{ icono('map-pin', 'icono', 24) }}<p>El mapa se cargará aquí.</p></div>
+    </div>
+    <input type="hidden" name="lat" value="{{ draft.get('lat', '') }}" data-lat-input>
+    <input type="hidden" name="lng" value="{{ draft.get('lng', '') }}" data-lng-input>
+    <input type="hidden" name="ubicacion_label" value="{{ draft.get('ubicacion_label', '') }}" data-ubicacion-label>
   </div>
 
   <div class="formulario__acciones">
@@ -86,4 +104,8 @@
     </button>
   </div>
 </form>
+{% endblock %}
+
+{% block scripts %}
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" defer></script>
 {% endblock %}

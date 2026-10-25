@@ -7,7 +7,20 @@ from datetime import datetime
 from zoneinfo import ZoneInfo
 
 from . import db
-from .constants import DIAS, GIROS, INTERES_POS, METODOS, TIPOS, giro_label, interes_label, metodo_label, tipo_label
+from .constants import (
+    CATEGORIAS_NOTICIA,
+    DIAS,
+    GIROS,
+    INTERES_POS,
+    MESES,
+    METODOS,
+    TIPOS,
+    categoria_noticia_label,
+    giro_label,
+    interes_label,
+    metodo_label,
+    tipo_label,
+)
 
 CDMX_TZ = ZoneInfo("America/Mexico_City")
 
@@ -139,6 +152,11 @@ class Comercio(db.Model):
             "colonia": self.colonia,
             "lat": self.coordenadas[0],
             "lng": self.coordenadas[1],
+            "descripcion": self.descripcion_corta,
+            "horario": self.horario_hoy_texto,
+            "abierto": self.abierto_ahora,
+            "metodos": self.metodos_pago_labels,
+            "productos": len(self.productos),
         }
 
     def __repr__(self) -> str:
@@ -177,3 +195,100 @@ def nuevo_slug(nombre: str) -> str:
         slug = f"{base}-{i}"
         i += 1
     return slug
+
+
+class Noticia(db.Model):
+    __tablename__ = "noticias"
+
+    id = db.Column(db.Integer, primary_key=True)
+    slug = db.Column(db.String(160), unique=True, nullable=False, index=True)
+    titulo = db.Column(db.String(200), nullable=False)
+    resumen = db.Column(db.String(320), nullable=False)
+    cuerpo = db.Column(db.Text, nullable=False)
+    categoria = db.Column(db.String(32), nullable=False, default="avisos")
+    fuente_nombre = db.Column(db.String(120), default="")
+    fuente_url = db.Column(db.String(300), default="")
+    publicada = db.Column(db.Boolean, default=True, nullable=False)
+    destacada = db.Column(db.Boolean, default=False, nullable=False)
+    creada_en = db.Column(db.DateTime, default=lambda: datetime.now(CDMX_TZ).replace(tzinfo=None))
+    actualizada_en = db.Column(
+        db.DateTime,
+        default=lambda: datetime.now(CDMX_TZ).replace(tzinfo=None),
+        onupdate=lambda: datetime.now(CDMX_TZ).replace(tzinfo=None),
+    )
+
+    @property
+    def categoria_label(self) -> str:
+        return categoria_noticia_label(self.categoria)
+
+    @property
+    def categoria_icono(self) -> str:
+        return CATEGORIAS_NOTICIA.get(self.categoria, {}).get("icono", "bell")
+
+    @property
+    def categoria_clase(self) -> str:
+        return CATEGORIAS_NOTICIA.get(self.categoria, {}).get("clase", "avisos")
+
+    @property
+    def fecha_larga(self) -> str:
+        if not self.creada_en:
+            return ""
+        return f"{self.creada_en.day} de {MESES[self.creada_en.month - 1]} de {self.creada_en.year}"
+
+    @property
+    def parrafos(self) -> list[str]:
+        return [p.strip() for p in (self.cuerpo or "").split("\n\n") if p.strip()]
+
+    def __repr__(self) -> str:
+        return f"<Noticia {self.slug}>"
+
+
+class Suscripcion(db.Model):
+    __tablename__ = "suscripciones"
+
+    id = db.Column(db.Integer, primary_key=True)
+    endpoint = db.Column(db.Text, unique=True, nullable=False)
+    p256dh = db.Column(db.String(300), nullable=False)
+    auth = db.Column(db.String(100), nullable=False)
+    user_agent = db.Column(db.String(300), default="")
+    activa = db.Column(db.Boolean, default=True, nullable=False)
+    creada_en = db.Column(db.DateTime, default=lambda: datetime.now(CDMX_TZ).replace(tzinfo=None))
+
+    def to_webpush(self) -> dict:
+        return {
+            "endpoint": self.endpoint,
+            "keys": {"p256dh": self.p256dh, "auth": self.auth},
+        }
+
+
+class NotificacionLog(db.Model):
+    __tablename__ = "notificaciones_log"
+
+    id = db.Column(db.Integer, primary_key=True)
+    noticia_id = db.Column(db.Integer, db.ForeignKey("noticias.id"), nullable=True)
+    titulo = db.Column(db.String(200), nullable=False)
+    cuerpo = db.Column(db.String(400), default="")
+    url = db.Column(db.String(300), default="")
+    total = db.Column(db.Integer, default=0)
+    exitos = db.Column(db.Integer, default=0)
+    fallos = db.Column(db.Integer, default=0)
+    enviada_en = db.Column(db.DateTime, default=lambda: datetime.now(CDMX_TZ).replace(tzinfo=None))
+
+    noticia = db.relationship("Noticia", backref="notificaciones")
+
+
+class SolicitudDigitalizacion(db.Model):
+    __tablename__ = "solicitudes_digitalizacion"
+
+    id = db.Column(db.Integer, primary_key=True)
+    nombre = db.Column(db.String(140), nullable=False)
+    comercio = db.Column(db.String(160), default="")
+    telefono = db.Column(db.String(24), nullable=False)
+    alcaldia = db.Column(db.String(60), default="")
+    interes = db.Column(db.String(40), default="diagnostico")
+    mensaje = db.Column(db.Text, default="")
+    atendida = db.Column(db.Boolean, default=False, nullable=False)
+    creada_en = db.Column(db.DateTime, default=lambda: datetime.now(CDMX_TZ).replace(tzinfo=None))
+
+    def __repr__(self) -> str:
+        return f"<SolicitudDigitalizacion {self.nombre}>"

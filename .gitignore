@@ -6,3 +6,5 @@ instance/
 .env
 .pytest_cache/
 .DS_Store
+
+vapid_private.pem

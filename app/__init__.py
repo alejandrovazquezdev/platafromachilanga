@@ -4,19 +4,22 @@ import secrets
 from datetime import datetime
 from pathlib import Path
 
-from flask import Flask, abort, jsonify, render_template, request, session
+from flask import Flask, abort, current_app, jsonify, render_template, request, session
 from flask_sqlalchemy import SQLAlchemy
 from werkzeug.exceptions import HTTPException
 from werkzeug.middleware.proxy_fix import ProxyFix
 
 from .constants import (
     ALCALDIAS,
+    CATEGORIAS_NOTICIA,
+    CATEGORIAS_NOTICIA_LABELS,
     COMO_SE_ENTERO,
     DIAS,
     GIROS,
     INTERES_POS,
     METODOS,
     TIPOS,
+    categoria_noticia_label,
     giro_label,
     interes_label,
     metodo_label,
@@ -40,8 +43,13 @@ def create_app(config_object="config.Config") -> Flask:
 
     from . import models  # noqa: F401  (registra los modelos)
 
+    from .routes.admin import admin_bp
+    from .routes.chat import chat_bp
     from .routes.directorio import directorio_bp
+    from .routes.geocoding import geocoding_bp
     from .routes.main import main_bp
+    from .routes.noticias import noticias_bp
+    from .routes.notificaciones import notificaciones_bp
     from .routes.panel import panel_bp
     from .routes.registro import registro_bp
 
@@ -49,6 +57,11 @@ def create_app(config_object="config.Config") -> Flask:
     app.register_blueprint(registro_bp)
     app.register_blueprint(directorio_bp)
     app.register_blueprint(panel_bp)
+    app.register_blueprint(noticias_bp)
+    app.register_blueprint(notificaciones_bp)
+    app.register_blueprint(admin_bp)
+    app.register_blueprint(chat_bp)
+    app.register_blueprint(geocoding_bp)
 
     app.jinja_env.trim_blocks = True
     app.jinja_env.lstrip_blocks = True
@@ -57,6 +70,7 @@ def create_app(config_object="config.Config") -> Flask:
         giro_label=giro_label,
         metodo_label=metodo_label,
         interes_label=interes_label,
+        categoria_noticia_label=categoria_noticia_label,
     )
     app.jinja_env.globals.update(
         TIPOS=TIPOS,
@@ -66,6 +80,8 @@ def create_app(config_object="config.Config") -> Flask:
         METODOS=METODOS,
         INTERES_POS=INTERES_POS,
         COMO_SE_ENTERO=COMO_SE_ENTERO,
+        CATEGORIAS_NOTICIA=CATEGORIAS_NOTICIA,
+        CATEGORIAS_NOTICIA_LABELS=CATEGORIAS_NOTICIA_LABELS,
         tipo_label=tipo_label,
         giro_label=giro_label,
         metodo_label=metodo_label,
@@ -77,13 +93,17 @@ def create_app(config_object="config.Config") -> Flask:
     def inject_csrf():
         if "_csrf_token" not in session:
             session["_csrf_token"] = secrets.token_urlsafe(32)
-        return {"csrf_token": lambda: session["_csrf_token"]}
+        return {
+            "csrf_token": lambda: session["_csrf_token"],
+            "vapid_public_key": current_app.config.get("VAPID_PUBLIC_KEY", ""),
+            "push_enabled": current_app.config.get("PUSH_ENABLED", False),
+        }
 
     @app.before_request
     def csrf_protect():
         if request.method == "POST":
             token = session.get("_csrf_token")
-            enviado = request.form.get("_csrf_token", "")
+            enviado = request.form.get("_csrf_token", "") or request.headers.get("X-CSRF-Token", "")
             if not token or not secrets.compare_digest(token, enviado):
                 abort(400, description="La sesión expiró. Vuelve a cargar la página e intenta de nuevo.")
 
@@ -102,7 +122,7 @@ def create_app(config_object="config.Config") -> Flask:
             "font-src 'self' https://fonts.gstatic.com data:; "
             "script-src 'self' 'unsafe-inline' https://unpkg.com; "
             "img-src 'self' data: https://server.arcgisonline.com https://unpkg.com; "
-            "connect-src 'self'; frame-ancestors 'self'",
+            "connect-src 'self'; worker-src 'self'; manifest-src 'self'; frame-ancestors 'self'",
         )
         return response
 
@@ -111,6 +131,10 @@ def create_app(config_object="config.Config") -> Flask:
         if not valor:
             return ""
         return valor.strftime("%d/%m/%Y")
+
+    @app.template_filter("categoria_noticia")
+    def filtro_categoria_noticia(valor):
+        return categoria_noticia_label(valor)
 
     @app.template_filter("precio")
     def formato_precio(valor):
@@ -166,8 +190,9 @@ def create_app(config_object="config.Config") -> Flask:
     with app.app_context():
         db.create_all()
         if app.config.get("SEED_DATA", True):
-            from .data.seed import seed_if_empty
+            from .data.seed import seed_if_empty, seed_noticias
 
             seed_if_empty()
+            seed_noticias()
 
     return app

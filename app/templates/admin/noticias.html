@@ -1,0 +1,62 @@
+{% extends 'admin/base_admin.html' %}
+{% from 'components/iconos.html' import icono %}
+
+{% block titulo %}Noticias · Operación Chilangatón{% endblock %}
+
+{% block contenido %}
+<div class="admin-cabecera">
+  <div>
+    <p class="eyebrow"><span class="eyebrow__linea" aria-hidden="true"></span> Contenido</p>
+    <h1>Noticias</h1>
+    <p>Crea, publica y notifica las noticias que verán los comercios.</p>
+  </div>
+  <a class="btn btn--primario" href="{{ url_for('admin.noticia_form') }}">
+    {{ icono('plus', 'btn__icono', 18) }}
+    Nueva noticia
+  </a>
+</div>
+
+{% if not push_ok %}
+<div class="alerta alerta--admin">{{ icono('alert', 'icono', 20) }}<p>Web Push sin configurar: podrás guardar noticias, pero no enviar avisos.</p></div>
+{% endif %}
+
+<section class="admin-card">
+  {% if noticias %}
+  <div class="tabla-envoltura">
+    <table class="tabla tabla--admin">
+      <thead>
+        <tr><th>Título</th><th>Categoría</th><th>Estado</th><th>Fecha</th><th>Acciones</th></tr>
+      </thead>
+      <tbody>
+        {% for noticia in noticias %}
+        <tr>
+          <td>
+            <strong>{{ noticia.titulo }}</strong>
+            {% if noticia.destacada %}<span class="admin-pill admin-pill--oro">Destacada</span>{% endif %}
+          </td>
+          <td>{{ noticia.categoria_label }}</td>
+          <td><span class="admin-pill {% if noticia.publicada %}admin-pill--ok{% endif %}">{{ 'Publicada' if noticia.publicada else 'Borrador' }}</span></td>
+          <td>{{ noticia.fecha_larga }}</td>
+          <td class="tabla__acciones">
+            <a href="{{ url_for('admin.noticia_form', noticia_id=noticia.id) }}">Editar</a>
+            {% if noticia.publicada %}
+            <a href="{{ url_for('noticias.detalle', slug=noticia.slug) }}" target="_blank" rel="noopener">Ver</a>
+            {% endif %}
+            <form method="post" action="{{ url_for('admin.notificar_noticia', noticia_id=noticia.id) }}">
+              <input type="hidden" name="_csrf_token" value="{{ csrf_token() }}">
+              <button class="tabla__boton" type="submit">Notificar</button>
+            </form>
+          </td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+  {% else %}
+  <div class="admin-vacio">
+    <p>No hay noticias todavía.</p>
+    <a class="btn btn--primario" href="{{ url_for('admin.noticia_form') }}">Crear la primera</a>
+  </div>
+  {% endif %}
+</section>
+{% endblock %}

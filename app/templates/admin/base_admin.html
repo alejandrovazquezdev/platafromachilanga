@@ -1,0 +1,46 @@
+<!doctype html>
+<html lang="es-MX">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>{% block titulo %}Operación · Chilangatón{% endblock %}</title>
+  <meta name="robots" content="noindex, nofollow">
+  <link rel="icon" type="image/png" href="{{ url_for('static', filename='img/favicon.png') }}">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/estilos.css') }}">
+</head>
+<body class="admin-body">
+  <header class="admin-topbar">
+    <div class="admin-topbar__inner">
+      <a class="admin-marca" href="{{ url_for('admin.dashboard') }}">
+        <img src="{{ url_for('static', filename='img/logo-gobierno-500.png') }}" alt="Gobierno de la Ciudad de México" width="500" height="152">
+        <span><strong>Chilangatón</strong><small>Operación</small></span>
+      </a>
+      <nav class="admin-nav" aria-label="Navegación de operación">
+        <a href="{{ url_for('admin.dashboard') }}" class="{% if request.endpoint == 'admin.dashboard' %}is-activo{% endif %}">Resumen</a>
+        <a href="{{ url_for('admin.noticias') }}" class="{% if request.endpoint and request.endpoint.startswith('admin.noticia') %}is-activo{% endif %}">Noticias</a>
+        <a href="{{ url_for('admin.notificar') }}" class="{% if request.endpoint == 'admin.notificar' %}is-activo{% endif %}">Notificaciones</a>
+        <a href="{{ url_for('admin.suscripciones') }}" class="{% if request.endpoint == 'admin.suscripciones' %}is-activo{% endif %}">Dispositivos</a>
+      </nav>
+      <div class="admin-topbar__acciones">
+        <a class="admin-topbar__enlace" href="{{ url_for('main.inicio') }}" target="_blank" rel="noopener">Ver sitio</a>
+        <a class="btn btn--fantasma btn--sm" href="{{ url_for('admin.logout') }}">Salir</a>
+      </div>
+    </div>
+  </header>
+
+  <main class="admin-main">
+    {% with messages = get_flashed_messages(with_categories=true) %}
+      {% if messages %}
+      <div class="admin-avisos" role="status">
+        {% for categoria, mensaje in messages %}
+        <div class="aviso {% if categoria == 'error' %}aviso--error{% else %}aviso--ok{% endif %}">{{ mensaje }}</div>
+        {% endfor %}
+      </div>
+      {% endif %}
+    {% endwith %}
+    {% block contenido %}{% endblock %}
+  </main>
+</body>
+</html>

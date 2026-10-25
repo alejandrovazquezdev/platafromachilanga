@@ -1,0 +1,224 @@
+{% extends 'base.html' %}
+{% from 'components/iconos.html' import icono %}
+{% from 'components/campos.html' import campo, select_campo, textarea %}
+
+{% block titulo %}Digitaliza tu negocio · Chilangatón{% endblock %}
+{% block descripcion %}Punto de venta, inventario y control de ventas para mercados, tianguis y tiendas de barrio. Sin dejar de ser un negocio de barrio.{% endblock %}
+
+{% block contenido %}
+<section class="digitaliza-hero">
+  <div class="contenedor digitaliza-hero__grid">
+    <div>
+      <p class="eyebrow"><span class="eyebrow__linea" aria-hidden="true"></span> Digitaliza tu negocio</p>
+      <h1>Tu negocio,<br><span class="texto-guinda">a tu ritmo.</span></h1>
+      <p class="digitaliza-hero__bajada">
+        Cobra con tarjeta, controla tus ventas y sabe qué tienes en el inventario.
+        Sin contratos eternos ni letras chiquitas.
+      </p>
+      <div class="hero__acciones">
+        <a class="btn btn--primario btn--lg" href="#solicitud">
+          Quiero un diagnóstico
+          {{ icono('arrow-right', 'btn__icono', 20) }}
+        </a>
+        <a class="btn btn--secundario btn--lg" href="#como-funciona">Ver cómo funciona</a>
+      </div>
+      <ul class="hero__sellos">
+        <li>{{ icono('check', 'icono', 16) }} Sin costo de diagnóstico</li>
+        <li>{{ icono('shield', 'icono', 16) }} Tú eliges el proveedor</li>
+        <li>{{ icono('users', 'icono', 16) }} Acompañamiento en persona</li>
+      </ul>
+    </div>
+
+    <div class="pos-demo" aria-label="Ejemplo de punto de venta">
+      <div class="pos-demo__cabecera">
+        <span class="pos-demo__marca">{{ icono('card', 'icono', 18) }} Punto de venta</span>
+        <span class="pos-demo__turno">Turno 1 · Caja</span>
+      </div>
+      <div class="pos-demo__total">
+        <span>Total</span>
+        <strong>$148.00</strong>
+      </div>
+      <ul class="pos-demo__lista">
+        <li><span>2 × Tamal de guajillo</span><strong>$44</strong></li>
+        <li><span>1 × Atole de arroz</span><strong>$18</strong></li>
+        <li><span>1 × Comida corrida</span><strong>$75</strong></li>
+        <li><span>1 × Agua de horchata</span><strong>$11</strong></li>
+      </ul>
+      <div class="pos-demo__pagos">
+        <span>{{ icono('wallet', 'icono', 15) }} Efectivo</span>
+        <span>{{ icono('smartphone', 'icono', 15) }} Transferencia</span>
+        <span>{{ icono('card', 'icono', 15) }} Tarjeta</span>
+      </div>
+      <div class="pos-demo__accion">Cobrar</div>
+      <p class="pos-demo__nota">Ejemplo de interfaz. El equipo y las comisiones los define tu proveedor.</p>
+    </div>
+  </div>
+</section>
+
+<section class="contenedor">
+  <div class="beneficio-registro">
+    <div>
+      <span>Incluido con tu registro</span>
+      <h2>Este módulo es un beneficio, no un cobro escondido.</h2>
+      <p>Si ya registraste tu comercio, puedes pedir el diagnóstico sin costo. No hay pagos ni suscripciones dentro de la plataforma.</p>
+    </div>
+    <a class="btn btn--secundario btn--sm" href="{{ url_for('panel.inicio') }}">Ir a mi panel</a>
+  </div>
+</section>
+
+<section class="seccion">
+  <div class="contenedor">
+    <div class="seccion__cabecera">
+      <p class="eyebrow"><span class="eyebrow__linea" aria-hidden="true"></span> Lo que resuelve</p>
+      <h2>Menos cuaderno,<br>más control.</h2>
+      <p>No se trata de llenar tu local de aparatos. Se trata de que sepas qué pasa con tu dinero y tu mercancía.</p>
+    </div>
+    <div class="beneficios beneficios--cuatro">
+      <article class="beneficio">
+        <span class="beneficio__icono">{{ icono('card', 'icono', 26) }}</span>
+        <h3>Cobra con tarjeta</h3>
+        <p>Una terminal o cobro digital para no perder ventas de quien no trae efectivo.</p>
+      </article>
+      <article class="beneficio">
+        <span class="beneficio__icono">{{ icono('chart', 'icono', 26) }}</span>
+        <h3>Controla tus ventas</h3>
+        <p>Cierre de caja claro, ventas del día y un historial que no depende de la memoria.</p>
+      </article>
+      <article class="beneficio">
+        <span class="beneficio__icono">{{ icono('package', 'icono', 26) }}</span>
+        <h3>Cuida tu inventario</h3>
+        <p>Sabes qué se está acabando y qué te está dejando margen, sin contar a mano cada noche.</p>
+      </article>
+      <article class="beneficio">
+        <span class="beneficio__icono">{{ icono('phone', 'icono', 26) }}</span>
+        <h3>Vende por WhatsApp</h3>
+        <p>Pedidos, apartados y entregas con un registro simple para no perder el hilo.</p>
+      </article>
+    </div>
+  </div>
+</section>
+
+<section class="seccion seccion--papel" id="como-funciona">
+  <div class="contenedor split split--ancho">
+    <div class="split__principal">
+      <p class="eyebrow"><span class="eyebrow__linea" aria-hidden="true"></span> Cómo te acompañamos</p>
+      <h2>Empezamos por lo que ya tienes</h2>
+      <p class="split__bajada">
+        No necesitas tirar tu cuaderno ni cambiar todo el primer día. Primero vemos
+        cómo trabajas y después proponemos el paso que más te conviene.
+      </p>
+      <ol class="pasos-lista pasos-lista--detalle">
+        <li class="paso">
+          <span class="paso__numero">01</span>
+          <div>
+            <h3>Diagnóstico en tu local</h3>
+            <p>Revisamos tus ventas, tus formas de cobro y tu conexión. Sin costo y sin compromiso.</p>
+          </div>
+        </li>
+        <li class="paso">
+          <span class="paso__numero">02</span>
+          <div>
+            <h3>Propuesta a tu medida</h3>
+            <p>Te explicamos qué terminal, qué app y qué comisiones aplican. Tú decides.</p>
+          </div>
+        </li>
+        <li class="paso">
+          <span class="paso__numero">03</span>
+          <div>
+            <h3>Instalación y capacitación</h3>
+            <p>Dejamos el punto de venta funcionando y te enseñamos a usarlo con tu equipo.</p>
+          </div>
+        </li>
+        <li class="paso">
+          <span class="paso__numero">04</span>
+          <div>
+            <h3>Acompañamiento</h3>
+            <p>Resolvemos dudas y ajustamos lo que haga falta durante las primeras semanas.</p>
+          </div>
+        </li>
+      </ol>
+    </div>
+
+    <aside class="panel-requisitos">
+      <h3>{{ icono('check', 'icono', 20) }} Antes / después</h3>
+      <div class="antes-despues">
+        <div>
+          <span class="antes-despues__tag">Antes</span>
+          <ul class="lista-x">
+            <li>Cuaderno con ventas del día.</li>
+            <li>“¿Cuánto me queda de cambio?”</li>
+            <li>Inventario que se revisa cada mes.</li>
+            <li>Clientes que no traen efectivo.</li>
+          </ul>
+        </div>
+        <div>
+          <span class="antes-despues__tag antes-despues__tag--bien">Después</span>
+          <ul class="lista-check">
+            <li>Cierre de caja en minutos.</li>
+            <li>Ventas y propinas separadas.</li>
+            <li>Alertas de stock bajo.</li>
+            <li>Cobro con tarjeta y transferencia.</li>
+          </ul>
+        </div>
+      </div>
+      <p class="nota">
+        {{ icono('info', 'icono', 18) }}
+        No somos una financiera ni un banco. Te orientamos y tú eliges al proveedor.
+      </p>
+    </aside>
+  </div>
+</section>
+
+<section class="seccion" id="solicitud">
+  <div class="contenedor solicitud-grid">
+    <div>
+      <p class="eyebrow"><span class="eyebrow__linea" aria-hidden="true"></span> Diagnóstico sin costo</p>
+      <h2>Cuéntanos de tu negocio</h2>
+      <p class="split__bajada">
+        Déjanos tus datos y te contactamos para agendar una visita o una llamada.
+        Sin compromiso y sin costo.
+      </p>
+      <ul class="lista-beneficios">
+        <li>{{ icono('check', 'icono', 18) }} <span>Revisamos si tu giro puede cobrar con tarjeta.</span></li>
+        <li>{{ icono('check', 'icono', 18) }} <span>Te decimos qué necesitas para empezar.</span></li>
+        <li>{{ icono('check', 'icono', 18) }} <span>No contratas nada en la primera visita.</span></li>
+      </ul>
+    </div>
+
+    <form class="formulario formulario--compacto" method="post" action="{{ url_for('main.digitaliza') }}#solicitud" novalidate>
+      <input type="hidden" name="_csrf_token" value="{{ csrf_token() }}">
+      <div class="formulario__cabecera">
+        <h3>Solicita tu diagnóstico</h3>
+        <p>Te contactamos en horario laboral.</p>
+      </div>
+      {% if errores %}
+      <div class="alerta" role="alert">{{ icono('alert', 'icono', 18) }}<p>Revisa los campos marcados.</p></div>
+      {% endif %}
+      <div class="campos-grid">
+        {{ campo('nombre', 'Tu nombre', valores.get('nombre', ''), requerido=True, error=errores.get('nombre'), maxlength=140) }}
+        {{ campo('comercio', 'Nombre del comercio', valores.get('comercio', ''), maxlength=160) }}
+      </div>
+      <div class="campos-grid">
+        {{ campo('telefono', 'Teléfono', valores.get('telefono', ''), tipo='tel', requerido=True, inputmode='tel', error=errores.get('telefono'), maxlength=24, placeholder='55 1234 5678') }}
+        {{ select_campo('alcaldia', 'Alcaldía', ALCALDIAS, valores.get('alcaldia', '')) }}
+      </div>
+      <div class="campo">
+        <label class="campo__label" for="interes">¿Qué te interesa?</label>
+        <select class="campo__control campo__control--select" id="interes" name="interes">
+          {% set opciones = {'diagnostico': 'Un diagnóstico general', 'terminal': 'Cobrar con tarjeta', 'inventario': 'Control de inventario', 'facturacion': 'Facturación', 'todo': 'Todo lo anterior'} %}
+          {% for clave, etiqueta in opciones.items() %}
+          <option value="{{ clave }}" {% if valores.get('interes') == clave %}selected{% endif %}>{{ etiqueta }}</option>
+          {% endfor %}
+        </select>
+      </div>
+      {{ textarea('mensaje', 'Cuéntanos un poco más (opcional)', valores.get('mensaje', ''), maxlength=600, filas=3, placeholder='Ej. Tengo una fonda con 2 personas y quiero cobrar con tarjeta.') }}
+      <label class="check check--consentimiento">
+        <input type="checkbox" name="consent" required>
+        <span>Acepto el <a href="{{ url_for('main.aviso_privacidad') }}" target="_blank" rel="noopener">aviso de privacidad</a> y que me contacten para este diagnóstico.</span>
+      </label>
+      {% if errores.get('consent') %}<p class="campo__error" role="alert">{{ errores.get('consent') }}</p>{% endif %}
+      <button class="btn btn--primario btn--bloque" type="submit">Enviar solicitud</button>
+    </form>
+  </div>
+</section>
+{% endblock %}
