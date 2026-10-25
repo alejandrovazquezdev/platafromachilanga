@@ -57,8 +57,17 @@ Variables opcionales en `.env` (ver `.env.example`):
 
 ```
 SECRET_KEY=...
-DATABASE_URL=sqlite:///instance/chilangaton.db
+# DATABASE_URL=sqlite:////ruta/absoluta/instance/chilangaton.db
+ADMIN_PASSWORD=...
+VAPID_PUBLIC_KEY=...
+VAPID_PRIVATE_KEY_PATH=vapid_private.pem
+VAPID_SUBJECT=mailto:equipo@chilangaton.mx
+OPENAI_API_KEY=...
+OPENAI_MODEL=gpt-5.6-luna
 ```
+
+El módulo de notificaciones push requiere HTTPS (excepto `localhost`) y un navegador
+con Push API. En iPhone, Safari exige agregar el sitio a la pantalla de inicio.
 
 ## Pruebas
 
