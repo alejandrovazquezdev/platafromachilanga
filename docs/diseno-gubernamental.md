@@ -53,7 +53,7 @@ titulares. Se carga desde Google Fonts y tiene fallback al sistema.
 - **Formularios:** labels visibles, ayudas, errores con `role="alert"`, foco con
   anillo guinda, radio cards accesibles y consentimiento explícito.
 - **Progreso:** barra lateral en escritorio y barra superior en móvil.
-- **Mapas:** Leaflet + teselas claras de CARTO, con pin guinda y atribución.
+- **Mapas:** Leaflet + teselas claras de Esri (Light Gray), con pin guinda y atribución.
 
 ## 4. Decisiones de adaptación
 
@@ -61,7 +61,7 @@ titulares. Se carga desde Google Fonts y tiene fallback al sistema.
   CSS propio con variables.
 - **Sin Tailwind:** se conserva la escala visual (contenedor, radios, spacings,
   estados) en CSS legible.
-- **Sin Mapbox:** Leaflet + CARTO/OSM para no depender de una API key.
+- **Sin Mapbox:** Leaflet + Esri Light Gray para no depender de una API key.
 - **Sin iconos externos:** sprite de SVG inline para mantener el peso bajo.
 - **Logo oficial:** se usa el activo de NegociaCDMX; el sitio se declara
   explícitamente como **prototipo no oficial** en el footer y el aviso de privacidad.

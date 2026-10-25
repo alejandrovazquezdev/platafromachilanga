@@ -101,7 +101,7 @@ def create_app(config_object="config.Config") -> Flask:
             "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://unpkg.com; "
             "font-src 'self' https://fonts.gstatic.com data:; "
             "script-src 'self' 'unsafe-inline' https://unpkg.com; "
-            "img-src 'self' data: https://*.basemaps.cartocdn.com https://basemaps.cartocdn.com https://unpkg.com; "
+            "img-src 'self' data: https://server.arcgisonline.com https://unpkg.com; "
             "connect-src 'self'; frame-ancestors 'self'",
         )
         return response
