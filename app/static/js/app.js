@@ -191,7 +191,7 @@
   /* ------------------------------------------------------------
      Evitar doble envío
      ------------------------------------------------------------ */
-  $$('form').forEach((form) => {
+  $$('form.formulario, form.filtros').forEach((form) => {
     form.addEventListener('submit', () => {
       const boton = form.querySelector('button[type="submit"]');
       if (boton && !boton.disabled) {

@@ -52,11 +52,26 @@ def lista():
                 " ".join(p.nombre for p in c.productos),
             ],
         )
+    total_global = Comercio.query.filter_by(estado="publicado").count()
+    if filtros["tipo"] in TIPOS:
+        grupos = [(filtros["tipo"], comercios)] if comercios else []
+        titulo_lista = TIPOS[filtros["tipo"]]["label"]
+    else:
+        grupos = [
+            (clave, [c for c in comercios if c.tipo == clave])
+            for clave in TIPOS
+        ]
+        grupos = [(clave, items) for clave, items in grupos if items]
+        titulo_lista = "Todos los comercios"
+
     mapa = [c.to_public_dict() for c in comercios]
     return render_template(
         "directorio/lista.html",
         comercios=comercios,
+        grupos=grupos,
+        titulo_lista=titulo_lista,
         total=len(comercios),
+        total_global=total_global,
         filtros=filtros,
         mapa_json=json.dumps(mapa, ensure_ascii=False),
     )

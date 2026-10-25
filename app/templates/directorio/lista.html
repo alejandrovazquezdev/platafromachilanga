@@ -20,7 +20,7 @@
       </div>
       <div class="directorio-hero__contador">
         <strong>{{ total }}</strong>
-        <span>{{ 'comercio' if total == 1 else 'comercios' }} en el mapa</span>
+        <span>de {{ total_global }} {{ 'comercio' if total_global == 1 else 'comercios' }}</span>
       </div>
     </div>
   </div>
@@ -102,11 +102,26 @@
 
     <div class="directorio__lista">
       {% if comercios %}
-      <div class="grid-cards grid-cards--directorio">
-        {% for comercio in comercios %}
-          {{ tarjeta_comercio(comercio, mostrar_mapa=True) }}
-        {% endfor %}
+      <div class="resultados-cabecera">
+        <div>
+          <h2>{{ titulo_lista }}</h2>
+          <p>Mostrando {{ total }} de {{ total_global }} comercios publicados.</p>
+        </div>
+        <a class="filtros__limpiar" href="{{ url_for('directorio.lista') }}">Limpiar filtros</a>
       </div>
+      {% for clave, items in grupos %}
+      <section class="grupo-comercios">
+        <div class="grupo-comercios__cabecera">
+          <h3>{{ TIPOS[clave].label }}</h3>
+          <span>{{ items|length }}</span>
+        </div>
+        <div class="grid-cards grid-cards--directorio">
+          {% for comercio in items %}
+            {{ tarjeta_comercio(comercio, mostrar_mapa=True) }}
+          {% endfor %}
+        </div>
+      </section>
+      {% endfor %}
       {% else %}
       <div class="vacio">
         {{ icono('search', 'icono', 32) }}

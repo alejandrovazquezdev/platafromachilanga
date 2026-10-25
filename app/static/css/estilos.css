@@ -6013,3 +6013,69 @@ h3 {
     margin-left: 0;
   }
 }
+
+/* Resultados seccionados del directorio */
+.resultados-cabecera {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 16px;
+  margin: 0 0 18px;
+}
+
+.resultados-cabecera h2 {
+  font-size: 1.25rem;
+  letter-spacing: -0.03em;
+}
+
+.resultados-cabecera p {
+  margin-top: 3px;
+  font-size: 0.74rem;
+  color: var(--tinta-suave);
+}
+
+.grupo-comercios {
+  margin-bottom: 26px;
+}
+
+.grupo-comercios:last-child {
+  margin-bottom: 0;
+}
+
+.grupo-comercios__cabecera {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 10px;
+  padding-bottom: 7px;
+  border-bottom: 1px solid var(--borde);
+}
+
+.grupo-comercios__cabecera h3 {
+  font-size: 0.78rem;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--guinda);
+}
+
+.grupo-comercios__cabecera span {
+  display: inline-flex;
+  min-width: 20px;
+  height: 20px;
+  align-items: center;
+  justify-content: center;
+  border-radius: var(--radio-pill);
+  background: var(--papel-fuerte);
+  font-size: 0.62rem;
+  font-weight: 700;
+  color: var(--tinta-suave);
+}
+
+@media (max-width: 640px) {
+  .resultados-cabecera {
+    align-items: flex-start;
+    flex-direction: column;
+    gap: 5px;
+  }
+}
