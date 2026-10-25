@@ -75,3 +75,10 @@ titulares. Se carga desde Google Fonts y tiene fallback al sistema.
 - `app/static/img/mapa-flores.png` — recorte decorativo del logo.
 - `app/static/img/favicon.png` — escudo recortado.
 - `app/static/js/app.js` — navegación, productos, horarios, mapas y copiado.
+
+## Ajustes de carácter (2026-10-25)
+
+Se retiraron las tarjetas flotantes y la animación del hero, se aplanó la banda
+CTA y se quitaron las etiquetas de “Reto 1”/“Prototipo” de la cabecera. La
+intención es que la plataforma se lea como un servicio público cotidiano y no
+como una maqueta de producto.
