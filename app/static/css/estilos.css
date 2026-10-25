@@ -4191,3 +4191,22 @@ h3 {
     margin-bottom: 20px;
   }
 }
+
+.flotante--pos {
+  bottom: 26px;
+}
+
+.cta__inner .btn {
+  flex: none;
+  white-space: nowrap;
+}
+
+@media (max-width: 640px) {
+  .flotante--pos {
+    display: none;
+  }
+
+  .cta__inner .btn {
+    white-space: normal;
+  }
+}
