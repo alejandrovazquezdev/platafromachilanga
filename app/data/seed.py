@@ -326,7 +326,7 @@ Este contenido es informativo y de ejemplo; verifica las reglas de tu alcaldía 
             "titulo": "Punto de venta: cómo cobrar con tarjeta sin complicarte",
             "resumen": "Comisiones, conectividad y propinas: lo que conviene preguntar antes de contratar una terminal.",
             "categoria": "digitalizacion",
-            "fuente_nombre": "Chilangatón",
+            "fuente_nombre": "Centlalli",
             "fuente_url": "",
             "destacada": False,
             "creada_en": datetime(2026, 10, 16, 12, 0),
@@ -336,7 +336,7 @@ Revisa si el equipo funciona con la señal de tu local. Si no tienes internet fi
 
 Empieza con lo básico: cobrar con tarjeta y consultar tus ventas. Después puedes sumar propinas, pagos a meses o facturación. No contrates un paquete grande si todavía no lo necesitas.
 
-En Chilangatón podemos orientarte sin costo; el equipo y las comisiones los define cada proveedor.""",
+En Centlalli podemos orientarte sin costo; el equipo y las comisiones los define cada proveedor.""",
         },
         {
             "titulo": "Campaña de seguridad en mercados y tianguis",
@@ -358,7 +358,7 @@ Este contenido es informativo y de ejemplo; no sustituye a las autoridades de se
             "titulo": "Antes de la temporada alta: actualiza tu ficha y tus precios",
             "resumen": "Una ficha completa con horarios y productos actualizados recibe más visitas y evita confusiones.",
             "categoria": "avisos",
-            "fuente_nombre": "Chilangatón",
+            "fuente_nombre": "Centlalli",
             "fuente_url": "",
             "destacada": False,
             "creada_en": datetime(2026, 10, 12, 11, 0),
@@ -392,6 +392,6 @@ def seed_cuentas():
     if Cuenta.query.filter_by(comercio_id=comercio.id).first():
         return
     cuenta = Cuenta(comercio_id=comercio.id, email=comercio.email)
-    cuenta.set_password("Chilangaton2026")
+    cuenta.set_password("Centlalli2026")
     db.session.add(cuenta)
     db.session.commit()

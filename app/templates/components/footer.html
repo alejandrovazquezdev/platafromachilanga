@@ -8,6 +8,7 @@
           <img src="{{ url_for('static', filename='img/logo-gobierno-500.png') }}" alt="Gobierno de la Ciudad de México" width="500" height="152">
         </picture>
       </div>
+      <p class="footer__nombre">Centlalli</p>
       <p class="footer__descripcion">
         Una plataforma para que mercados, tianguis y tiendas de barrio sean visibles,
         vendan más y den el paso a la digitalización.
@@ -42,7 +43,7 @@
       <h2 class="footer__titulo">Contacto</h2>
       <ul class="footer__lista footer__lista--contacto">
         <li>{{ icono('map-pin', 'icono', 16) }} Ciudad de México</li>
-        <li>{{ icono('mail', 'icono', 16) }} Equipo Chilangatón</li>
+        <li>{{ icono('mail', 'icono', 16) }} Equipo Centlalli</li>
         <li>{{ icono('clock', 'icono', 16) }} Lun–Vie, 9:00–18:00</li>
       </ul>
       <a class="footer__enlace" href="{{ url_for('registro.paso1') }}">
@@ -53,7 +54,7 @@
   </div>
 
   <div class="contenedor footer__bottom">
-    <p>© {{ anio_actual }} Chilangatón. Prototipo para el hackathon.</p>
+    <p>© {{ anio_actual }} Centlalli. Prototipo para el hackathon.</p>
     <p class="footer__aviso">
       No es un sitio oficial del Gobierno de la Ciudad de México. Los datos de los
       comercios del directorio son de demostración.

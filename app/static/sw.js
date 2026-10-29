@@ -1,4 +1,4 @@
-/* Service worker de Chilangatón: notificaciones push. */
+/* Service worker de Centlalli: notificaciones push. */
 self.addEventListener('install', (event) => {
   self.skipWaiting();
 });
@@ -12,9 +12,9 @@ self.addEventListener('push', (event) => {
   try {
     data = event.data ? event.data.json() : {};
   } catch (error) {
-    data = { title: 'Chilangatón', body: event.data ? event.data.text() : 'Tienes un nuevo aviso.' };
+    data = { title: 'Centlalli', body: event.data ? event.data.text() : 'Tienes un nuevo aviso.' };
   }
-  const title = data.title || 'Chilangatón';
+  const title = data.title || 'Centlalli';
   const options = {
     body: data.body || 'Tienes un nuevo aviso para tu comercio.',
     icon: data.icon || '/static/img/icon-192.png',

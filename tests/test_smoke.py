@@ -19,7 +19,7 @@ def _login_demo(client):
     token = re.search(r'name="_csrf_token" value="([^"]+)"', html).group(1)
     return client.post(
         "/iniciar-sesion",
-        data={"_csrf_token": token, "usuario": "donamari@chilangaton.mx", "contra": "Chilangaton2026"},
+        data={"_csrf_token": token, "usuario": "donamari@chilangaton.mx", "contra": "Centlalli2026"},
         follow_redirects=False,
     )
 
@@ -251,3 +251,19 @@ def test_suscripcion_push(client):
     )
     assert respuesta.status_code == 200
     assert respuesta.get_json()["ok"] is True
+
+
+def test_chat_desactivado_sin_api_key(client, app):
+    app.config["OPENAI_API_KEY"] = ""
+    app.config["CHAT_ENABLED"] = False
+    import re
+
+    html = client.get("/").get_data(as_text=True)
+    token = re.search(r'name="csrf-token" content="([^"]+)"', html).group(1)
+    respuesta = client.post(
+        "/api/chat",
+        json={"messages": [{"role": "user", "content": "Hola"}]},
+        headers={"X-CSRF-Token": token},
+    )
+    assert respuesta.status_code == 200
+    assert "no está configurado" in respuesta.get_json()["reply"].lower()

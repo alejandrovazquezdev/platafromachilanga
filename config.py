@@ -27,6 +27,7 @@ class Config:
     PUSH_ENABLED = bool(VAPID_PUBLIC_KEY and os.path.exists(VAPID_PRIVATE_KEY_PATH))
     OPENAI_API_KEY = os.environ.get("OPENAI_API_KEY", "")
     OPENAI_MODEL = os.environ.get("OPENAI_MODEL", "gpt-5.6-luna")
+    CHAT_ENABLED = bool(OPENAI_API_KEY)
 
 
 class ProductionConfig(Config):

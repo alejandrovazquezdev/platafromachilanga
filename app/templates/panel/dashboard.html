@@ -7,6 +7,7 @@
   <link rel="icon" type="image/png" href="{{ url_for('static', filename='img/favicon.png') }}">
   <link rel="stylesheet" href="{{ url_for('static', filename='css/dashboard.css') }}">
   <style>
+    .dashboard-brand { margin: 0 0 4px; color: var(--dorado-cdmx); font-size: 1.05rem; font-weight: 700; letter-spacing: .22em; text-transform: uppercase; }
     .dashboard-actions { max-width: 1200px; margin: 18px auto 0; padding: 0 20px; display: flex; flex-wrap: wrap; gap: 8px; justify-content: flex-end; }
     .dashboard-actions a { padding: 8px 11px; border: 1px solid var(--guinda-cdmx); border-radius: 4px; color: var(--guinda-cdmx); text-decoration: none; font-size: .82rem; font-weight: 600; background: #fff; }
     .dashboard-actions a:hover { background: var(--guinda-cdmx); color: #fff; }
@@ -23,6 +24,7 @@
 <body>
   <div class="content-wrapper">
     <header class="dashboard-header">
+      <p class="dashboard-brand">Centlalli</p>
       <h1>PANEL DE CONTROL</h1>
       <p>Gestión Interna de tu Tienda Local</p>
     </header>
@@ -97,7 +99,7 @@
   </div>
 
   <footer class="main-footer">
-    <p>Plataforma Chilanga © 2026 - Conectando el comercio local</p>
+    <p>Centlalli © 2026 - Conectando el comercio local</p>
   </footer>
 </body>
 </html>

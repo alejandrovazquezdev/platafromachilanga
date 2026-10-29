@@ -99,6 +99,7 @@ def create_app(config_object="config.Config") -> Flask:
             "csrf_token": lambda: session["_csrf_token"],
             "vapid_public_key": current_app.config.get("VAPID_PUBLIC_KEY", ""),
             "push_enabled": current_app.config.get("PUSH_ENABLED", False),
+            "chat_enabled": current_app.config.get("CHAT_ENABLED", False),
         }
 
     @app.before_request
@@ -152,7 +153,7 @@ def create_app(config_object="config.Config") -> Flask:
         return jsonify(
             {
                 "status": "ok",
-                "servicio": "chilangaton",
+                "servicio": "centlalli",
                 "comercios": Comercio.query.count(),
                 "hora": datetime.now().isoformat(timespec="seconds"),
             }

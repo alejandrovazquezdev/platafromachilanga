@@ -1,6 +1,6 @@
-# Chilangatón · Plataforma de comercio popular
+# Centlalli · Plataforma de comercio popular
 
-Prototipo para el **Reto 1 — Comercio popular y barrial** del Chilangatón 2026.
+Prototipo para el **Reto 1 — Comercio popular y barrial** de Centlalli.
 Permite registrar mercados, tianguis y tiendas de barrio, publicar su ficha,
 explorar un directorio y conocer su panel de visibilidad.
 
@@ -63,7 +63,7 @@ SECRET_KEY=...
 ADMIN_PASSWORD=...
 VAPID_PUBLIC_KEY=...
 VAPID_PRIVATE_KEY_PATH=vapid_private.pem
-VAPID_SUBJECT=mailto:equipo@chilangaton.mx
+VAPID_SUBJECT=mailto:equipo@centlalli.mx
 OPENAI_API_KEY=...
 OPENAI_MODEL=gpt-5.6-luna
 ```
@@ -91,7 +91,7 @@ al comercio. El login usa el diseño original de `IS.html` y el dashboard usa el
 - Productos: el formulario del dashboard crea productos reales y se reflejan en la
   ficha pública.
 - La contraseña se guarda con hash de Werkzeug; nunca en texto plano.
-- Cuenta demo para probar: `donamari@chilangaton.mx` / `Chilangaton2026`.
+- Cuenta demo para probar: `donamari@chilangaton.mx` / `Centlalli2026`.
   Es solo para el hackathon; cámbiale la contraseña o elimínala antes de un uso real.
 
 ## Módulos nuevos
@@ -103,7 +103,7 @@ al comercio. El login usa el diseño original de `IS.html` y el dashboard usa el
 - **Digitaliza**: módulo de punto de venta, inventario y diagnóstico. Se inspira en
   la operación de caja/inventario de MERP (`main`), **sin pasarela de pagos**; es un
   beneficio del registro y captura solicitudes de diagnóstico.
-- **Chatbot “Chilanga”**: asistente con OpenAI (`gpt-5.6-luna`) que responde dudas
+- **Chatbot “Centli”**: asistente con OpenAI (`gpt-5.6-luna`) que responde dudas
   de la web. La API key vive solo en `.env` del servidor.
 - **Notificaciones Web Push**: prompt móvil, service worker, VAPID y envío desde el
   panel de operación.

@@ -2,7 +2,7 @@
 {% from 'components/iconos.html' import icono %}
 {% from 'components/tarjeta_comercio.html' import tarjeta_comercio %}
 
-{% block titulo %}{{ comercio.nombre }} · {{ comercio.alcaldia }} · Chilangatón{% endblock %}
+{% block titulo %}{{ comercio.nombre }} · {{ comercio.alcaldia }} · Centlalli{% endblock %}
 {% block descripcion %}{{ comercio.descripcion_corta or 'Ficha de comercio popular en la Ciudad de México.' }}{% endblock %}
 
 {% block head_extra %}
@@ -30,7 +30,7 @@
       </div>
       <h1>{{ comercio.nombre }}</h1>
       <p class="ficha-hero__lugar">{{ icono('map-pin', 'icono', 18) }} {{ comercio.colonia }}, {{ comercio.alcaldia }}</p>
-      <p class="ficha-hero__descripcion">{{ comercio.descripcion or 'Un comercio de barrio que forma parte de la red de Chilangatón.' }}</p>
+      <p class="ficha-hero__descripcion">{{ comercio.descripcion or 'Un comercio de barrio que forma parte de la red de Centlalli.' }}</p>
       <div class="ficha-hero__sellos">
         <span>{{ icono('calendar', 'icono', 16) }} {{ comercio.anios_operando or 'Comercio local' }}</span>
         {% if comercio.personas %}<span>{{ icono('users', 'icono', 16) }} {{ comercio.personas }} personas</span>{% endif %}
@@ -135,13 +135,13 @@
     <div class="tarjeta-lateral tarjeta-lateral--compacta">
       <p class="tarjeta-lateral__eyebrow">Punto de venta</p>
       <h3>{{ comercio.interes_pos_label }}</h3>
-      <p>Si el comercio lo solicitó, el equipo de Chilangatón puede contactarlo para cotizar una terminal.</p>
+      <p>Si el comercio lo solicitó, el equipo de Centlalli puede contactarlo para cotizar una terminal.</p>
     </div>
 
     <div class="tarjeta-lateral tarjeta-lateral--compacta">
       <p class="tarjeta-lateral__eyebrow">¿Información incorrecta?</p>
       <p>Ayúdanos a mantener el directorio al día.</p>
-      <a class="enlace-flecha" href="mailto:equipo@chilangaton.mx?subject=Reporte%20de%20ficha%20{{ comercio.folio }}">Reportar esta ficha {{ icono('arrow-right', 'icono', 16) }}</a>
+      <a class="enlace-flecha" href="mailto:equipo@centlalli.mx?subject=Reporte%20de%20ficha%20{{ comercio.folio }}">Reportar esta ficha {{ icono('arrow-right', 'icono', 16) }}</a>
     </div>
   </aside>
 </section>

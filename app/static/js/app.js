@@ -205,7 +205,7 @@
 
 
   /* ------------------------------------------------------------
-     Asistente Chilanga
+     Asistente Centli
      ------------------------------------------------------------ */
   const chat = $('[data-chat]');
   const chatPanel = $('[data-chat-panel]');

@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Ficha de {{ comercio.nombre }} · Chilangatón</title>
+  <title>Ficha de {{ comercio.nombre }} · Centlalli</title>
   <link rel="stylesheet" href="{{ url_for('static', filename='css/estilos.css') }}">
 </head>
 <body>
@@ -16,7 +16,7 @@
     <header class="ficha-print__cabecera">
       <img src="{{ url_for('static', filename='img/logo-gobierno-500.png') }}" alt="Gobierno de la Ciudad de México">
       <div>
-        <strong>Chilangatón</strong><br>
+        <strong>Centlalli</strong><br>
         <small>Comercio popular · Ciudad de México</small>
       </div>
     </header>
@@ -25,7 +25,7 @@
       <div>
         <p class="eyebrow">{{ comercio.tipo_label }} · {{ comercio.giro_label }}</p>
         <h1>{{ comercio.nombre }}</h1>
-        <p>{{ comercio.descripcion or 'Comercio de barrio registrado en Chilangatón.' }}</p>
+        <p>{{ comercio.descripcion or 'Comercio de barrio registrado en Centlalli.' }}</p>
 
         <h2>Ubicación</h2>
         <p>{{ comercio.calle }}<br>{{ comercio.colonia }}, {{ comercio.alcaldia }}</p>
@@ -60,7 +60,7 @@
     </div>
 
     <p class="ficha-print__pie">
-      Chilangatón es un prototipo independiente. No es un sitio oficial del Gobierno de la Ciudad de México.
+      Centlalli es un prototipo independiente. No es un sitio oficial del Gobierno de la Ciudad de México.
       Verifica la información en la ficha pública: {{ url_for('directorio.ficha', slug=comercio.slug, _external=True) }}
     </p>
   </div>

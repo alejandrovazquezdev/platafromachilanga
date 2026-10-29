@@ -3,15 +3,15 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>{% block titulo %}Chilangatón · Comercio popular de la CDMX{% endblock %}</title>
+  <title>{% block titulo %}Centlalli · Comercio popular de la CDMX{% endblock %}</title>
   <meta name="description" content="{% block descripcion %}Registra tu mercado, tianguis o tienda de barrio: hazlo visible, publica tus productos y da el paso a la digitalización.{% endblock %}">
   <meta name="theme-color" content="#9F2241">
   <meta name="csrf-token" content="{{ csrf_token() }}">
   {% if vapid_public_key %}<meta name="vapid-public-key" content="{{ vapid_public_key }}">{% endif %}
   <meta property="og:locale" content="es_MX">
   <meta property="og:type" content="website">
-  <meta property="og:site_name" content="Chilangatón">
-  <meta property="og:title" content="{% block og_titulo %}Chilangatón · Comercio popular de la CDMX{% endblock %}">
+  <meta property="og:site_name" content="Centlalli">
+  <meta property="og:title" content="{% block og_titulo %}Centlalli · Comercio popular de la CDMX{% endblock %}">
   <meta property="og:description" content="{% block og_descripcion %}Tu comercio, en el mapa de la ciudad. Registro gratuito para mercados, tianguis y tiendas de barrio.{% endblock %}">
   <meta property="og:image" content="{{ url_for('static', filename='img/logo-gobierno-1000.png', _external=True) }}">
   <link rel="icon" type="image/png" sizes="256x256" href="{{ url_for('static', filename='img/favicon.png') }}">
@@ -32,7 +32,7 @@
   {% block footer %}{% include 'components/footer.html' %}{% endblock %}
   {% if not request.path.startswith('/admin') %}
     {% include 'components/aviso_notificaciones.html' %}
-    {% include 'components/chat.html' %}
+    {% if chat_enabled %}{% include 'components/chat.html' %}{% endif %}
   {% endif %}
   <script src="{{ url_for('static', filename='js/app.js') }}" defer></script>
   {% block scripts %}{% endblock %}

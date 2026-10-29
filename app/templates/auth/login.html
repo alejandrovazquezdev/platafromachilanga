@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Iniciar sesión · Plataforma Chilanga</title>
+  <title>Iniciar sesión · Centlalli</title>
   <link rel="icon" type="image/png" href="{{ url_for('static', filename='img/favicon.png') }}">
   <link rel="stylesheet" href="{{ url_for('static', filename='css/IS.css') }}">
   <style>
@@ -12,6 +12,7 @@
     .cabeza { flex: none; height: auto; max-height: none; }
     .cuerpo { flex: 1; height: auto; max-height: none; padding-bottom: 18px; }
     .pie { flex: none; height: auto; max-height: none; margin-top: auto; }
+    .login-tagline { margin: 4px 0 0; font-size: .8rem; font-weight: 600; letter-spacing: .22em; text-transform: uppercase; color: rgba(255,255,255,.75); }
     .error { margin: 0 auto 12px; max-width: 340px; padding: 9px 12px; border: 1px solid #b00020; border-radius: 4px; background: #fdecef; color: #8a0018; font-size: .85rem; }
     .registro-link { margin: 14px auto 0; font-size: .85rem; color: #555; }
     .registro-link a { color: maroon; font-weight: 700; }
@@ -24,8 +25,8 @@
 </head>
 <body>
   <header class="cabeza">
-    <img class="img" src="{{ url_for('static', filename='img/logo2.png') }}" alt="Plataforma Chilanga">
-    <label><h1>PLATAFORMA CHILANGA</h1></label>
+    <img class="img" src="{{ url_for('static', filename='img/logo2.png') }}" alt="Centlalli">
+    <label><h1>CENTLALLI</h1><p class="login-tagline">Comercio popular</p></label>
   </header>
 
   <main class="cuerpo">

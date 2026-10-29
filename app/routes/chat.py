@@ -11,7 +11,7 @@ chat_bp = Blueprint("chat", __name__, url_prefix="/api")
 _LIMITES = defaultdict(deque)
 _MAX_POR_HORA = 30
 
-SYSTEM_PROMPT = """Eres Chilanga, la asistente virtual de Chilangatón, una plataforma para
+SYSTEM_PROMPT = """Eres Centli, la asistente virtual de Centlalli, una plataforma para
 mercados, tianguis y tiendas de barrio de la Ciudad de México.
 
 Tu trabajo es resolver dudas sobre la web y orientar a las personas comerciantes.
@@ -21,7 +21,7 @@ innecesarios. Si no sabes algo, dilo y recomienda revisar la fuente oficial.
 Contexto de la plataforma:
 - El registro es gratuito, voluntario y toma unos 5 minutos. No exige RFC.
 - El RFC es opcional y no se publica; el correo y el nombre de contacto tampoco.
-- El registro en Chilangatón NO sustituye trámites de la alcaldía, SAT, COFEPRIS
+- El registro en Centlalli NO sustituye trámites de la alcaldía, SAT, COFEPRIS
   ni otros trámites oficiales. No des asesoría legal, fiscal ni financiera.
 - El módulo Digitaliza ofrece diagnóstico y orientación sobre punto de venta,
   inventario y cobros; no es una financiera.
@@ -50,7 +50,7 @@ def _permitido(ip: str) -> bool:
 
 @chat_bp.post("/chat")
 def chat():
-    if not current_app.config.get("OPENAI_API_KEY"):
+    if not current_app.config.get("CHAT_ENABLED") or not current_app.config.get("OPENAI_API_KEY"):
         return jsonify(
             {
                 "reply": "El asistente no está configurado todavía. Mientras tanto, puedes revisar /preguntas-frecuentes o /marco-legal."

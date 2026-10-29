@@ -48,7 +48,7 @@ def geocodificar():
                 "addressdetails": 1,
             },
             headers={
-                "User-Agent": "Chilangaton/1.0 (https://chilangaton.devs-quarkz.com)",
+                "User-Agent": "Centlalli/1.0 (https://chilangaton.devs-quarkz.com)",
                 "Accept-Language": "es",
             },
             timeout=8,

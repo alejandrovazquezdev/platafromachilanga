@@ -1,7 +1,7 @@
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap');
 
 /* ============================================================
-   Chilangatón · sistema visual basado en la identidad
+   Centlalli · sistema visual basado en la identidad
    gubernamental de la CDMX (guinda, oro, papel y tinta).
    ============================================================ */
 
@@ -6077,5 +6077,43 @@ h3 {
     align-items: flex-start;
     flex-direction: column;
     gap: 5px;
+  }
+}
+
+/* Nombre del proyecto: Centlalli */
+.marca__texto strong {
+  font-size: 1.55rem;
+  line-height: 0.95;
+  letter-spacing: -0.055em;
+}
+
+.marca__texto small {
+  letter-spacing: 0.18em;
+}
+
+.hero__marca {
+  margin: 0 0 10px;
+  font-size: clamp(2rem, 3.4vw, 2.9rem);
+  font-weight: 800;
+  line-height: 0.95;
+  letter-spacing: -0.065em;
+  color: var(--guinda);
+}
+
+.footer__nombre {
+  margin-top: 12px;
+  font-size: 1.35rem;
+  font-weight: 800;
+  letter-spacing: -0.045em;
+  color: var(--blanco);
+}
+
+@media (max-width: 640px) {
+  .marca__texto strong {
+    font-size: 1.12rem;
+  }
+
+  .hero__marca {
+    font-size: 1.8rem;
   }
 }

@@ -5,14 +5,14 @@
 
 ## 1. Qué se extrajo de NegociaCDMX
 
-| Elemento | Archivo fuente | Uso en Chilangatón |
+| Elemento | Archivo fuente | Uso en Centlalli |
 |---|---|---|
 | Guinda institucional | `src/app.css` (`--color-gob`) | Color primario, botones, enlaces, cifras |
 | Guinda oscuro / claro / suave | `src/app.css` | Hover, estados, fondos de tarjetas |
 | Fondo neutro cálido | `src/app.css` + `+page.svelte` | Papel `#FBF8F3` y secciones alternas |
 | Tipografía Inter | `src/app.css` | Toda la interfaz, con fallback del sistema |
 | Header blanco con borde | `SiteHeader.svelte` | Header sticky con logo y navegación |
-| Marca con logo + nombre | `Brand.svelte` | Logo oficial + wordmark “Chilangatón” |
+| Marca con logo + nombre | `Brand.svelte` | Logo oficial + wordmark “Centlalli” |
 | Campos redondeados con foco guinda | `Field.svelte` | Inputs, selects, textareas y radio cards |
 | Contenedor `max-w-5xl` | `+page.svelte` | Contenedor de 1180 px |
 | Tarjetas `rounded-xl border` | `+page.svelte` | Beneficios, fichas, panel y pasos |
@@ -42,7 +42,7 @@ titulares. Se carga desde Google Fonts y tiene fallback al sistema.
 
 ## 3. Componentes
 
-- **Header institucional:** franja guinda con “Chilangatón 2026 · Reto 1”,
+- **Header institucional:** franja guinda con “Centlalli · Reto 1”,
   header blanco sticky, logo oficial, navegación y CTA guinda.
 - **Hero:** titular grande, bajada, dos CTAs, sellos de confianza y una composición
   visual con ficha de comercio, mapa decorativo y flores del logo oficial.

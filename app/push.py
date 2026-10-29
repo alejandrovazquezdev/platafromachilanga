@@ -69,7 +69,7 @@ def enviar_push(titulo: str, cuerpo: str, url: str = "", noticia: Noticia | None
                 subscription_info=suscripcion.to_webpush(),
                 data=json.dumps(payload, ensure_ascii=False),
                 vapid_private_key=str(_ruta_llave()),
-                vapid_claims={"sub": current_app.config.get("VAPID_SUBJECT", "mailto:equipo@chilangaton.mx")},
+                vapid_claims={"sub": current_app.config.get("VAPID_SUBJECT", "mailto:equipo@centlalli.mx")},
                 timeout=12,
             )
             exitos += 1
